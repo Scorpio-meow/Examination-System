@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 專案管理期末考試系統
+Copyright (c) 2025 專案管理期末考試系統
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
