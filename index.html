@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考試系統</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 首頁 -->
+        <div id="home-page" class="page active">
+            <div class="hero-section">
+                <h1>考試系統</h1>
+                <div class="exam-info card">
+                    <div class="card__body">
+                        <h3>考試說明</h3>
+                        <!-- 新增題庫選擇 -->
+                        <div class="form-group">
+                            <label for="question-bank-select"><strong>選擇題庫：</strong></label>
+                            <select id="question-bank-select" class="form-control">
+                                <option value="Project_Management.json">專案管理</option>
+                                <option value="Basic_Financial_Planning.json">理財規劃</option>
+                            </select>
+                        </div>
+                        <ul class="exam-details">
+                            <li><strong>題目數量：</strong>50 題</li>
+                            <li><strong>題目類型：</strong>單選題、簡答題</li>
+                            <li><strong>考試時間：</strong>無限制</li>
+                            <li><strong>及格分數：</strong>60 分</li>
+                        </ul>
+                        <p class="note">請仔細閱讀每個題目，選擇最適當的答案。考試過程中可以前後導航修改答案。</p>
+                        <button class="btn btn--primary btn--lg btn--full-width" id="start-exam-btn">
+                            開始考試
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 考試頁面 -->
+        <div id="exam-page" class="page">
+            <div class="exam-header">
+                <div class="progress-info">
+                    <h2>考試系統</h2>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progress-fill"></div>
+                    </div>
+                    <div class="progress-text">
+                        第 <span id="current-question">1</span> 題 / 共 <span id="total-questions">50</span> 題
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-section">
+                <div class="question-card card">
+                    <div class="card__body">
+                        <div class="question-number">
+                            題目 <span id="question-number">1</span>
+                        </div>
+                        <div class="question-text" id="question-text">
+                            載入中...
+                        </div>
+                        <div class="options-container" id="options-container">
+                            <!-- 選項將由 JavaScript 動態生成 -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="navigation-section">
+                    <button class="btn btn--outline" id="prev-btn" disabled>
+                        上一題
+                    </button>
+                    <button class="btn btn--primary" id="next-btn">
+                        下一題
+                    </button>
+                    <button class="btn btn--primary btn--lg hidden" id="submit-btn">
+                        提交考試
+                    </button>
+                </div>
+                
+                <div class="keyboard-hints">
+                    <h5>鍵盤快捷鍵</h5>
+                    <ul class="hint-list">
+                        <li class="hint-item">
+                            <span>上一題</span>
+                            <span class="hint-key">←</span>
+                        </li>
+                        <li class="hint-item">
+                            <span>下一題</span>
+                            <span class="hint-key">→</span>
+                        </li>
+                        <li class="hint-item">
+                            <span>選項A (僅單選題)</span>
+                            <span class="hint-key">1</span>
+                        </li>
+                        <li class="hint-item">
+                            <span>選項B (僅單選題)</span>
+                            <span class="hint-key">2</span>
+                        </li>
+                        <li class="hint-item">
+                            <span>選項C (僅單選題)</span>
+                            <span class="hint-key">3</span>
+                        </li>
+                        <li class="hint-item">
+                            <span>選項D (僅單選題)</span>
+                            <span class="hint-key">4</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 結果頁面 -->
+        <div id="result-page" class="page">
+            <div class="result-header">
+                <h1>考試結果</h1>
+            </div>
+            
+            <div class="score-section">
+                <div class="score-card card">
+                    <div class="card__body">
+                        <div class="score-display">
+                            <div class="score-circle">
+                                <div class="score-number" id="final-score">0</div>
+                                <div class="score-label">分</div>
+                            </div>
+                        </div>
+                        <div class="score-details">
+                            <div class="score-item">
+                                <span>正確題數：</span>
+                                <span id="correct-count">0</span> / <span id="total-count">50</span>
+                            </div>
+                            <div class="score-item">
+                                <span>正確率：</span>
+                                <span id="accuracy-rate">0%</span>
+                            </div>
+                            <div class="score-item">
+                                <span>考試結果：</span>
+                                <span id="exam-status" class="status">未知</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="review-section">
+                <div class="section-header">
+                    <h3>答題回顧</h3>
+                    <p>檢視每題的正確答案和您的選擇</p>
+                </div>
+                <div id="review-container">
+                    <!-- 答題回顧將由 JavaScript 動態生成 -->
+                </div>
+            </div>
+
+            <div class="action-section">
+                <button class="btn btn--primary btn--lg" id="restart-exam-btn">
+                    重新考試
+                </button>
+                <button class="btn btn--outline btn--lg" id="history-btn">
+                    查看歷史記錄
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
