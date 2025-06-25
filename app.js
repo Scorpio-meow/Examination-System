@@ -28,14 +28,19 @@ class ExamApp {
         this.loadQuestions().then(() => {
             this.init();
         });
-    } async loadQuestions(forceReload = false) {
+    }    async loadQuestions(forceReload = false) {
         this.isLoading = true;
         this.showLoadingState(true);
         try {
             let response;
             let questions = [];
             // 根據選擇的題庫載入
-            response = await fetch(this.selectedQuestionBank);
+            // 使用相對於目前頁面的URL路徑，確保在GitHub Pages等環境中也能正確載入
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
+            const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
+            console.log(`嘗試從 ${questionBankUrl} 載入題庫`);
+            
+            response = await fetch(questionBankUrl);
             if (response.ok) {
                 questions = await response.json();
                 console.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
@@ -111,6 +116,12 @@ class ExamApp {
     }
 
     handleLoadError() {
+        console.error('題庫載入失敗，嘗試備用內容');
+        
+        // 記錄更詳細的資訊以幫助診斷問題
+        console.log('目前題庫:', this.selectedQuestionBank);
+        console.log('頁面位置:', window.location.href);
+        
         this.questions = [{
             "id": 1,
             "question": "題目載入失敗，請檢查網路連接並重新整理頁面。",
@@ -120,7 +131,7 @@ class ExamApp {
         }];
 
         // 顯示錯誤訊息
-        this.showErrorMessage('題目載入失敗，請重新整理頁面重試。');
+        this.showErrorMessage(`題目載入失敗 (${this.selectedQuestionBank})，請重新整理頁面重試。`);
     }
 
     showLoadingState(show) {
@@ -157,19 +168,45 @@ class ExamApp {
         examInfo.parentNode.insertBefore(errorDiv, examInfo);
     }
     init() {
+        // 載入用戶配置和設定事件綁定
+        this.loadConfig();
         this.bindEvents();
         this.setupConfigPanel();
-        this.setupQuestionBankSelect(); // 新增：初始化題庫選擇事件
+        this.setupQuestionBankSelect(); // 初始化題庫選擇事件
         this.showPage('home');
         this.updateExamInfo();
+        
+        // 輸出初始化完成的訊息
+        console.log('考試系統初始化完成');
+        console.log('當前題庫:', this.selectedQuestionBank);
+        console.log('題目數量:', this.questions.length);
     }
 
     setupQuestionBankSelect() {
         const select = document.getElementById('question-bank-select');
         if (select) {
-            select.value = this.selectedQuestionBank;
+            // 確保選擇器值與當前選擇的題庫匹配
+            if (this.selectedQuestionBank) {
+                // 尋找包含相同檔名的選項
+                const options = Array.from(select.options);
+                const matchingOption = options.find(opt => 
+                    opt.value === this.selectedQuestionBank || 
+                    opt.value.includes(this.selectedQuestionBank.split('/').pop())
+                );
+                
+                if (matchingOption) {
+                    select.value = matchingOption.value;
+                } else {
+                    select.value = select.options[0].value;
+                    this.selectedQuestionBank = select.value;
+                }
+            }
+            
             select.onchange = (e) => {
+                const previousQuestionBank = this.selectedQuestionBank;
                 this.selectedQuestionBank = e.target.value;
+                console.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
+                
                 this.clearSavedProgress();
                 this.loadQuestions(true).then(() => {
                     this.currentQuestionIndex = 0;
@@ -178,9 +215,11 @@ class ExamApp {
                     this.examStartTime = null;
                     this.examEndTime = null;
                     this.showPage('home');
-                    this.init();
+                    this.updateExamInfo(); // 更新考試資訊
                 });
             };
+        } else {
+            console.error('找不到題庫選擇元素 (question-bank-select)');
         }
     }
 
