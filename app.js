@@ -1056,11 +1056,12 @@ class ExamApp {
     // 顯示歷史記錄
     showExamHistory() {
         try {
-            // 檢查是否已存在 modal，如果存在則先移除
-            const existingModal = document.querySelector('.modal-overlay');
-            if (existingModal) {
-                document.body.removeChild(existingModal);
-            }
+            // 移除所有已存在的 modal
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                if (document.body.contains(modal)) {
+                    document.body.removeChild(modal);
+                }
+            });
             
             const records = JSON.parse(localStorage.getItem('examRecords') || '[]');
             if (records.length === 0) {
@@ -1068,7 +1069,7 @@ class ExamApp {
                 return;
             }
 
-            const historyHtml = records.map((record, index) => {
+            const historyHtml = records.map((record) => {
                 const date = new Date(record.date).toLocaleString('zh-TW');
                 const durationText = `${Math.floor(record.duration / 60000)}分${Math.floor((record.duration % 60000) / 1000)}秒`;
                 return `
@@ -1089,11 +1090,6 @@ class ExamApp {
     }
 
     createHistoryModal(content) {
-        // 確保移除所有現有的 modal
-        document.querySelectorAll('.modal-overlay').forEach(modal => {
-            modal.remove();
-        });
-        
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
         modal.setAttribute('id', 'history-modal');
@@ -1139,16 +1135,6 @@ class ExamApp {
             }
         };
         document.addEventListener('keydown', escKeyHandler);
-        
-        // 為了防止重複添加，移除之前可能存在的 modal
-        setTimeout(() => {
-            const oldModals = document.querySelectorAll('.modal-overlay:not(:last-child)');
-            oldModals.forEach(oldModal => {
-                if (document.body.contains(oldModal)) {
-                    document.body.removeChild(oldModal);
-                }
-            });
-        }, 100);
 
         return modal;
     }
