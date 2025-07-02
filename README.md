@@ -1,5 +1,7 @@
 # 專案管理期末考試系統
-
+![更新日期](https://img.shields.io/badge/更新日期-2025年6月18日-blue)
+![版本](https://img.shields.io/badge/版本-1.0.0-brightgreen)
+![授權](https://img.shields.io/badge/授權-MIT-orange)
 一個基於Web的專案管理知識測驗系統，提供50題精心設計的單選題，涵蓋專案管理原則、績效領域和基本概念。
 
 ## 功能特色
