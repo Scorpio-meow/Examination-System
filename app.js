@@ -22,7 +22,7 @@ class ExamApp {
             passingScore: 60         // 及格分數
         };
 
-        this.selectedQuestionBank = 'Project_Management.json'; // 預設題庫
+        this.selectedQuestionBank = 'IPAS-AI-L11-A.json'; // 預設題庫
 
         // 載入題目數據並初始化
         this.loadQuestions().then(() => {
