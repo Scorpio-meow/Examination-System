@@ -240,6 +240,10 @@ class ExamApp {
                         <span>隨機題目順序</span>
                     </label>
                     <label class="config-option">
+                        <input type="checkbox" id="shuffle-options" ${this.config.shuffleOptions ? 'checked' : ''}>
+                        <span>隨機選項順序</span>
+                    </label>
+                    <label class="config-option">
                         <input type="checkbox" id="show-explanation" ${this.config.showExplanation ? 'checked' : ''}>
                         <span>顯示答案解釋</span>
                     </label>
@@ -255,6 +259,14 @@ class ExamApp {
             this.config.shuffleQuestions = e.target.checked;
             this.saveConfig();
         });
+
+        const shuffleOptionsEl = document.getElementById('shuffle-options');
+        if (shuffleOptionsEl) {
+            shuffleOptionsEl.addEventListener('change', (e) => {
+                this.config.shuffleOptions = e.target.checked;
+                this.saveConfig();
+            });
+        }
 
         document.getElementById('show-explanation').addEventListener('change', (e) => {
             this.config.showExplanation = e.target.checked;
@@ -384,6 +396,15 @@ class ExamApp {
             this.shuffleArray(this.questions);
         }
 
+        // 如果啟用隨機選項，為每題單選題打亂選項並重新標註 A-D，同步更新正確答案字母
+        if (this.config.shuffleOptions) {
+            this.questions.forEach(q => {
+                if (q && q.type === 'single' && Array.isArray(q.options) && q.options.length > 0) {
+                    this.shuffleQuestionOptions(q);
+                }
+            });
+        }
+
         // 重置狀態
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
@@ -398,6 +419,39 @@ class ExamApp {
         this.updateProgress();
         this.updateNavigation();
         this.startTimer();
+    }
+
+    // 單題目：打亂選項並重新標註 A-D，同步調整正確答案字母
+    shuffleQuestionOptions(question) {
+        try {
+            const currentAnswer = (question.answer || '').toString().trim().toUpperCase();
+            // 將選項標準化為 { text, isCorrect }
+            const optionObjs = (question.options || []).map(opt => {
+                const text = (opt || '').toString();
+                const letter = text.trim().charAt(0).toUpperCase();
+                const cleanText = text.replace(/^[A-D]\.?\s*/, '').trim();
+                return {
+                    text: cleanText,
+                    isCorrect: letter === currentAnswer
+                };
+            });
+
+            if (optionObjs.length === 0) return; // 無選項不處理
+
+            // 打亂
+            this.shuffleArray(optionObjs);
+
+            // 重新標註與回填正確答案
+            question.options = optionObjs.map((o, idx) => {
+                const newLetter = String.fromCharCode(65 + idx); // A, B, C, ...
+                if (o.isCorrect) {
+                    question.answer = newLetter;
+                }
+                return `${newLetter}. ${o.text}`;
+            });
+        } catch (e) {
+            console.warn('隨機選項順序時發生問題，已跳過該題：', e);
+        }
     }
 
     shuffleArray(array) {
@@ -920,8 +974,12 @@ class ExamApp {
                 this.config = { ...this.config, ...JSON.parse(savedConfig) };
 
                 // 更新UI
-                document.getElementById('shuffle-questions').checked = this.config.shuffleQuestions;
-                document.getElementById('show-explanation').checked = this.config.showExplanation;
+                const sqEl = document.getElementById('shuffle-questions');
+                if (sqEl) sqEl.checked = this.config.shuffleQuestions;
+                const soEl = document.getElementById('shuffle-options');
+                if (soEl) soEl.checked = this.config.shuffleOptions;
+                const seEl = document.getElementById('show-explanation');
+                if (seEl) seEl.checked = this.config.showExplanation;
             }
         } catch (error) {
             console.warn('載入配置失敗:', error);
