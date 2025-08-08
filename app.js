@@ -502,25 +502,6 @@ class ExamApp {
         document.getElementById('question-number').textContent = this.currentQuestionIndex + 1;
         document.getElementById('question-text').textContent = question.question;
         
-        // 如果題目內容很短且有解釋，在界面上添加解釋作為參考
-        if (question.question.length < 20 && question.explanation) {
-            const explanationRef = document.createElement('div');
-            explanationRef.className = 'question-explanation-reference';
-            explanationRef.style.cssText = `
-                margin-top: 10px;
-                font-style: italic;
-                color: var(--color-text-secondary);
-                font-size: 0.9em;
-            `;
-            explanationRef.textContent = `參考: ${question.explanation.substring(0, 100)}${question.explanation.length > 100 ? '...' : ''}`;
-            
-            // 清除之前可能存在的參考說明
-            const oldRef = document.querySelector('.question-explanation-reference');
-            if (oldRef) oldRef.remove();
-            
-            document.getElementById('question-text').parentNode.appendChild(explanationRef);
-        }
-
         // 更新總題數
         document.getElementById('total-questions').textContent = this.questions.length;
         document.getElementById('current-question').textContent = this.currentQuestionIndex + 1;
@@ -805,11 +786,7 @@ class ExamApp {
         const reviewDiv = document.createElement('div');
         reviewDiv.className = 'review-item card';
         
-        // 使用題目文本，如果題目很短但有解釋，則加入部分解釋
-        let displayQuestion = question.question;
-        if (displayQuestion.length < 20 && question.explanation) {
-            displayQuestion += ` (參考: ${question.explanation.substring(0, 60)}${question.explanation.length > 60 ? '...' : ''})`;
-        }
+    let displayQuestion = question.question;
         
         let contentHtml = '';
         if (question.type === 'single') {
