@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675">
+  <rect width="100%" height="100%" fill="#f6f7f8"/>
+  <rect x="40" y="40" width="760" height="595" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <rect x="820" y="40" width="340" height="595" rx="12" fill="#ffffff" stroke="#d0d7de"/>
+  <rect x="70" y="80" width="420" height="20" rx="4" fill="#e5e7eb"/>
+  <rect x="70" y="120" width="680" height="16" rx="4" fill="#e5e7eb"/>
+  <rect x="70" y="150" width="620" height="16" rx="4" fill="#e5e7eb"/>
+  <rect x="70" y="180" width="640" height="16" rx="4" fill="#e5e7eb"/>
+  <rect x="70" y="230" width="650" height="48" rx="8" fill="#e5e7eb"/>
+  <rect x="70" y="290" width="650" height="48" rx="8" fill="#e5e7eb"/>
+  <rect x="70" y="350" width="650" height="48" rx="8" fill="#e5e7eb"/>
+  <rect x="70" y="410" width="650" height="48" rx="8" fill="#e5e7eb"/>
+  <rect x="850" y="80" width="280" height="18" rx="4" fill="#e5e7eb"/>
+  <!-- grid -->
+  <g transform="translate(850,120)">
+    <rect x="0" y="0" width="44" height="44" rx="8" fill="#d1fae5" stroke="#10b981"/>
+    <rect x="52" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <rect x="104" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <rect x="156" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <rect x="208" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <rect x="0" y="52" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+    <rect x="52" y="52" width="44" height="44" rx="8" fill="#ecfeff" stroke="#06b6d4"/>
+    <rect x="104" y="52" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+  </g>
+</svg>

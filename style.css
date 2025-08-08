@@ -306,6 +306,42 @@ pre code {
   padding: 0;
 }
 
+/* Exam content layout */
+.exam-content {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: var(--space-16);
+  align-items: start;
+}
+
+.exam-main { min-width: 0; }
+
+.exam-sidebar {
+  position: sticky;
+  top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-12);
+  background: var(--color-surface);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+}
+
+.exam-sidebar .answer-status {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .exam-content {
+    grid-template-columns: 1fr;
+  }
+  .exam-sidebar {
+    position: static;
+  }
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -1402,3 +1438,39 @@ select.form-control {
     font-size: 10px;
     border: 1px solid var(--color-border);
 }
+
+/* Question number grid */
+.question-grid {
+  margin-top: var(--space-12);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+  gap: var(--space-8);
+}
+
+.question-grid__btn {
+  height: 36px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.question-grid__btn:hover { background: var(--color-secondary); }
+.question-grid__btn:active { transform: scale(0.98); }
+.question-grid__btn:focus-visible { box-shadow: var(--focus-ring); outline: none; }
+
+.question-grid__btn--current {
+  border-color: var(--color-primary);
+  background: rgba(var(--color-success-rgb), 0.08);
+}
+
+.question-grid__btn--answered { border-color: rgba(var(--color-success-rgb), 0.5); }
+.question-grid__btn--unanswered { opacity: 0.85; }

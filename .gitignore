@@ -1,0 +1,18 @@
+# Ignore screenshot automation code and local Node setup
+scripts/
+package.json
+package-lock.json
+
+# Node modules and artifacts
+node_modules/
+playwright-report/
+test-results/
+.playwright/
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

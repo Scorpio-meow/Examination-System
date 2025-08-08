@@ -56,62 +56,72 @@
                 </div>
             </div>
 
-            <div class="question-section">
-                <div class="question-card card">
-                    <div class="card__body">
-                        <div class="question-number">
-                            題目 <span id="question-number">1</span>
-                        </div>
-                        <div class="question-text" id="question-text">
-                            載入中...
-                        </div>
-                        <div class="options-container" id="options-container">
-                            <!-- 選項將由 JavaScript 動態生成 -->
+            <div class="exam-content">
+                <div class="exam-main">
+                    <div class="question-section">
+                        <div class="question-card card">
+                            <div class="card__body">
+                                <div class="question-number">
+                                    題目 <span id="question-number">1</span>
+                                </div>
+                                <div class="question-text" id="question-text">
+                                    載入中...
+                                </div>
+                                <div class="options-container" id="options-container">
+                                    <!-- 選項將由 JavaScript 動態生成 -->
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="navigation-section">
-                    <button class="btn btn--outline" id="prev-btn" disabled>
-                        上一題
-                    </button>
-                    <button class="btn btn--primary" id="next-btn">
-                        下一題
-                    </button>
-                    <button class="btn btn--primary btn--lg hidden" id="submit-btn">
-                        提交考試
-                    </button>
+                    <div class="navigation-section">
+                        <button class="btn btn--outline" id="prev-btn" disabled>
+                            上一題
+                        </button>
+                        <button class="btn btn--primary" id="next-btn">
+                            下一題
+                        </button>
+                        <button class="btn btn--primary btn--lg hidden" id="submit-btn">
+                            提交考試
+                        </button>
+                    </div>
+                    
+                    <div class="keyboard-hints">
+                        <h5>鍵盤快捷鍵</h5>
+                        <ul class="hint-list">
+                            <li class="hint-item">
+                                <span>上一題</span>
+                                <span class="hint-key">←</span>
+                            </li>
+                            <li class="hint-item">
+                                <span>下一題</span>
+                                <span class="hint-key">→</span>
+                            </li>
+                            <li class="hint-item">
+                                <span>選項A (僅單選題)</span>
+                                <span class="hint-key">1</span>
+                            </li>
+                            <li class="hint-item">
+                                <span>選項B (僅單選題)</span>
+                                <span class="hint-key">2</span>
+                            </li>
+                            <li class="hint-item">
+                                <span>選項C (僅單選題)</span>
+                                <span class="hint-key">3</span>
+                            </li>
+                            <li class="hint-item">
+                                <span>選項D (僅單選題)</span>
+                                <span class="hint-key">4</span>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-                
-                <div class="keyboard-hints">
-                    <h5>鍵盤快捷鍵</h5>
-                    <ul class="hint-list">
-                        <li class="hint-item">
-                            <span>上一題</span>
-                            <span class="hint-key">←</span>
-                        </li>
-                        <li class="hint-item">
-                            <span>下一題</span>
-                            <span class="hint-key">→</span>
-                        </li>
-                        <li class="hint-item">
-                            <span>選項A (僅單選題)</span>
-                            <span class="hint-key">1</span>
-                        </li>
-                        <li class="hint-item">
-                            <span>選項B (僅單選題)</span>
-                            <span class="hint-key">2</span>
-                        </li>
-                        <li class="hint-item">
-                            <span>選項C (僅單選題)</span>
-                            <span class="hint-key">3</span>
-                        </li>
-                        <li class="hint-item">
-                            <span>選項D (僅單選題)</span>
-                            <span class="hint-key">4</span>
-                        </li>
-                    </ul>
-                </div>
+                <aside class="exam-sidebar" aria-label="題目導覽">
+                    <div class="answer-status" aria-live="polite">
+                        已答 <span id="answered-count">0</span> 題 · 未答 <span id="unanswered-count">0</span> 題
+                    </div>
+                    <div class="question-grid" id="question-grid" aria-label="題號列表" role="navigation"></div>
+                </aside>
             </div>
         </div>
 
