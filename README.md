@@ -81,8 +81,8 @@
 ├── style.css               # 樣式表
 ├── Project_Management.json # 專案管理題庫
 ├── Basic_Financial_Planning.json # 理財規劃題庫
-├── IPAS-AI-L11-A.json     # IPAS L11 題庫（A卷：AI 基礎與治理）
-├── IPAS-AI-L11-B.json     # IPAS L11 題庫（B卷：AI 基礎與治理）
+├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
+├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
 ├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
 ├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
 ├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
