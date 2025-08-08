@@ -1,6 +1,6 @@
 # 考試系統 📚
 
-一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 iPASS 系列 A–D），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
+一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
 
 ![更新日期](https://img.shields.io/badge/更新日期-2025年8月8日-blue)
 ![版本](https://img.shields.io/badge/版本-3.1.0-brightgreen)
@@ -12,7 +12,9 @@
 - **多種專業題庫**：
   - **專案管理**：涵蓋專案管理12項原則、8大績效領域等核心知識
   - **理財規劃**：涵蓋基本理財知識與規劃策略
-  - **iPASS 系列（A–D）**：涵蓋 No Code/Low Code、生成式 AI 應用、提示工程、合規與治理等主題（JSON 題庫：ipass-A/B/C/D）
+  - **IPAS 題庫**：
+    - L11 基礎與治理（IPAS-AI-L11-A.json、IPAS-AI-L11-B.json）
+    - L12 生成式 AI 應用與規劃（IPAS-AI-L12-A.json、IPAS-AI-L12-B.json、IPAS-AI-L12-C.json、IPAS-AI-L12-D.json）
 - **多樣題型**：
   - **單選題**：每題提供4個選項，選擇最適合的答案
   - **簡答題**：需要提供簡短文字回答
@@ -27,8 +29,7 @@
 - **選項隨機排列**：避免記憶位置影響學習效果（自動重新標註 A–D，並同步更新正確答案以確保判分正確）
 - **自動保存進度**：意外關閉瀏覽器也不怕遺失進度
 - **答案解釋顯示**：幫助理解錯誤原因
-- **題庫切換**：可隨時在專案管理與理財規劃題庫間切換
-  - 現已支援 iPASS 系列題庫（A–D）
+- **題庫切換**：可隨時在專案管理、理財規劃與 IPAS 題庫（L11 A/B、L12 A–D）之間切換
 - **深色/淺色主題**：自動適應系統偏好設定
 
 ### 🎨 使用者體驗
@@ -67,7 +68,11 @@
    # 然後在瀏覽器中訪問: http://localhost:8000
    ```
 3. 或直接在瀏覽器中開啟（推薦使用現代瀏覽器如 Chrome、Edge、Comet）
-4. 選擇題庫，開始考試！
+4. 在首頁的「選擇題庫」下拉選單選擇：
+  - 專案管理 / 理財規劃
+  - IPAS L11：IPAS-AI-L11-A / IPAS-AI-L11-B
+  - IPAS L12：IPAS-AI-L12-A / B / C / D
+  之後按「開始考試」。
 
 ### 檔案結構
 ```
@@ -76,10 +81,12 @@
 ├── style.css               # 樣式表
 ├── Project_Management.json # 專案管理題庫
 ├── Basic_Financial_Planning.json # 理財規劃題庫
-├── ipass-A.json            # iPASS 題庫 A（主題：企業/工具基礎與情境題）
-├── ipass-B.json            # iPASS 題庫 B
-├── ipass-C.json            # iPASS 題庫 C（主題：No Code/Low Code、生成式 AI 實務）
-├── ipass-D.json            # iPASS 題庫 D（主題：治理、合規、敏捷與效能）
+├── IPAS-AI-L11-A.json     # IPAS L11 題庫（A卷：AI 基礎與治理）
+├── IPAS-AI-L11-B.json     # IPAS L11 題庫（B卷：AI 基礎與治理）
+├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
+├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
+├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
+├── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
 ├── LICENSE.txt             # MIT授權條款
 └── README.md               # 專案說明
 ```
@@ -136,14 +143,14 @@
 - 退休規劃與資產配置
 - 保險與稅務規劃
 
-### iPASS 系列題庫（A–D）
+### IPAS 題庫（L11、L12）
 聚焦於企業實務數位化與 AI 應用情境，包括但不限於：
 - No Code / Low Code 選型、擴充、效能與成本考量
 - 生成式 AI 在內容、生產力與多媒體應用（提示策略、seed 控制、一致性）
 - RAG、微調、合規/隱私與治理框架
 - 敏捷與產品交付實務、風險控管與實驗設計
 
-各題庫為獨立 JSON 檔（`ipass-A.json`、`ipass-B.json`、`ipass-C.json`、`ipass-D.json`），可直接於介面中切換使用。
+各題庫為獨立 JSON 檔（`IPAS-AI-L11-*.json`、`IPAS-AI-L12-*.json`），可直接於介面中切換使用。
 
 ## 開發指南
 
@@ -176,7 +183,7 @@
 
 ### 切換題庫與新增選項
 - 介面中的下拉選單（`question-bank-select`）會列出可用題庫。
-- 若新增了新的 JSON 題庫檔，請在 `index.html` 中為 `question-bank-select` 加入對應選項，並在 `app.js` 的載入邏輯中加入檔名映射（若已採用自動掃描/對應則可免）。
+- 若新增新的 JSON 題庫檔，請在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，檔名會由 `app.js` 直接載入（使用相對路徑 fetch）。
 - 檔名建議使用易辨識規則（例如：`<Domain>_<Topic>.json` 或 `ipass-<Letter>.json`）。
 
 ## 使用指南
@@ -209,7 +216,7 @@
 ## 常見問題解答 (FAQ)
 
 ### Q: 如何在手機上使用此考試系統？
-A: 只需在手機瀏覽器中開啟 (https://scorpio-meow.github.io/project-management-exam/) 。系統採用響應式設計，會自動適應您的手機螢幕大小。
+A: 只需在手機瀏覽器中開啟 (https://scorpio-meow.github.io/Examination-System/) 。系統採用響應式設計，會自動適應您的手機螢幕大小。
 
 ### Q: 如何添加新的題庫？
 A: 參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到題庫映射）。
@@ -232,7 +239,7 @@ A: 預設情況下沒有時間限制，您可以按照自己的節奏完成測�
 - 介面：考試頁改為主內容 + 右側側邊欄布局，並優化響應式
 
 ### 3.0.0 — 2025-08-08
-- 新增 iPASS 系列題庫（A、B、C、D）
+- 新增 IPAS 系列題庫（A、B、C、D）
 - README 增補檔案結構、題庫說明與切換/擴充指引
 - 輕微文案調整與排版優化
 
