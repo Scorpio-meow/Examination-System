@@ -3,7 +3,7 @@
 一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
 
 ![更新日期](https://img.shields.io/badge/更新日期-2025年8月10日-blue)
-![版本](https://img.shields.io/badge/版本-3.2.0-brightgreen)
+![版本](https://img.shields.io/badge/版本-3.2.1-brightgreen)
 ![授權](https://img.shields.io/badge/授權-MIT-orange)
 
 ## 功能特色
@@ -65,17 +65,18 @@
 
 ### 快速開始
 1. 下載專案檔案到本地
-2. 使用網頁伺服器開啟 `index.html`
-   ```bash
-   # 使用 Python 內建的 HTTP 伺服器
-   python -m http.server
-   
-   # 或使用 PowerShell (Windows)
-   python -m http.server
-   # 然後在瀏覽器中訪問: http://localhost:8000
-   ```
-3. 或直接在瀏覽器中開啟（推薦使用現代瀏覽器如 Chrome、Edge、Comet）
-4. 在首頁的「選擇題庫」下拉選單選擇：
+2. 使用本機伺服器開啟 `index.html`（避免瀏覽器對 `file://` 的限制導致題庫 JSON 載入失敗）
+   - macOS/Linux（bash）
+     ```bash
+     python3 -m http.server 8000
+     # 然後在瀏覽器中前往: http://localhost:8000
+     ```
+   - Windows（PowerShell）
+     ```powershell
+     py -3 -m http.server 8000
+     # 然後在瀏覽器中前往: http://localhost:8000
+     ```
+3. 在首頁的「選擇題庫」下拉選單選擇：
   - 專案管理 / 理財規劃
   - IPAS L11：IPAS-AI-L11-A / IPAS-AI-L11-B
   - IPAS L12：IPAS-AI-L12-A / B / C / D
@@ -222,6 +223,13 @@
 
 本專案採用 MIT 授權條款，允許自由使用、修改和分發。詳見 [LICENSE.txt](LICENSE.txt) 檔案。
 
+## 疑難排解（Troubleshooting）
+
+- 題庫載入失敗或顯示「題目載入失敗」：請務必以本機伺服器開啟（見「快速開始」第 2 步），直接用檔案總管雙擊 `index.html` 可能因瀏覽器安全限制導致 `fetch` JSON 失敗。
+- 匯出的 CSV 亂碼：本系統已在 CSV 檔前加入 UTF‑8 BOM。若 Excel 仍顯示亂碼，請使用「資料」>「自文字/CSV」匯入並選擇 UTF‑8 編碼。
+- 介面未更新或快捷鍵異常：請嘗試重新整理並清除瀏覽器快取；若要重置本機狀態，亦可清除 LocalStorage（將會移除歷史記錄與設定）。
+- 歷史記錄遺失：歷史記錄存放於瀏覽器 LocalStorage，若清除瀏覽器資料或使用隱私模式，記錄將不可用。
+
 ## 常見問題解答 (FAQ)
 
 ### Q: 如何在手機上使用此考試系統？
@@ -240,6 +248,9 @@ A: 可以。在結果頁可直接「匯出結果（JSON/CSV）」。CSV 以 UTF�
 A: 預設情況下沒有時間限制，您可以按照自己的節奏完成測驗。
 
 ## 版本記錄（Changelog）
+
+### 3.2.1 — 2025-08-10
+- 修正：app.js 語法錯誤（將誤嵌在 `_getSelectedBankInfo` 內的 `escapeHtml` 提取為獨立類別方法，解決分號/括號解析問題）
 
 ### 3.2.0 — 2025-08-10
 - 修正：題型標準化以小寫比對（saq/sqa/short），最終統一為 'SAQ' 或 'single'

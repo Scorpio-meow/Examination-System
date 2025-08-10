@@ -1420,6 +1420,11 @@ class ExamApp {
             if (sel) {
                 const opt = sel.selectedOptions && sel.selectedOptions[0];
                 return { value: sel.value || this.selectedQuestionBank, label: (opt && opt.textContent) || sel.value };
+            }
+        } catch {}
+        return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
+    }
+
     // 輔助：HTML escape，防止 XSS
     escapeHtml(str) {
         return String(str)
@@ -1428,10 +1433,6 @@ class ExamApp {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
-    }
-            }
-        } catch {}
-        return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
     }
 }
 
