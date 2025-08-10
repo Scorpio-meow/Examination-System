@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540">
+  <defs>
+    <style>
+      .bg { fill: #f8f8f4; }
+      .card { fill: #ffffff; stroke: #d7d0c7; }
+      .title { font: 700 24px 'Segoe UI', Arial; fill: #13343b; }
+      .label { font: 500 14px 'Segoe UI', Arial; fill: #263238; }
+      .muted { font: 400 12px 'Segoe UI', Arial; fill: #63707a; }
+      .btn-primary { fill: #21808d; }
+      .btn-outline { fill: #ffffff; stroke: #bdb7ae; }
+      .btn-text-primary { font: 600 14px 'Segoe UI', Arial; fill: #fcfcf9; }
+      .btn-text-outline { font: 600 14px 'Segoe UI', Arial; fill: #263238; }
+      .header { font: 700 28px 'Segoe UI', Arial; fill: #21808d; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="960" height="540"/>
+  <text class="header" x="60" y="72">考試系統 · 結果頁</text>
+
+  <!-- Score card -->
+  <rect class="card" x="60" y="100" rx="12" ry="12" width="360" height="220"/>
+  <text class="title" x="84" y="140">考試結果</text>
+  <text class="label" x="84" y="172">分數：88 分</text>
+  <text class="label" x="84" y="198">正確率：88%</text>
+  <text class="label" x="84" y="224">結果：通過</text>
+
+  <!-- Action buttons -->
+  <rect class="btn-primary" x="60" y="350" width="160" height="40" rx="8"/>
+  <text class="btn-text-primary" x="96" y="376">重新考試</text>
+
+  <rect class="btn-outline" x="232" y="350" width="190" height="40" rx="8"/>
+  <text class="btn-text-outline" x="244" y="376">匯出結果（JSON）</text>
+
+  <rect class="btn-outline" x="434" y="350" width="190" height="40" rx="8"/>
+  <text class="btn-text-outline" x="446" y="376">匯出結果（CSV）</text>
+
+  <text class="muted" x="60" y="420">CSV 以 UTF‑8 with BOM 產生，避免 Excel 亂碼</text>
+  <text class="muted" x="60" y="440">示意圖：實際樣式以程式運行畫面為準</text>
+</svg>

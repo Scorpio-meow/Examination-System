@@ -1,25 +1,122 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675">
-  <rect width="100%" height="100%" fill="#f6f7f8"/>
-  <rect x="40" y="40" width="760" height="595" rx="12" fill="#ffffff" stroke="#d0d7de"/>
-  <rect x="820" y="40" width="340" height="595" rx="12" fill="#ffffff" stroke="#d0d7de"/>
-  <rect x="70" y="80" width="420" height="20" rx="4" fill="#e5e7eb"/>
-  <rect x="70" y="120" width="680" height="16" rx="4" fill="#e5e7eb"/>
-  <rect x="70" y="150" width="620" height="16" rx="4" fill="#e5e7eb"/>
-  <rect x="70" y="180" width="640" height="16" rx="4" fill="#e5e7eb"/>
-  <rect x="70" y="230" width="650" height="48" rx="8" fill="#e5e7eb"/>
-  <rect x="70" y="290" width="650" height="48" rx="8" fill="#e5e7eb"/>
-  <rect x="70" y="350" width="650" height="48" rx="8" fill="#e5e7eb"/>
-  <rect x="70" y="410" width="650" height="48" rx="8" fill="#e5e7eb"/>
-  <rect x="850" y="80" width="280" height="18" rx="4" fill="#e5e7eb"/>
-  <!-- grid -->
-  <g transform="translate(850,120)">
-    <rect x="0" y="0" width="44" height="44" rx="8" fill="#d1fae5" stroke="#10b981"/>
-    <rect x="52" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
-    <rect x="104" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
-    <rect x="156" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
-    <rect x="208" y="0" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
-    <rect x="0" y="52" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
-    <rect x="52" y="52" width="44" height="44" rx="8" fill="#ecfeff" stroke="#06b6d4"/>
-    <rect x="104" y="52" width="44" height="44" rx="8" fill="#ffffff" stroke="#d0d7de"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675">
+  <defs>
+    <style>
+      .bg { fill: #fcfcf9; }
+      .card { fill: #ffffff; stroke: #dcd6cc; }
+      .border { stroke: #dcd6cc; }
+      .title { font: 700 22px 'Segoe UI', Arial; fill: #13343b; }
+      .text { font: 500 14px 'Segoe UI', Arial; fill: #263238; }
+      .muted { font: 400 12px 'Segoe UI', Arial; fill: #63707a; }
+      .primary { fill: #21808d; }
+      .btn-text { font: 600 14px 'Segoe UI', Arial; fill: #fcfcf9; }
+      .btn-outline { fill: #ffffff; stroke: #d0d7de; }
+      .btn-outline-text { font: 600 14px 'Segoe UI', Arial; fill: #13343b; }
+      .pill { fill: #e6f7f9; stroke: #21808d; }
+      .option { fill: #ffffff; stroke: #d0d7de; }
+      .option-sel { fill: #eefbfc; stroke: #21808d; }
+      .kbd { fill: #ffffff; stroke: #d0d7de; }
+      .grid { fill: #ffffff; stroke: #d0d7de; }
+      .grid-cur { fill: #eefbfc; stroke: #21808d; }
+      .grid-ans { fill: #ffffff; stroke: #6bb6c0; }
+    </style>
+  </defs>
+  <rect class="bg" x="0" y="0" width="1200" height="675"/>
+
+  <!-- Header with title, progress bar, timer -->
+  <g transform="translate(40,30)">
+    <text class="title" x="0" y="0">考試系統</text>
+    <g transform="translate(0,20)">
+      <rect x="0" y="0" width="720" height="10" rx="5" fill="#e5e7eb"/>
+      <rect class="primary" x="0" y="0" width="360" height="10" rx="5"/>
+    </g>
+    <text class="muted" x="0" y="48">第 12 題 / 共 50 題</text>
+    <text class="muted" x="640" y="48">考試時間：08:23</text>
   </g>
+
+  <!-- Main left column -->
+  <g transform="translate(40,80)">
+    <rect class="card" x="0" y="0" width="760" height="560" rx="12"/>
+    <!-- Question card -->
+    <g transform="translate(24,20)">
+      <text class="text" x="0" y="0">題目 12 <tspan>
+        </tspan></text>
+      <rect class="pill" x="88" y="-18" width="68" height="24" rx="12"/>
+      <text class="muted" x="106" y="-2">單選題</text>
+
+      <!-- Question text lines -->
+      <rect x="0" y="20" width="680" height="14" rx="3" fill="#e5e7eb"/>
+      <rect x="0" y="42" width="640" height="14" rx="3" fill="#e5e7eb"/>
+      <rect x="0" y="64" width="610" height="14" rx="3" fill="#e5e7eb"/>
+
+      <!-- Options -->
+      <g transform="translate(0,96)">
+        <rect class="option-sel" x="0" y="0" width="700" height="48" rx="8"/>
+        <text class="text" x="16" y="30">A. 範例選項（已選擇）</text>
+        <rect class="option" x="0" y="60" width="700" height="48" rx="8"/>
+        <text class="text" x="16" y="90">B. 範例選項</text>
+        <rect class="option" x="0" y="120" width="700" height="48" rx="8"/>
+        <text class="text" x="16" y="150">C. 範例選項</text>
+        <rect class="option" x="0" y="180" width="700" height="48" rx="8"/>
+        <text class="text" x="16" y="210">D. 範例選項</text>
+      </g>
+
+      <!-- Navigation buttons -->
+      <g transform="translate(0,320)">
+        <rect class="btn-outline" x="0" y="0" width="100" height="36" rx="8"/>
+        <text class="btn-outline-text" x="24" y="24">上一題</text>
+        <rect class="primary" x="120" y="0" width="100" height="36" rx="8"/>
+        <text class="btn-text" x="144" y="24">下一題</text>
+      </g>
+
+      <!-- Keyboard hints -->
+      <g transform="translate(0,372)">
+        <rect x="0" y="0" width="700" height="64" rx="8" fill="#f0f3f5" stroke="#e0e0e0"/>
+        <text class="muted" x="16" y="22">鍵盤快捷鍵：</text>
+        <g transform="translate(120,6)">
+          <rect class="kbd" x="0" y="0" width="28" height="20" rx="4"/>
+          <text class="muted" x="8" y="15">←</text>
+          <text class="muted" x="36" y="15">上一題</text>
+        </g>
+        <g transform="translate(220,6)">
+          <rect class="kbd" x="0" y="0" width="28" height="20" rx="4"/>
+          <text class="muted" x="8" y="15">→</text>
+          <text class="muted" x="36" y="15">下一題</text>
+        </g>
+        <g transform="translate(360,6)">
+          <rect class="kbd" x="0" y="0" width="28" height="20" rx="4"/>
+          <text class="muted" x="8" y="15">1</text>
+          <text class="muted" x="36" y="15">選 A–D</text>
+        </g>
+        <g transform="translate(460,6)">
+          <rect class="kbd" x="0" y="0" width="36" height="20" rx="4"/>
+          <text class="muted" x="6" y="15">Enter</text>
+          <text class="muted" x="46" y="15">下一題/提交</text>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right sidebar -->
+  <g transform="translate(830,80)">
+    <rect class="card" x="0" y="0" width="330" height="560" rx="12"/>
+    <text class="muted" x="16" y="26">已答 12 題 · 未答 38 題</text>
+    <!-- Grid of question numbers -->
+    <g transform="translate(16,48)">
+      <!-- row 1 -->
+      <rect class="grid-cur" x="0" y="0" width="36" height="36" rx="6"/>
+      <rect class="grid-ans" x="44" y="0" width="36" height="36" rx="6"/>
+      <rect class="grid" x="88" y="0" width="36" height="36" rx="6"/>
+      <rect class="grid" x="132" y="0" width="36" height="36" rx="6"/>
+      <rect class="grid-ans" x="176" y="0" width="36" height="36" rx="6"/>
+      <rect class="grid" x="220" y="0" width="36" height="36" rx="6"/>
+      <!-- row 2 -->
+      <rect class="grid" x="0" y="44" width="36" height="36" rx="6"/>
+      <rect class="grid-ans" x="44" y="44" width="36" height="36" rx="6"/>
+      <rect class="grid" x="88" y="44" width="36" height="36" rx="6"/>
+      <rect class="grid" x="132" y="44" width="36" height="36" rx="6"/>
+      <rect class="grid" x="176" y="44" width="36" height="36" rx="6"/>
+      <rect class="grid" x="220" y="44" width="36" height="36" rx="6"/>
+    </g>
+  </g>
+
 </svg>

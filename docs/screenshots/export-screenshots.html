@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SVG → PNG 匯出工具</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#f8f8f4; color:#13343b; margin:0; }
+    .container { max-width: 900px; margin: 24px auto; padding: 0 16px; }
+    h1 { font-size: 22px; margin: 0 0 8px; }
+    p { margin: 0 0 16px; color: #63707a; }
+    .card { background:#fff; border:1px solid #d7d0c7; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+    .row { display:flex; align-items:center; justify-content:space-between; gap: 12px; padding: 8px 0; border-top: 1px solid #eee; }
+    .row:first-child { border-top: none; }
+    .name { font-weight: 600; }
+    .dim { color:#63707a; font-size: 12px; }
+    button { background:#21808d; color:#fcfcf9; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; }
+    button:disabled { opacity:.5; cursor: not-allowed; }
+    .actions { display:flex; gap:8px; }
+    .hint { font-size: 12px; color:#63707a; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SVG → PNG 匯出工具</h1>
+    <p>點擊下方按鈕即可把專案內的 SVG 示意圖轉為 PNG 並下載。</p>
+
+    <div class="card">
+      <div class="row">
+        <div>
+          <div class="name">settings-panel.svg → settings-panel.png</div>
+          <div class="dim">建議尺寸：960 × 540</div>
+        </div>
+        <div class="actions">
+          <button id="btn1">下載 PNG</button>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <div class="name">result-export.svg → result-export.png</div>
+          <div class="dim">建議尺寸：960 × 540</div>
+        </div>
+        <div class="actions">
+          <button id="btn2">下載 PNG</button>
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <div class="name">全部</div>
+          <div class="dim">兩張圖片一次下載</div>
+        </div>
+        <div class="actions">
+          <button id="btnAll">全部下載</button>
+        </div>
+      </div>
+      <div class="hint">若下載未觸發，請確認此頁是透過 http://localhost/ 類似網址開啟（勿用 file://）。</div>
+    </div>
+  </div>
+
+  <script>
+    async function svgToPng(svgPath, outName, width = 960, height = 540) {
+      // 載入 SVG 原始文字
+      const res = await fetch(svgPath);
+      const svgText = await res.text();
+      const blob = new Blob([svgText], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+
+      // 建立影像載入
+      const img = new Image();
+      img.decoding = 'async';
+      const loaded = new Promise((resolve, reject) => {
+        img.onload = () => resolve();
+        img.onerror = reject;
+      });
+      img.src = url;
+      await loaded;
+
+      // 繪製到畫布
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, width, height);
+      ctx.drawImage(img, 0, 0, width, height);
+
+      // 下載
+      canvas.toBlob((pngBlob) => {
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(pngBlob);
+        a.download = outName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(a.href);
+          URL.revokeObjectURL(url);
+        }, 0);
+      }, 'image/png');
+    }
+
+    document.getElementById('btn1').addEventListener('click', () => svgToPng('settings-panel.svg', 'settings-panel.png'));
+    document.getElementById('btn2').addEventListener('click', () => svgToPng('result-export.svg', 'result-export.png'));
+    document.getElementById('btnAll').addEventListener('click', async () => {
+      await svgToPng('settings-panel.svg', 'settings-panel.png');
+      await svgToPng('result-export.svg', 'result-export.png');
+    });
+  </script>
+</body>
+</html>

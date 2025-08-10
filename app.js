@@ -66,9 +66,9 @@ class ExamApp {
             // 確定題目類型
             let type = q.type ? q.type.toString().toLowerCase() : 'single';
 
-            // 如果是簡答題相關的類型，統一標準化為SAQ
-            if (["SAQ", "SQA", "short"].includes(type)) {
-                type = "SAQ";
+            // 如果是簡答題相關的類型（以小寫比對），最後標準化為 'SAQ'
+            if (["saq", "sqa", "short"].includes(type)) {
+                type = 'SAQ';
             } else {
                 // 如果沒有明確指定，但也沒有選項，視為簡答題
                 type = (Array.isArray(q.options) && q.options.length > 0) ? 'single' : 'SAQ';
@@ -247,6 +247,10 @@ class ExamApp {
                         <input type="checkbox" id="show-explanation" ${this.config.showExplanation ? 'checked' : ''}>
                         <span>顯示答案解釋</span>
                     </label>
+                    <label class="config-option" for="passing-score">
+                        <span style="min-width: 88px; display:inline-block;">及格分數</span>
+                        <input type="number" id="passing-score" min="0" max="100" value="${this.config.passingScore}" class="form-control" style="max-width:100px;">
+                    </label>
                 </div>
             </div>
         `;
@@ -272,6 +276,17 @@ class ExamApp {
             this.config.showExplanation = e.target.checked;
             this.saveConfig();
         });
+
+        const passingEl = document.getElementById('passing-score');
+        if (passingEl) {
+            passingEl.addEventListener('input', (e) => {
+                const val = parseInt(e.target.value, 10);
+                const safe = isNaN(val) ? 60 : Math.min(100, Math.max(0, val));
+                this.config.passingScore = safe;
+                e.target.value = safe;
+                this.saveConfig();
+            });
+        }
 
         // 載入保存的配置
         this.loadConfig();
@@ -325,6 +340,16 @@ class ExamApp {
             this.showExamHistory();
         });
 
+        // 匯出結果按鈕（結果頁）
+        const exportJsonBtn = document.getElementById('export-json-btn');
+        const exportCsvBtn = document.getElementById('export-csv-btn');
+        if (exportJsonBtn) {
+            exportJsonBtn.addEventListener('click', () => this.exportResults('json'));
+        }
+        if (exportCsvBtn) {
+            exportCsvBtn.addEventListener('click', () => this.exportResults('csv'));
+        }
+
         // 鍵盤快捷鍵
         document.addEventListener('keydown', (e) => {
             // 如果在文字輸入區域中，不要觸發快捷鍵
@@ -346,6 +371,14 @@ class ExamApp {
                         e.preventDefault();
                         this.nextQuestion();
                         break;
+                    case 'Enter':
+                        e.preventDefault();
+                        if (this.currentQuestionIndex === this.questions.length - 1) {
+                            this.submitExam();
+                        } else {
+                            this.nextQuestion();
+                        }
+                        break;
                     case '1':
                     case '2':
                     case '3':
@@ -355,6 +388,11 @@ class ExamApp {
                             this.selectOptionByNumber(parseInt(e.key) - 1);
                         }
                         break;
+                }
+            } else if (document.getElementById('result-page').classList.contains('active')) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    this.restartExam();
                 }
             }
         });
@@ -546,11 +584,12 @@ class ExamApp {
             optionsContainer.appendChild(inputDiv);
             // 綁定輸入事件
             const input = inputDiv.querySelector('textarea');
-            input.addEventListener('input', (e) => {
-                this.userAnswers[question.id] = e.target.value;
+            const debounced = this._debounce((val) => {
+                this.userAnswers[question.id] = val;
                 if (this.config.autoSave) this.saveProgress();
                 this.updateAnswerStatus();
-            });
+            }, 400);
+            input.addEventListener('input', (e) => debounced(e.target.value));
 
             // 確保文本區域自動獲得焦點
             setTimeout(() => {
@@ -835,6 +874,111 @@ class ExamApp {
         };
     }
 
+    // 匯出結果（JSON/CSV）
+    exportResults(format = 'json') {
+        if (!this.isExamCompleted) {
+            alert('請先完成考試再匯出結果');
+            return;
+        }
+
+        const bankInfo = this._getSelectedBankInfo();
+        const startedAt = this.examStartTime ? new Date(this.examStartTime) : null;
+        const endedAt = this.examEndTime ? new Date(this.examEndTime) : null;
+
+        const durationSec = this.lastExamResult?.duration ? Math.round(this.lastExamResult.duration / 1000) : 0;
+        const meta = {
+            bankFile: bankInfo.value,
+            bankLabel: bankInfo.label,
+            score: this.lastExamResult.score,
+            accuracy: Math.round((this.lastExamResult.correctCount / this.lastExamResult.totalCount) * 100),
+            correctCount: this.lastExamResult.correctCount,
+            totalCount: this.lastExamResult.totalCount,
+            passingScore: this.config.passingScore,
+            isPassed: this.lastExamResult.isPassed,
+            durationSeconds: durationSec,
+            startedAt: startedAt ? startedAt.toISOString() : '',
+            endedAt: endedAt ? endedAt.toISOString() : '',
+            exportedAt: new Date().toISOString()
+        };
+
+        // 每題結果
+        const perQuestion = this.questions.map((q, idx) => {
+            const userAnswer = this.userAnswers[q.id];
+            const correct = q.type === 'single'
+                ? userAnswer === q.answer
+                : (userAnswer && q.answer && userAnswer.toString().trim().toLowerCase() === q.answer.toString().trim().toLowerCase());
+            return {
+                no: idx + 1,
+                id: q.id,
+                type: q.type,
+                question: q.question,
+                userAnswer: userAnswer ?? '',
+                correctAnswer: q.answer ?? '',
+                isCorrect: !!correct
+            };
+        });
+
+        const fileBase = `exam_result_${this._slugify(bankInfo.label || bankInfo.value)}_${this._formatDateForFile(new Date())}`;
+
+        if (format === 'json') {
+            const data = { meta, questions: perQuestion };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+            this._downloadBlob(blob, `${fileBase}.json`);
+        } else {
+            // CSV
+            const headers = ['no','id','type','question','userAnswer','correctAnswer','isCorrect','score','accuracy','passingScore','bankLabel','exportedAt'];
+            const rows = perQuestion.map(r => [
+                r.no,
+                r.id,
+                r.type,
+                this._csvEscape(r.question),
+                this._csvEscape(r.userAnswer ?? ''),
+                this._csvEscape(r.correctAnswer ?? ''),
+                r.isCorrect,
+                meta.score,
+                meta.accuracy,
+                meta.passingScore,
+                this._csvEscape(meta.bankLabel),
+                meta.exportedAt
+            ]);
+            const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\r\n');
+            // 加入 UTF-8 BOM，避免 Excel 開啟時出現亂碼
+            const BOM = '\ufeff';
+            const blob = new Blob([BOM, csv], { type: 'text/csv;charset=utf-8' });
+            this._downloadBlob(blob, `${fileBase}.csv`);
+        }
+    }
+
+    _csvEscape(val) {
+        const s = (val ?? '').toString();
+        if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+    }
+
+    _downloadBlob(blob, filename) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 0);
+    }
+
+    _formatDateForFile(d) {
+        const pad = (n) => n.toString().padStart(2, '0');
+        return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    }
+
+    _slugify(s) {
+        return (s || '').toString().trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-_.]+/g, '');
+    }
+
     generateReview() {
         const reviewContainer = document.getElementById('review-container');
         reviewContainer.innerHTML = '';
@@ -1031,6 +1175,8 @@ class ExamApp {
                 if (soEl) soEl.checked = this.config.shuffleOptions;
                 const seEl = document.getElementById('show-explanation');
                 if (seEl) seEl.checked = this.config.showExplanation;
+                const psEl = document.getElementById('passing-score');
+                if (psEl) psEl.value = this.config.passingScore;
             }
         } catch (error) {
             console.warn('載入配置失敗:', error);
@@ -1043,13 +1189,23 @@ class ExamApp {
         if (!question || optionIndex >= question.options.length) return;
 
         const optionValue = String.fromCharCode(65 + optionIndex); // A, B, C, D
-        const optionElement = document.querySelector(`input[value="${optionValue}"]`);
+    const container = document.getElementById('options-container');
+    const optionElement = container ? container.querySelector(`input[value="${optionValue}"]`) : null;
 
         if (optionElement) {
             optionElement.checked = true;
             optionElement.closest('.option').classList.add('selected');
             this.selectOption(question.id, optionValue, optionElement.closest('.option'));
         }
+    }
+
+    // 簡易 debounce 實作
+    _debounce(fn, delay = 400) {
+        let t;
+        return (...args) => {
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), delay);
+        };
     }
 
     // 成功訊息顯示
@@ -1140,13 +1296,16 @@ class ExamApp {
     saveExamRecord() {
         try {
             const records = JSON.parse(localStorage.getItem('examRecords') || '[]');
+            const bankInfo = this._getSelectedBankInfo();
             const newRecord = {
                 date: new Date().toISOString(),
                 score: this.lastExamResult.score,
                 correctCount: this.lastExamResult.correctCount,
                 totalCount: this.lastExamResult.totalCount,
                 duration: this.lastExamResult.duration,
-                isPassed: this.lastExamResult.isPassed
+                isPassed: this.lastExamResult.isPassed,
+                bankFile: bankInfo.value,
+                bankLabel: bankInfo.label
             };
 
             records.unshift(newRecord); // 最新記錄在前
@@ -1187,6 +1346,7 @@ class ExamApp {
                         <span class="history-score">${record.score}分</span>
                         <span class="history-duration">${durationText}</span>
                         <span class="history-status">${record.isPassed ? '通過' : '未通過'}</span>
+                        <div class="history-bank" style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 12px;">題庫：${record.bankLabel || record.bankFile || '未知'}</div>
                     </div>
                 `;
             }).join('');
@@ -1246,6 +1406,18 @@ class ExamApp {
         document.addEventListener('keydown', escKeyHandler);
 
         return modal;
+    }
+
+    // 輔助：取得題庫顯示文字與檔名
+    _getSelectedBankInfo() {
+        try {
+            const sel = document.getElementById('question-bank-select');
+            if (sel) {
+                const opt = sel.selectedOptions && sel.selectedOptions[0];
+                return { value: sel.value || this.selectedQuestionBank, label: (opt && opt.textContent) || sel.value };
+            }
+        } catch {}
+        return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
     }
 }
 
