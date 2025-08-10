@@ -1340,13 +1340,18 @@ class ExamApp {
             const historyHtml = records.map((record) => {
                 const date = new Date(record.date).toLocaleString('zh-TW');
                 const durationText = `${Math.floor(record.duration / 60000)}分${Math.floor((record.duration % 60000) / 1000)}秒`;
+                // Escape all user-controlled or untrusted values before inserting into HTML
+                const safeScore = this.escapeHtml(String(record.score));
+                const safeBankLabel = this.escapeHtml(record.bankLabel || '');
+                const safeBankFile = this.escapeHtml(record.bankFile || '');
+                const safeStatus = record.isPassed ? '通過' : '未通過';
                 return `
                     <div class="history-item ${record.isPassed ? 'passed' : 'failed'}">
                         <span class="history-date">${date}</span>
-                        <span class="history-score">${record.score}分</span>
+                        <span class="history-score">${safeScore}分</span>
                         <span class="history-duration">${durationText}</span>
-                        <span class="history-status">${record.isPassed ? '通過' : '未通過'}</span>
-                        <div class="history-bank" style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 12px;">題庫：${record.bankLabel || record.bankFile || '未知'}</div>
+                        <span class="history-status">${safeStatus}</span>
+                        <div class="history-bank" style="grid-column: 1 / -1; color: var(--color-text-secondary); font-size: 12px;">題庫：${safeBankLabel || safeBankFile || '未知'}</div>
                     </div>
                 `;
             }).join('');
@@ -1415,6 +1420,15 @@ class ExamApp {
             if (sel) {
                 const opt = sel.selectedOptions && sel.selectedOptions[0];
                 return { value: sel.value || this.selectedQuestionBank, label: (opt && opt.textContent) || sel.value };
+    // 輔助：HTML escape，防止 XSS
+    escapeHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
             }
         } catch {}
         return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
