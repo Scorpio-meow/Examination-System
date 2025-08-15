@@ -2,8 +2,8 @@
 
 一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
 
-![更新日期](https://img.shields.io/badge/更新日期-2025年8月10日-blue)
-![版本](https://img.shields.io/badge/版本-3.2.1-brightgreen)
+![更新日期](https://img.shields.io/badge/更新日期-2025年8月15日-blue)
+![版本](https://img.shields.io/badge/版本-3.3.0-brightgreen)
 ![授權](https://img.shields.io/badge/授權-MIT-orange)
 
 ## 功能特色
@@ -45,7 +45,16 @@
 - **詳細成績報告**：顯示總分、正確率和考試結果
 - **錯題分析**：針對答錯題目提供解釋
 - **歷史記錄**：查看之前的考試記錄（含題庫名稱）
-- **結果匯出**：一鍵匯出 JSON 或 CSV（CSV 以 UTF‑8 with BOM，避免 Excel 亂碼）
+- **結果匯出**：一鍵匯出 JSON 或 CSV（CSV 以 UTF‑8 with BOM，避免 Excel 亂碼，並加入公式注入防護）
+
+### 🔒 安全與隱私
+- **XSS 防護**：移除 innerHTML/字串模板插入，全面改用 DOM API 與 textContent
+- **內容安全政策（CSP）**：
+  - default-src/script-src/style-src 僅允許 'self'，已移除 style-src 'unsafe-inline'
+  - font-src 僅 'self' 與 data:，移除外部字體供應鏈風險
+- **本機資料 TTL**：LocalStorage 內容（進度/設定/歷史）預設保存 7 天，逾期自動清除
+- **一鍵清除本機資料**：設定面板提供「清除所有本機資料」按鈕
+- **CSV 公式注入防護**：匯出時自動為以 =、+、-、@ 開頭的儲存格值加前置單引號，避免被 Excel/Sheets 當成公式執行
 
 ## 安裝與使用
 
@@ -95,8 +104,11 @@
 ├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
 ├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
 ├── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
-├── LICENSE.txt             # MIT授權條款
+├── LICENSE                 # MIT授權條款
 └── README.md               # 專案說明
+└── tools/                  #（維運）安全掃描工具
+  ├── scan-security.ps1   # PowerShell 掃描腳本（搜尋常見危險 API 與注入點）
+  └── scan-results.txt    # 最近一次掃描結果
 ```
 
 ## 技術架構
@@ -221,7 +233,7 @@
 
 ## 授權條款
 
-本專案採用 MIT 授權條款，允許自由使用、修改和分發。詳見 [LICENSE.txt](LICENSE.txt) 檔案。
+本專案採用 MIT 授權條款，允許自由使用、修改和分發。詳見 [LICENSE](LICENSE) 檔案。
 
 ## 疑難排解（Troubleshooting）
 
@@ -247,7 +259,18 @@ A: 可以。在結果頁可直接「匯出結果（JSON/CSV）」。CSV 以 UTF�
 ### Q: 考試時間有限制嗎？
 A: 預設情況下沒有時間限制，您可以按照自己的節奏完成測驗。
 
+### Q: 如何清除或縮短本機資料保存？
+A: 在首頁「考試設定」面板按下「清除所有本機資料」即可移除進度、設定與歷史。系統預設保存 7 天；若需調整 TTL，請於程式中調整 `storageTtlMs`。
+
 ## 版本記錄（Changelog）
+
+### 3.3.0 — 2025-08-15
+- 安全：移除 innerHTML/模板注入；以 DOM API/textContent 建構所有內容
+- 安全：新增並收緊 CSP（style-src 去除 'unsafe-inline'；font-src 僅 'self'、data:）
+- 安全：移除外部字體來源，降低供應鏈風險
+- 隱私：LocalStorage 加入 7 天 TTL；設定面板新增「清除所有本機資料」
+- 匯出：CSV 公式注入防護（以單引號前綴易被當公式的值）
+- 工具：新增 PowerShell 安全掃描腳本（tools/scan-security.ps1）
 
 ### 3.2.1 — 2025-08-10
 - 修正：app.js 語法錯誤（將誤嵌在 `_getSelectedBankInfo` 內的 `escapeHtml` 提取為獨立類別方法，解決分號/括號解析問題）
