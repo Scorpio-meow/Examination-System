@@ -1,3 +1,23 @@
+/* Utility classes to replace former inline styles */
+.mt-12px { margin-top: 12px; }
+.w-100 { width: 100%; }
+.mt-10px { margin-top: 10px; }
+.transform-bump { transform: scale(1.02); }
+.grid-col-full { grid-column: 1 / -1; }
+.text-secondary-sm { color: var(--color-text-secondary); font-size: 12px; }
+
+/* Feedback message blocks */
+.error-message, .success-message {
+  background: var(--color-error);
+  color: white;
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin: 16px 0;
+  text-align: center;
+}
+.success-message { background: var(--color-success); animation: fadeIn 0.3s ease-in; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 :root {
   /* Colors */
   --color-background: rgba(252, 252, 249, 1);
@@ -683,11 +703,7 @@ select.form-control {
   border: 1px solid var(--color-border-secondary);
 }
 
-@font-face {
-  font-family: 'FKGroteskNeue';
-  src: url('https://r2cdn.perplexity.ai/fonts/FKGroteskNeue.woff2')
-    format('woff2');
-}
+/* 外部字體已移除以降低供應鏈風險。若需自訂字體，請改為自託管並更新 CSP。 */
 
 /* Custom styles for the exam website */
 
