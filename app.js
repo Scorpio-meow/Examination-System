@@ -969,19 +969,26 @@ class ExamApp {
             exportedAt: new Date().toISOString()
         };
 
-        // 每題結果
+        // 每題結果（含中文型別名稱、題目選項與解釋）
         const perQuestion = this.questions.map((q, idx) => {
             const userAnswer = this.userAnswers[q.id];
             const correct = q.type === 'single'
                 ? userAnswer === q.answer
                 : (userAnswer && q.answer && userAnswer.toString().trim().toLowerCase() === q.answer.toString().trim().toLowerCase());
+
+            const typeLabel = q.type === 'SAQ' ? '簡答題' : '單選題';
+            const optionsText = Array.isArray(q.options) ? q.options.join('\n') : '';
+
             return {
                 no: idx + 1,
                 id: q.id,
                 type: q.type,
+                typeLabel,
                 question: q.question,
+                options: optionsText,
                 userAnswer: userAnswer ?? '',
                 correctAnswer: q.answer ?? '',
+                explanation: q.explanation ?? '',
                 isCorrect: !!correct
             };
         });
@@ -989,23 +996,35 @@ class ExamApp {
         const fileBase = `exam_result_${this._slugify(bankInfo.label || bankInfo.value)}_${this._formatDateForFile(new Date())}`;
 
         if (format === 'json') {
-            const data = { meta, questions: perQuestion };
+            // 以每題為一列，鍵名使用中文並與 CSV 對齊
+            const data = perQuestion.map(r => ({
+                '編號': r.no,
+                'ID': r.id,
+                '類型': r.typeLabel,
+                '題目': r.question,
+                '選項': r.options ?? '',
+                '作答': r.userAnswer ?? '',
+                '解答': r.correctAnswer ?? '',
+                '是否正確': r.isCorrect ? '是' : '否',
+                '解釋': r.explanation ?? '',
+                '題庫標籤': meta.bankLabel,
+                '匯出時間': meta.exportedAt
+            }));
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
             this._downloadBlob(blob, `${fileBase}.json`);
         } else {
-            // CSV
-            const headers = ['no','id','type','question','userAnswer','correctAnswer','isCorrect','score','accuracy','passingScore','bankLabel','exportedAt'];
+            // CSV（中文欄位與指定順序）
+            const headers = ['編號','ID','類型','題目','選項','作答','解答','是否正確','解釋','題庫標籤','匯出時間'];
             const rows = perQuestion.map(r => [
                 r.no,
                 r.id,
-                r.type,
+                this._csvEscape(this._csvSanitize(r.typeLabel)),
                 this._csvEscape(this._csvSanitize(r.question)),
+                this._csvEscape(this._csvSanitize(r.options ?? '')),
                 this._csvEscape(this._csvSanitize(r.userAnswer ?? '')),
                 this._csvEscape(this._csvSanitize(r.correctAnswer ?? '')),
-                r.isCorrect,
-                meta.score,
-                meta.accuracy,
-                meta.passingScore,
+                this._csvEscape(this._csvSanitize(r.isCorrect ? '是' : '否')),
+                this._csvEscape(this._csvSanitize(r.explanation ?? '')),
                 this._csvEscape(this._csvSanitize(meta.bankLabel)),
                 meta.exportedAt
             ]);
