@@ -1232,6 +1232,7 @@ class ExamApp {
             userAnswers: this.userAnswers,
             examStartTime: this.examStartTime,
             questions: this.questions,
+            questionBank: this.selectedQuestionBank, // 保存當前題庫名稱
             timestamp: new Date().toISOString()
         };
 
@@ -1247,15 +1248,30 @@ class ExamApp {
             const savedData = this._lsGetWithTtl('examProgress');
             if (savedData) {
                 const progressData = savedData;
+                
+                // 檢查保存的進度是否有題庫名稱，且是否與當前選擇的題庫一致
+                if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
+                    console.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
+                    return;
+                }
+                
                 if (progressData.userAnswers && Object.keys(progressData.userAnswers).length > 0) {
                     const continueExam = confirm('發現未完成的考試進度，是否繼續之前的考試？');
                     if (continueExam) {
                         this.currentQuestionIndex = progressData.currentQuestionIndex || 0;
                         this.userAnswers = progressData.userAnswers || {};
                         this.examStartTime = new Date(progressData.examStartTime);
+                        
+                        // 如果保存的進度包含題目數據，恢復題目順序
+                        if (progressData.questions && Array.isArray(progressData.questions) && progressData.questions.length > 0) {
+                            this.questions = progressData.questions;
+                        }
 
                         // 顯示恢復進度的提示
                         this.showSuccessMessage('已恢復之前的考試進度');
+                    } else {
+                        // 用戶選擇不繼續，清除進度
+                        this.clearSavedProgress();
                     }
                 }
             }
