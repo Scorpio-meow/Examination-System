@@ -1252,7 +1252,7 @@ class ExamApp {
                 // 檢查保存的進度是否有題庫名稱，且是否與當前選擇的題庫一致
                 if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
                     console.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
-                    return;
+                    return false;
                 }
                 
                 if (progressData.userAnswers && Object.keys(progressData.userAnswers).length > 0) {
@@ -1267,16 +1267,30 @@ class ExamApp {
                             this.questions = progressData.questions;
                         }
 
+                        // 自動進入考試頁面並顯示當前題目
+                        this.showPage('exam');
+                        this.displayQuestion();
+                        this.updateProgress();
+                        this.updateNavigation();
+                        this.updateAnswerStatus();
+                        this.renderQuestionGrid();
+                        this.startTimer();
+
                         // 顯示恢復進度的提示
                         this.showSuccessMessage('已恢復之前的考試進度');
+                        
+                        return true;
                     } else {
                         // 用戶選擇不繼續，清除進度
                         this.clearSavedProgress();
+                        return false;
                     }
                 }
             }
+            return false;
         } catch (error) {
             console.warn('載入保存的進度失敗:', error);
+            return false;
         }
     }
 
