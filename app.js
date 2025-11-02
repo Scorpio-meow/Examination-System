@@ -1,3 +1,15 @@
+// 生產環境偵測與條件化 Logger
+const IS_PRODUCTION = window.location.hostname !== 'localhost' && 
+                      window.location.hostname !== '127.0.0.1' && 
+                      !window.location.hostname.includes('192.168');
+
+const logger = {
+    log: (...args) => !IS_PRODUCTION && console.log(...args),
+    warn: (...args) => !IS_PRODUCTION && console.warn(...args),
+    error: (...args) => !IS_PRODUCTION && console.error(...args),
+    info: (...args) => !IS_PRODUCTION && console.info(...args)
+};
+
 // 考試應用程式主要邏輯
 class ExamApp {
     constructor() {
@@ -41,12 +53,19 @@ class ExamApp {
             // 使用相對於目前頁面的URL路徑，確保在GitHub Pages等環境中也能正確載入
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
             const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
-            console.log(`嘗試從 ${questionBankUrl} 載入題庫`);
+            logger.log(`嘗試從 ${questionBankUrl} 載入題庫`);
 
             response = await fetch(questionBankUrl);
             if (response.ok) {
                 questions = await response.json();
-                console.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
+                logger.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
+                
+                // JSON Schema 驗證
+                const validationResult = this.validateQuestionSchema(questions);
+                if (!validationResult.isValid) {
+                    logger.warn('題庫格式驗證警告:', validationResult.errors);
+                    // 繼續載入，但記錄警告
+                }
             } else {
                 throw new Error('題庫載入失敗');
             }
@@ -56,12 +75,65 @@ class ExamApp {
             this.originalQuestions = [...this.questions];
             if (!forceReload) this.loadSavedProgress();
         } catch (error) {
-            console.error('載入題目失敗:', error);
+            logger.error('載入題目失敗:', error);
             this.handleLoadError();
         } finally {
             this.isLoading = false;
             this.showLoadingState(false);
         }
+    }
+
+    // JSON Schema 驗證
+    validateQuestionSchema(questions) {
+        const errors = [];
+        
+        if (!Array.isArray(questions)) {
+            errors.push('題庫必須是陣列格式');
+            return { isValid: false, errors };
+        }
+
+        questions.forEach((q, index) => {
+            // 必要欄位檢查
+            if (!q.id && q.id !== 0) {
+                errors.push(`題目 ${index + 1}: 缺少 id 欄位`);
+            }
+            
+            if (!q.question && !q.explanation) {
+                errors.push(`題目 ${index + 1}: 缺少 question 或 explanation 欄位`);
+            }
+
+            // 型別檢查
+            if (q.type) {
+                const validTypes = ['single', 'saq', 'SAQ', 'short'];
+                const typeStr = q.type.toString().toLowerCase();
+                if (!validTypes.includes(typeStr) && !validTypes.includes(q.type)) {
+                    errors.push(`題目 ${index + 1}: 不支援的題型 "${q.type}"`);
+                }
+            }
+
+            // 單選題選項檢查
+            const isSingleChoice = !q.type || q.type.toString().toLowerCase() === 'single';
+            if (isSingleChoice) {
+                if (!Array.isArray(q.options) || q.options.length === 0) {
+                    errors.push(`題目 ${index + 1}: 單選題缺少選項`);
+                }
+                if (!q.answer) {
+                    errors.push(`題目 ${index + 1}: 缺少正確答案`);
+                }
+            }
+
+            // 資料型別驗證
+            if (q.options && !Array.isArray(q.options)) {
+                errors.push(`題目 ${index + 1}: options 必須是陣列`);
+            }
+        });
+
+        return {
+            isValid: errors.length === 0,
+            errors,
+            totalQuestions: questions.length,
+            validQuestions: questions.length - errors.length
+        };
     }
 
     validateAndNormalizeQuestions(rawQuestions) {
@@ -119,11 +191,11 @@ class ExamApp {
     }
 
     handleLoadError() {
-        console.error('題庫載入失敗，嘗試備用內容');
+        logger.error('題庫載入失敗，嘗試備用內容');
 
         // 記錄更詳細的資訊以幫助診斷問題
-        console.log('目前題庫:', this.selectedQuestionBank);
-        console.log('頁面位置:', window.location.href);
+        logger.log('目前題庫:', this.selectedQuestionBank);
+        logger.log('頁面位置:', window.location.href);
 
         this.questions = [{
             "id": 1,
@@ -172,9 +244,9 @@ class ExamApp {
         this.updateExamInfo();
 
         // 輸出初始化完成的訊息
-        console.log('考試系統初始化完成');
-        console.log('當前題庫:', this.selectedQuestionBank);
-        console.log('題目數量:', this.questions.length);
+        logger.log('考試系統初始化完成');
+        logger.log('當前題庫:', this.selectedQuestionBank);
+        logger.log('題目數量:', this.questions.length);
     }
 
     setupQuestionBankSelect() {
@@ -199,8 +271,25 @@ class ExamApp {
 
             select.onchange = (e) => {
                 const previousQuestionBank = this.selectedQuestionBank;
-                this.selectedQuestionBank = e.target.value;
-                console.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
+                const newQuestionBank = e.target.value;
+                
+                // 檢查是否有未完成的考試進度
+                const hasProgress = !this.isExamCompleted && Object.keys(this.userAnswers).length > 0;
+                
+                if (hasProgress) {
+                    const confirmSwitch = confirm(
+                        '您有未完成的考試進度，切換題庫將會清除目前的進度。\n\n確定要切換題庫嗎？'
+                    );
+                    
+                    if (!confirmSwitch) {
+                        // 使用者取消，恢復原選項
+                        e.target.value = previousQuestionBank;
+                        return;
+                    }
+                }
+                
+                this.selectedQuestionBank = newQuestionBank;
+                logger.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
 
                 this.clearSavedProgress();
                 this.loadQuestions(true).then(() => {
@@ -214,7 +303,7 @@ class ExamApp {
                 });
             };
         } else {
-            console.error('找不到題庫選擇元素 (question-bank-select)');
+            logger.error('找不到題庫選擇元素 (question-bank-select)');
         }
     }
 
@@ -533,7 +622,7 @@ class ExamApp {
                 return `${newLetter}. ${o.text}`;
             });
         } catch (e) {
-            console.warn('隨機選項順序時發生問題，已跳過該題：', e);
+            logger.warn('隨機選項順序時發生問題，已跳過該題：', e);
         }
     }
 
@@ -548,14 +637,17 @@ class ExamApp {
         // 先移除所有舊的 exam-timer，避免重複
         document.querySelectorAll('.exam-timer').forEach(el => el.remove());
         const timerElement = this.createTimerElement();
-        document.querySelector('.exam-header .progress-info').appendChild(timerElement);
+        const progressInfo = this._querySelector('.exam-header .progress-info');
+        if (progressInfo) {
+            progressInfo.appendChild(timerElement);
+        }
 
         this.timerInterval = setInterval(() => {
             const elapsed = new Date() - this.examStartTime;
             const minutes = Math.floor(elapsed / 60000);
             const seconds = Math.floor((elapsed % 60000) / 1000);
 
-            const timerDisplay = document.getElementById('exam-timer');
+            const timerDisplay = this._getElement('exam-timer', false);
             if (timerDisplay) {
                 timerDisplay.textContent = `考試時間：${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
             }
@@ -582,18 +674,24 @@ class ExamApp {
         const question = this.questions[this.currentQuestionIndex];
         if (!question) return;
 
-        console.log(`顯示題目 #${this.currentQuestionIndex + 1}, 類型:`, question.type);
+        logger.log(`顯示題目 #${this.currentQuestionIndex + 1}, 類型:`, question.type);
 
-        // 更新題目編號和內容
-        document.getElementById('question-number').textContent = this.currentQuestionIndex + 1;
-        document.getElementById('question-text').textContent = question.question;
+        // 更新題目編號和內容（使用安全方法）
+        const questionNumber = this._getElement('question-number');
+        if (questionNumber) questionNumber.textContent = this.currentQuestionIndex + 1;
+        
+        const questionText = this._getElement('question-text');
+        if (questionText) questionText.textContent = question.question;
 
         // 更新總題數
-        document.getElementById('total-questions').textContent = this.questions.length;
-        document.getElementById('current-question').textContent = this.currentQuestionIndex + 1;
+        const totalQuestions = this._getElement('total-questions');
+        if (totalQuestions) totalQuestions.textContent = this.questions.length;
+        
+        const currentQuestion = this._getElement('current-question');
+        if (currentQuestion) currentQuestion.textContent = this.currentQuestionIndex + 1;
 
         // 更新題目類型標籤
-        const questionCard = document.querySelector('.question-card');
+        const questionCard = this._querySelector('.question-card');
         if (questionCard) {
             // 移除現有類型標籤
             questionCard.classList.remove('question-single', 'question-saq');
@@ -601,13 +699,13 @@ class ExamApp {
             questionCard.classList.add(question.type === 'SAQ' ? 'question-saq' : 'question-single');
 
             // 找到或創建題型標籤
-            let typeLabel = document.querySelector('.question-type-label');
+            let typeLabel = this._querySelector('.question-type-label', false);
             if (!typeLabel) {
                 typeLabel = document.createElement('div');
                 typeLabel.className = 'question-type-label';
-                const questionNumber = document.querySelector('.question-number');
-                if (questionNumber && questionNumber.parentNode) {
-                    questionNumber.parentNode.insertBefore(typeLabel, questionNumber.nextSibling);
+                const questionNumberEl = this._querySelector('.question-number');
+                if (questionNumberEl && questionNumberEl.parentNode) {
+                    questionNumberEl.parentNode.insertBefore(typeLabel, questionNumberEl.nextSibling);
                 }
             }
             typeLabel.textContent = question.type === 'SAQ' ? '簡答題' : '單選題';
@@ -615,8 +713,10 @@ class ExamApp {
         }
 
         // 清除舊選項
-        const optionsContainer = document.getElementById('options-container');
-    while (optionsContainer.firstChild) optionsContainer.removeChild(optionsContainer.firstChild);
+        const optionsContainer = this._getElement('options-container');
+        if (!optionsContainer) return;
+        
+        while (optionsContainer.firstChild) optionsContainer.removeChild(optionsContainer.firstChild);
 
         // 根據題目類型顯示不同的作答介面
         if (question.type === 'SAQ') {
@@ -672,6 +772,8 @@ class ExamApp {
     createOptionElement(optionText, index, questionId) {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'option';
+        optionDiv.setAttribute('role', 'radio');
+        optionDiv.setAttribute('aria-checked', 'false');
 
         const optionValue = optionText.charAt(0); // A, B, C, D
 
@@ -681,6 +783,7 @@ class ExamApp {
         input.name = `question-${questionId}`;
         input.value = optionValue;
         input.id = `option-${questionId}-${index}`;
+        input.setAttribute('aria-label', optionText);
 
         const label = document.createElement('label');
         label.htmlFor = input.id;
@@ -702,11 +805,16 @@ class ExamApp {
     selectOption(questionId, optionValue, optionElement) {
         // 移除同組其他選項的選中狀態
         document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
-            input.closest('.option').classList.remove('selected');
+            const parentDiv = input.closest('.option');
+            if (parentDiv) {
+                parentDiv.classList.remove('selected');
+                parentDiv.setAttribute('aria-checked', 'false');
+            }
         });
 
         // 添加當前選項的選中狀態
         optionElement.classList.add('selected');
+        optionElement.setAttribute('aria-checked', 'true');
 
         // 保存用戶選擇
         this.userAnswers[questionId] = optionValue;
@@ -750,9 +858,30 @@ class ExamApp {
     }
 
     updateProgress() {
-    const progressFill = document.getElementById('progress-fill');
-    const progressPercentage = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
-    progressFill.style.setProperty('width', `${progressPercentage}%`);
+        const progressFill = this._getElement('progress-fill', false);
+        if (progressFill) {
+            const progressPercentage = ((this.currentQuestionIndex + 1) / this.questions.length) * 100;
+            progressFill.style.setProperty('width', `${progressPercentage}%`);
+            progressFill.setAttribute('aria-valuenow', Math.round(progressPercentage));
+        }
+        
+        // 通知螢幕閱讀器題目已切換
+        this._announceToScreenReader(`第 ${this.currentQuestionIndex + 1} 題，共 ${this.questions.length} 題`);
+    }
+
+    // 輔助：通知螢幕閱讀器
+    _announceToScreenReader(message) {
+        let announcer = this._getElement('sr-announcer', false);
+        if (!announcer) {
+            announcer = document.createElement('div');
+            announcer.id = 'sr-announcer';
+            announcer.className = 'sr-only';
+            announcer.setAttribute('role', 'status');
+            announcer.setAttribute('aria-live', 'polite');
+            announcer.setAttribute('aria-atomic', 'true');
+            document.body.appendChild(announcer);
+        }
+        announcer.textContent = message;
     }
 
     updateNavigation() {
@@ -1239,7 +1368,7 @@ class ExamApp {
         try {
             this._lsSetWithTtl('examProgress', progressData, this.storageTtlMs);
         } catch (error) {
-            console.warn('保存進度失敗:', error);
+            logger.warn('保存進度失敗:', error);
         }
     }
 
@@ -1249,9 +1378,9 @@ class ExamApp {
             if (savedData) {
                 const progressData = savedData;
                 
-                // 檢查保存的進度是否有題庫名稱，且是否與當前選擇的題庫一致
+                // 檢查保存的進度是否有題庫名稱,且是否與當前選擇的題庫一致
                 if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
-                    console.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
+                    logger.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
                     return false;
                 }
                 
@@ -1289,7 +1418,7 @@ class ExamApp {
             }
             return false;
         } catch (error) {
-            console.warn('載入保存的進度失敗:', error);
+            logger.warn('載入保存的進度失敗:', error);
             return false;
         }
     }
@@ -1298,7 +1427,7 @@ class ExamApp {
         try {
             localStorage.removeItem('examProgress');
         } catch (error) {
-            console.warn('清除保存的進度失敗:', error);
+            logger.warn('清除保存的進度失敗:', error);
         }
     }
 
@@ -1306,7 +1435,7 @@ class ExamApp {
         try {
             this._lsSetWithTtl('examConfig', this.config, this.storageTtlMs);
         } catch (error) {
-            console.warn('保存配置失敗:', error);
+            logger.warn('保存配置失敗:', error);
         }
     }
 
@@ -1327,7 +1456,7 @@ class ExamApp {
                 if (psEl) psEl.value = this.config.passingScore;
             }
         } catch (error) {
-            console.warn('載入配置失敗:', error);
+            logger.warn('載入配置失敗:', error);
         }
     }
 
@@ -1469,7 +1598,7 @@ class ExamApp {
             }
             this._lsSetWithTtl('examRecords', records, this.storageTtlMs);
         } catch (error) {
-            console.warn('保存考試記錄失敗:', error);
+            logger.warn('保存考試記錄失敗:', error);
         }
     }
 
@@ -1596,9 +1725,34 @@ class ExamApp {
 
     // localStorage with TTL helpers
     _lsSetWithTtl(key, value, ttlMs) {
-        const now = Date.now();
-        const record = { value, _ts: now, _ttl: ttlMs };
-        localStorage.setItem(key, JSON.stringify(record));
+        try {
+            const now = Date.now();
+            const record = { value, _ts: now, _ttl: ttlMs };
+            localStorage.setItem(key, JSON.stringify(record));
+        } catch (error) {
+            if (error.name === 'QuotaExceededError') {
+                console.warn('LocalStorage 容量已滿，嘗試清理舊資料...');
+                // 嘗試清理歷史記錄以釋放空間
+                try {
+                    const records = JSON.parse(localStorage.getItem('examRecords') || '[]');
+                    if (records.length > 5) {
+                        // 只保留最近 5 筆
+                        localStorage.setItem('examRecords', JSON.stringify(records.slice(0, 5)));
+                        // 重試儲存
+                        localStorage.setItem(key, JSON.stringify({ value, _ts: now, _ttl: ttlMs }));
+                        console.log('已清理部分歷史記錄並成功儲存');
+                    } else {
+                        throw error;
+                    }
+                } catch (retryError) {
+                    console.error('LocalStorage 空間不足且清理失敗:', retryError);
+                    this.showErrorMessage('儲存空間不足，請清除瀏覽器快取或歷史記錄');
+                }
+            } else {
+                console.error('LocalStorage 儲存失敗:', error);
+                throw error;
+            }
+        }
     }
 
     _lsGetWithTtl(key) {
@@ -1639,6 +1793,23 @@ class ExamApp {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+
+    // 輔助：安全獲取 DOM 元素
+    _getElement(id, warnIfMissing = true) {
+        const element = document.getElementById(id);
+        if (!element && warnIfMissing) {
+            console.warn(`找不到元素: #${id}`);
+        }
+        return element;
+    }
+
+    _querySelector(selector, warnIfMissing = true) {
+        const element = document.querySelector(selector);
+        if (!element && warnIfMissing) {
+            console.warn(`找不到元素: ${selector}`);
+        }
+        return element;
     }
 }
 
