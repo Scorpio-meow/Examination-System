@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>考試系統</title>
-    <!-- 進一步收緊 CSP：移除 style-src 'unsafe-inline'（已移除 inline style 用法） -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
-        <!-- 首頁 -->
         <div id="home-page" class="page active">
             <div class="hero-section">
                 <h1>考試系統</h1>
-                
-                <!-- 系統定位說明 -->
-                <div class="system-notice card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 1.5rem; border: none;">
+                <div class="system-notice card"
+                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin-bottom: 1.5rem; border: none;">
                     <div class="card__body">
                         <h3 style="color: white; margin-top: 0;">📢 重要說明</h3>
                         <p style="margin-bottom: 0.5rem;"><strong>本系統為個人練習/學習工具</strong></p>
@@ -27,11 +27,10 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 <div class="exam-info card">
                     <div class="card__body">
                         <h3>考試說明</h3>
-                        <!-- 新增題庫選擇 -->
                         <div class="form-group">
                             <label for="question-bank-select"><strong>選擇題庫：</strong></label>
                             <select id="question-bank-select" class="form-control">
@@ -41,6 +40,7 @@
                                 <option value="IPAS-AI-L12-B.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)</option>
                                 <option value="IPAS-AI-L12-C.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)</option>
                                 <option value="IPAS-AI-L12-D.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)</option>
+                                <option value="IPAS-AI-L11-130994.json">114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994</option>
                                 <option value="Project_Management.json">專案管理</option>
                                 <option value="Basic_Financial_Planning.json">理財規劃</option>
                             </select>
@@ -59,8 +59,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 考試頁面 -->
         <div id="exam-page" class="page">
             <div class="exam-header">
                 <div class="progress-info">
@@ -86,7 +84,6 @@
                                     載入中...
                                 </div>
                                 <div class="options-container" id="options-container">
-                                    <!-- 選項將由 JavaScript 動態生成 -->
                                 </div>
                             </div>
                         </div>
@@ -103,7 +100,7 @@
                             提交考試
                         </button>
                     </div>
-                    
+
                     <div class="keyboard-hints">
                         <h5>鍵盤快捷鍵</h5>
                         <ul class="hint-list">
@@ -142,13 +139,11 @@
                 </aside>
             </div>
         </div>
-
-        <!-- 結果頁面 -->
         <div id="result-page" class="page">
             <div class="result-header">
                 <h1>考試結果</h1>
             </div>
-            
+
             <div class="score-section">
                 <div class="score-card card">
                     <div class="card__body">
@@ -182,7 +177,6 @@
                     <p>檢視每題的正確答案和您的選擇</p>
                 </div>
                 <div id="review-container">
-                    <!-- 答題回顧將由 JavaScript 動態生成 -->
                 </div>
             </div>
 
@@ -205,4 +199,5 @@
 
     <script src="app.js"></script>
 </body>
+
 </html>

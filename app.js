@@ -1,76 +1,56 @@
-// 生產環境偵測與條件化 Logger
-const IS_PRODUCTION = window.location.hostname !== 'localhost' && 
-                      window.location.hostname !== '127.0.0.1' && 
-                      !window.location.hostname.includes('192.168');
-
+const IS_PRODUCTION = window.location.hostname !== 'localhost' &&
+    window.location.hostname !== '127.0.0.1' &&
+    !window.location.hostname.includes('192.168');
 const logger = {
     log: (...args) => !IS_PRODUCTION && console.log(...args),
     warn: (...args) => !IS_PRODUCTION && console.warn(...args),
     error: (...args) => !IS_PRODUCTION && console.error(...args),
     info: (...args) => !IS_PRODUCTION && console.info(...args)
 };
-
-// 考試應用程式主要邏輯
 class ExamApp {
     constructor() {
-        // 考試題目數據 - 使用外部 JSON 文件
         this.questions = [];
-        this.originalQuestions = []; // 保存原始題目順序
-
-        // 應用程式狀態
+        this.originalQuestions = [];
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
         this.isExamCompleted = false;
         this.examStartTime = null;
         this.examEndTime = null;
         this.isLoading = false;
-
-        // 配置選項
         this.config = {
-            shuffleQuestions: false, // 是否隨機打亂題目順序
-            shuffleOptions: false,   // 是否隨機打亂選項順序
-            autoSave: true,          // 是否自動保存進度
-            showExplanation: true,   // 是否顯示答案解釋
-            passingScore: 60         // 及格分數
+            shuffleQuestions: false,
+            shuffleOptions: false,
+            autoSave: true,
+            showExplanation: true,
+            passingScore: 60
         };
-
-    this.selectedQuestionBank = 'IPAS-AI-L11-A.json'; // 預設題庫
-
-    // 本機資料保存期限（預設 7 天）
-    this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
-
-        // 載入題目數據並初始化
+        this.selectedQuestionBank = 'IPAS-AI-L11-A.json';
+        this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
         this.loadQuestions().then(() => {
             this.init();
         });
-    } async loadQuestions(forceReload = false) {
+    }
+
+    async loadQuestions(forceReload = false) {
         this.isLoading = true;
         this.showLoadingState(true);
         try {
             let response;
             let questions = [];
-            // 根據選擇的題庫載入
-            // 使用相對於目前頁面的URL路徑，確保在GitHub Pages等環境中也能正確載入
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
             const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
             logger.log(`嘗試從 ${questionBankUrl} 載入題庫`);
-
             response = await fetch(questionBankUrl);
             if (response.ok) {
                 questions = await response.json();
                 logger.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
-                
-                // JSON Schema 驗證
                 const validationResult = this.validateQuestionSchema(questions);
                 if (!validationResult.isValid) {
                     logger.warn('題庫格式驗證警告:', validationResult.errors);
-                    // 繼續載入，但記錄警告
                 }
             } else {
                 throw new Error('題庫載入失敗');
             }
-
-            // 驗證和標準化題目格式
             this.questions = this.validateAndNormalizeQuestions(questions);
             this.originalQuestions = [...this.questions];
             if (!forceReload) this.loadSavedProgress();
@@ -83,26 +63,19 @@ class ExamApp {
         }
     }
 
-    // JSON Schema 驗證
     validateQuestionSchema(questions) {
         const errors = [];
-        
         if (!Array.isArray(questions)) {
             errors.push('題庫必須是陣列格式');
             return { isValid: false, errors };
         }
-
         questions.forEach((q, index) => {
-            // 必要欄位檢查
             if (!q.id && q.id !== 0) {
                 errors.push(`題目 ${index + 1}: 缺少 id 欄位`);
             }
-            
             if (!q.question && !q.explanation) {
                 errors.push(`題目 ${index + 1}: 缺少 question 或 explanation 欄位`);
             }
-
-            // 型別檢查
             if (q.type) {
                 const validTypes = ['single', 'saq', 'SAQ', 'short'];
                 const typeStr = q.type.toString().toLowerCase();
@@ -110,8 +83,6 @@ class ExamApp {
                     errors.push(`題目 ${index + 1}: 不支援的題型 "${q.type}"`);
                 }
             }
-
-            // 單選題選項檢查
             const isSingleChoice = !q.type || q.type.toString().toLowerCase() === 'single';
             if (isSingleChoice) {
                 if (!Array.isArray(q.options) || q.options.length === 0) {
@@ -121,13 +92,10 @@ class ExamApp {
                     errors.push(`題目 ${index + 1}: 缺少正確答案`);
                 }
             }
-
-            // 資料型別驗證
             if (q.options && !Array.isArray(q.options)) {
                 errors.push(`題目 ${index + 1}: options 必須是陣列`);
             }
         });
-
         return {
             isValid: errors.length === 0,
             errors,
@@ -138,23 +106,16 @@ class ExamApp {
 
     validateAndNormalizeQuestions(rawQuestions) {
         return rawQuestions.map((q, index) => {
-            // 確定題目類型
             let type = q.type ? q.type.toString().toLowerCase() : 'single';
-
-            // 如果是簡答題相關的類型（以小寫比對），最後標準化為 'SAQ'
             if (["saq", "sqa", "short"].includes(type)) {
                 type = 'SAQ';
             } else {
-                // 如果沒有明確指定，但也沒有選項，視為簡答題
                 type = (Array.isArray(q.options) && q.options.length > 0) ? 'single' : 'SAQ';
             }
-
-            // 針對只有 explanation 屬性的題目，使用 explanation 作為題目內容
             let questionText = q.question || '';
             if (!questionText && q.explanation) {
                 questionText = `${q.explanation.substring(0, 100)}${q.explanation.length > 100 ? '...' : ''}`;
             }
-
             const question = {
                 id: q.id || (index + 1),
                 question: questionText || `題目 ${index + 1}`,
@@ -163,11 +124,8 @@ class ExamApp {
                 explanation: q.explanation || '',
                 type: type
             };
-
-            // 單選題選項修正 (只處理單選題)
             if (question.type === 'single') {
                 if (question.options.length === 0 || !Array.isArray(question.options)) {
-                    // 創建基本的選項，如果題目有答案（如：A, B, C, D），使用它來標示正確選項
                     const correctOption = question.answer ? question.answer.toUpperCase() : '';
                     question.options = ['A', 'B', 'C', 'D'].map(letter => {
                         if (letter === correctOption) {
@@ -184,19 +142,14 @@ class ExamApp {
                     return option;
                 });
             }
-
             return question;
-            // 確保所有題目都被加載，無論其結構如何
         }).filter(q => q.id != null);
     }
 
     handleLoadError() {
         logger.error('題庫載入失敗，嘗試備用內容');
-
-        // 記錄更詳細的資訊以幫助診斷問題
         logger.log('目前題庫:', this.selectedQuestionBank);
         logger.log('頁面位置:', window.location.href);
-
         this.questions = [{
             "id": 1,
             "question": "題目載入失敗，請檢查網路連接並重新整理頁面。",
@@ -204,8 +157,6 @@ class ExamApp {
             "answer": "A",
             "explanation": "請檢查網路連接或重新載入頁面"
         }];
-
-        // 顯示錯誤訊息
         this.showErrorMessage(`題目載入失敗 (${this.selectedQuestionBank})，請重新整理頁面重試。`);
     }
 
@@ -221,29 +172,24 @@ class ExamApp {
     }
 
     showErrorMessage(message) {
-        // 創建錯誤訊息元素
         const existingError = document.querySelector('.error-message');
         if (existingError) {
             existingError.remove();
         }
-
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'error-message';
         errorDiv.textContent = message;
-
         const examInfo = document.querySelector('.exam-info');
         examInfo.parentNode.insertBefore(errorDiv, examInfo);
     }
+
     init() {
-        // 載入用戶配置和設定事件綁定
         this.loadConfig();
         this.bindEvents();
         this.setupConfigPanel();
-        this.setupQuestionBankSelect(); // 初始化題庫選擇事件
+        this.setupQuestionBankSelect();
         this.showPage('home');
         this.updateExamInfo();
-
-        // 輸出初始化完成的訊息
         logger.log('考試系統初始化完成');
         logger.log('當前題庫:', this.selectedQuestionBank);
         logger.log('題目數量:', this.questions.length);
@@ -252,15 +198,12 @@ class ExamApp {
     setupQuestionBankSelect() {
         const select = document.getElementById('question-bank-select');
         if (select) {
-            // 確保選擇器值與當前選擇的題庫匹配
             if (this.selectedQuestionBank) {
-                // 尋找包含相同檔名的選項
                 const options = Array.from(select.options);
                 const matchingOption = options.find(opt =>
                     opt.value === this.selectedQuestionBank ||
                     opt.value.includes(this.selectedQuestionBank.split('/').pop())
                 );
-
                 if (matchingOption) {
                     select.value = matchingOption.value;
                 } else {
@@ -268,29 +211,21 @@ class ExamApp {
                     this.selectedQuestionBank = select.value;
                 }
             }
-
             select.onchange = (e) => {
                 const previousQuestionBank = this.selectedQuestionBank;
                 const newQuestionBank = e.target.value;
-                
-                // 檢查是否有未完成的考試進度
                 const hasProgress = !this.isExamCompleted && Object.keys(this.userAnswers).length > 0;
-                
                 if (hasProgress) {
                     const confirmSwitch = confirm(
                         '您有未完成的考試進度，切換題庫將會清除目前的進度。\n\n確定要切換題庫嗎？'
                     );
-                    
                     if (!confirmSwitch) {
-                        // 使用者取消，恢復原選項
                         e.target.value = previousQuestionBank;
                         return;
                     }
                 }
-                
                 this.selectedQuestionBank = newQuestionBank;
                 logger.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
-
                 this.clearSavedProgress();
                 this.loadQuestions(true).then(() => {
                     this.currentQuestionIndex = 0;
@@ -299,7 +234,7 @@ class ExamApp {
                     this.examStartTime = null;
                     this.examEndTime = null;
                     this.showPage('home');
-                    this.updateExamInfo(); // 更新考試資訊
+                    this.updateExamInfo();
                 });
             };
         } else {
@@ -308,11 +243,8 @@ class ExamApp {
     }
 
     setupConfigPanel() {
-        // 先移除舊的 config-panel（避免重複）
         const oldPanel = document.querySelector('.config-panel');
         if (oldPanel) oldPanel.remove();
-
-        // 創建配置面板
         const configPanel = document.createElement('div');
         configPanel.className = 'config-panel card';
         const body = document.createElement('div');
@@ -320,10 +252,8 @@ class ExamApp {
         const title = document.createElement('h4');
         title.textContent = '考試設定';
         body.appendChild(title);
-
         const options = document.createElement('div');
         options.className = 'config-options';
-
         const makeCheckbox = (id, labelText, checked) => {
             const wrapper = document.createElement('label');
             wrapper.className = 'config-option';
@@ -337,7 +267,6 @@ class ExamApp {
             wrapper.appendChild(span);
             return { wrapper, input };
         };
-
         const makeNumberInput = (id, labelText, value) => {
             const wrapper = document.createElement('label');
             wrapper.className = 'config-option';
@@ -358,20 +287,16 @@ class ExamApp {
             wrapper.appendChild(input);
             return { wrapper, input };
         };
-
         const { wrapper: shuffleQWrap, input: shuffleQ } = makeCheckbox('shuffle-questions', '隨機題目順序', this.config.shuffleQuestions);
         const { wrapper: shuffleOWrap, input: shuffleO } = makeCheckbox('shuffle-options', '隨機選項順序', this.config.shuffleOptions);
         const { wrapper: showExpWrap, input: showExp } = makeCheckbox('show-explanation', '顯示答案解釋', this.config.showExplanation);
         const { wrapper: passingWrap, input: passingInput } = makeNumberInput('passing-score', '及格分數', this.config.passingScore);
-
         options.appendChild(shuffleQWrap);
         options.appendChild(shuffleOWrap);
         options.appendChild(showExpWrap);
         options.appendChild(passingWrap);
-
-        // 資料管理區塊：清除本機資料按鈕 + TTL 提示
         const privacySection = document.createElement('div');
-    privacySection.className = 'config-privacy mt-12px';
+        privacySection.className = 'config-privacy mt-12px';
         const privacyNote = document.createElement('p');
         privacyNote.className = 'note';
         privacyNote.textContent = '注意：本機資料（進度/設定/歷史）預設保留 7 天，逾期會自動清除。';
@@ -382,30 +307,23 @@ class ExamApp {
         clearBtn.textContent = '清除所有本機資料';
         privacySection.appendChild(privacyNote);
         privacySection.appendChild(clearBtn);
-
         body.appendChild(options);
         body.appendChild(privacySection);
         configPanel.appendChild(body);
-
         const examInfo = document.querySelector('.exam-info');
         examInfo.parentNode.insertBefore(configPanel, examInfo);
-
-        // 綁定配置事件
         shuffleQ.addEventListener('change', (e) => {
             this.config.shuffleQuestions = e.target.checked;
             this.saveConfig();
         });
-
         shuffleO.addEventListener('change', (e) => {
             this.config.shuffleOptions = e.target.checked;
             this.saveConfig();
         });
-
         showExp.addEventListener('change', (e) => {
             this.config.showExplanation = e.target.checked;
             this.saveConfig();
         });
-
         passingInput.addEventListener('input', (e) => {
             const val = parseInt(e.target.value, 10);
             const safe = isNaN(val) ? 60 : Math.min(100, Math.max(0, val));
@@ -413,18 +331,13 @@ class ExamApp {
             e.target.value = safe;
             this.saveConfig();
         });
-
-        // 清除所有本機資料
         clearBtn.addEventListener('click', () => this.clearAllLocalData());
-        // 載入保存的配置
         this.loadConfig();
     }
 
     updateExamInfo() {
         const totalQuestions = this.questions.length;
         document.getElementById('total-questions').textContent = totalQuestions;
-
-        // 更新考試說明中的題目數量
         const examDetails = document.querySelector('.exam-details');
         if (examDetails) {
             const firstLi = examDetails.querySelector('li');
@@ -437,33 +350,24 @@ class ExamApp {
             }
         }
     }
+
     bindEvents() {
-        // 開始考試按鈕
         document.getElementById('start-exam-btn').addEventListener('click', () => {
             this.startExam();
         });
-
-        // 導航按鈕
         document.getElementById('prev-btn').addEventListener('click', () => {
             this.previousQuestion();
         });
-
         document.getElementById('next-btn').addEventListener('click', () => {
             this.nextQuestion();
         });
-
-        // 提交考試按鈕
         document.getElementById('submit-btn').addEventListener('click', () => {
             this.submitExam();
         });
-        // 重新考試按鈕
         document.getElementById('restart-exam-btn').addEventListener('click', () => {
             this.restartExam();
         });
-
-        // 歷史記錄按鈕
         document.getElementById('history-btn').addEventListener('click', () => {
-            // 在顯示歷史記錄前，先清除所有已存在的 modal
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 if (document.body.contains(modal)) {
                     document.body.removeChild(modal);
@@ -471,8 +375,6 @@ class ExamApp {
             });
             this.showExamHistory();
         });
-
-        // 匯出結果按鈕（結果頁）
         const exportJsonBtn = document.getElementById('export-json-btn');
         const exportCsvBtn = document.getElementById('export-csv-btn');
         if (exportJsonBtn) {
@@ -481,19 +383,13 @@ class ExamApp {
         if (exportCsvBtn) {
             exportCsvBtn.addEventListener('click', () => this.exportResults('csv'));
         }
-
-        // 鍵盤快捷鍵
         document.addEventListener('keydown', (e) => {
-            // 如果在文字輸入區域中，不要觸發快捷鍵
             if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
                 return;
             }
-
             if (document.getElementById('exam-page').classList.contains('active')) {
                 const currentQuestion = this.questions[this.currentQuestionIndex];
-                // 單選題才使用數字鍵快捷鍵
                 const isMultipleChoice = currentQuestion && currentQuestion.type === 'single';
-
                 switch (e.key) {
                     case 'ArrowLeft':
                         e.preventDefault();
@@ -528,17 +424,13 @@ class ExamApp {
                 }
             }
         });
-
-        // 定期自動保存
         if (this.config.autoSave) {
             setInterval(() => {
                 if (!this.isExamCompleted && Object.keys(this.userAnswers).length > 0) {
                     this.saveProgress();
                 }
-            }, 30000); // 每30秒自動保存
+            }, 30000);
         }
-
-        // 頁面關閉前警告
         window.addEventListener('beforeunload', (e) => {
             if (!this.isExamCompleted && Object.keys(this.userAnswers).length > 0) {
                 e.preventDefault();
@@ -549,24 +441,17 @@ class ExamApp {
     }
 
     showPage(pageId) {
-        // 隱藏所有頁面
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
         });
-
-        // 顯示指定頁面
         document.getElementById(`${pageId}-page`).classList.add('active');
     }
-    startExam() {
-        // 準備題目
-        this.questions = [...this.originalQuestions];
 
-        // 如果啟用隨機順序，打亂題目
+    startExam() {
+        this.questions = [...this.originalQuestions];
         if (this.config.shuffleQuestions) {
             this.shuffleArray(this.questions);
         }
-
-        // 如果啟用隨機選項，為每題單選題打亂選項並重新標註 A-D，同步更新正確答案字母
         if (this.config.shuffleOptions) {
             this.questions.forEach(q => {
                 if (q && q.type === 'single' && Array.isArray(q.options) && q.options.length > 0) {
@@ -574,16 +459,11 @@ class ExamApp {
                 }
             });
         }
-
-        // 重置狀態
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
         this.isExamCompleted = false;
         this.examStartTime = new Date();
-
-        // 清除之前保存的進度
         this.clearSavedProgress();
-
         this.showPage('exam');
         this.displayQuestion();
         this.updateProgress();
@@ -593,11 +473,9 @@ class ExamApp {
         this.startTimer();
     }
 
-    // 單題目：打亂選項並重新標註 A-D，同步調整正確答案字母
     shuffleQuestionOptions(question) {
         try {
             const currentAnswer = (question.answer || '').toString().trim().toUpperCase();
-            // 將選項標準化為 { text, isCorrect }
             const optionObjs = (question.options || []).map(opt => {
                 const text = (opt || '').toString();
                 const letter = text.trim().charAt(0).toUpperCase();
@@ -607,15 +485,10 @@ class ExamApp {
                     isCorrect: letter === currentAnswer
                 };
             });
-
-            if (optionObjs.length === 0) return; // 無選項不處理
-
-            // 打亂
+            if (optionObjs.length === 0) return;
             this.shuffleArray(optionObjs);
-
-            // 重新標註與回填正確答案
             question.options = optionObjs.map((o, idx) => {
-                const newLetter = String.fromCharCode(65 + idx); // A, B, C, ...
+                const newLetter = String.fromCharCode(65 + idx);
                 if (o.isCorrect) {
                     question.answer = newLetter;
                 }
@@ -634,19 +507,16 @@ class ExamApp {
     }
 
     startTimer() {
-        // 先移除所有舊的 exam-timer，避免重複
         document.querySelectorAll('.exam-timer').forEach(el => el.remove());
         const timerElement = this.createTimerElement();
         const progressInfo = this._querySelector('.exam-header .progress-info');
         if (progressInfo) {
             progressInfo.appendChild(timerElement);
         }
-
         this.timerInterval = setInterval(() => {
             const elapsed = new Date() - this.examStartTime;
             const minutes = Math.floor(elapsed / 60000);
             const seconds = Math.floor((elapsed % 60000) / 1000);
-
             const timerDisplay = this._getElement('exam-timer', false);
             if (timerDisplay) {
                 timerDisplay.textContent = `考試時間：${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
@@ -657,10 +527,10 @@ class ExamApp {
     createTimerElement() {
         const timerDiv = document.createElement('div');
         timerDiv.className = 'exam-timer';
-    const inner = document.createElement('div');
-    inner.id = 'exam-timer';
-    inner.textContent = '考試時間：00:00';
-    timerDiv.appendChild(inner);
+        const inner = document.createElement('div');
+        inner.id = 'exam-timer';
+        inner.textContent = '考試時間：00:00';
+        timerDiv.appendChild(inner);
         return timerDiv;
     }
 
@@ -673,32 +543,19 @@ class ExamApp {
     displayQuestion() {
         const question = this.questions[this.currentQuestionIndex];
         if (!question) return;
-
         logger.log(`顯示題目 #${this.currentQuestionIndex + 1}, 類型:`, question.type);
-
-        // 更新題目編號和內容（使用安全方法）
         const questionNumber = this._getElement('question-number');
         if (questionNumber) questionNumber.textContent = this.currentQuestionIndex + 1;
-        
         const questionText = this._getElement('question-text');
         if (questionText) questionText.textContent = question.question;
-
-        // 更新總題數
         const totalQuestions = this._getElement('total-questions');
         if (totalQuestions) totalQuestions.textContent = this.questions.length;
-        
         const currentQuestion = this._getElement('current-question');
         if (currentQuestion) currentQuestion.textContent = this.currentQuestionIndex + 1;
-
-        // 更新題目類型標籤
         const questionCard = this._querySelector('.question-card');
         if (questionCard) {
-            // 移除現有類型標籤
             questionCard.classList.remove('question-single', 'question-saq');
-            // 添加當前題型標籤
             questionCard.classList.add(question.type === 'SAQ' ? 'question-saq' : 'question-single');
-
-            // 找到或創建題型標籤
             let typeLabel = this._querySelector('.question-type-label', false);
             if (!typeLabel) {
                 typeLabel = document.createElement('div');
@@ -711,36 +568,25 @@ class ExamApp {
             typeLabel.textContent = question.type === 'SAQ' ? '簡答題' : '單選題';
             typeLabel.className = `question-type-label ${question.type === 'SAQ' ? 'saq' : 'single'}`;
         }
-
-        // 清除舊選項
         const optionsContainer = this._getElement('options-container');
         if (!optionsContainer) return;
-        
         while (optionsContainer.firstChild) optionsContainer.removeChild(optionsContainer.firstChild);
-
-        // 根據題目類型顯示不同的作答介面
         if (question.type === 'SAQ') {
-            // 簡答題顯示文字輸入框（使用 DOM API 建立，避免 innerHTML 注入）
             const inputDiv = document.createElement('div');
             inputDiv.className = 'SAQ-answer-container';
-
             const label = document.createElement('label');
             label.setAttribute('for', 'SAQ-answer-input');
             label.className = 'form-label';
             label.textContent = '請輸入您的答案：';
-
             const textarea = document.createElement('textarea');
             textarea.id = 'SAQ-answer-input';
             textarea.className = 'form-control';
             textarea.rows = 4;
-            textarea.classList.add('w-100','mt-10px');
+            textarea.classList.add('w-100', 'mt-10px');
             textarea.value = this.userAnswers[question.id] || '';
-
             inputDiv.appendChild(label);
             inputDiv.appendChild(textarea);
             optionsContainer.appendChild(inputDiv);
-
-            // 綁定輸入事件
             const input = textarea;
             const debounced = this._debounce((val) => {
                 this.userAnswers[question.id] = val;
@@ -748,8 +594,6 @@ class ExamApp {
                 this.updateAnswerStatus();
             }, 400);
             input.addEventListener('input', (e) => debounced(e.target.value));
-
-            // 確保文本區域自動獲得焦點
             setTimeout(() => {
                 input.focus();
             }, 100);
@@ -758,7 +602,6 @@ class ExamApp {
                 const optionElement = this.createOptionElement(optionText, index, question.id);
                 optionsContainer.appendChild(optionElement);
             });
-            // 如果用戶已經選擇過答案，恢復選擇狀態
             if (this.userAnswers[question.id]) {
                 const selectedOption = optionsContainer.querySelector(`input[value="${this.userAnswers[question.id]}"]`);
                 if (selectedOption) {
@@ -774,9 +617,7 @@ class ExamApp {
         optionDiv.className = 'option';
         optionDiv.setAttribute('role', 'radio');
         optionDiv.setAttribute('aria-checked', 'false');
-
-        const optionValue = optionText.charAt(0); // A, B, C, D
-
+        const optionValue = optionText.charAt(0);
         const input = document.createElement('input');
         input.type = 'radio';
         input.className = 'option-radio';
@@ -784,26 +625,20 @@ class ExamApp {
         input.value = optionValue;
         input.id = `option-${questionId}-${index}`;
         input.setAttribute('aria-label', optionText);
-
         const label = document.createElement('label');
         label.htmlFor = input.id;
         label.className = 'option-text';
-        // 安全指派文字，避免題庫含 HTML 被渲染
         label.textContent = optionText;
-
         optionDiv.appendChild(input);
         optionDiv.appendChild(label);
-
-        // 添加點擊事件
         optionDiv.addEventListener('click', () => {
             input.checked = true;
             this.selectOption(questionId, optionValue, optionDiv);
         });
-
         return optionDiv;
     }
+
     selectOption(questionId, optionValue, optionElement) {
-        // 移除同組其他選項的選中狀態
         document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
             const parentDiv = input.closest('.option');
             if (parentDiv) {
@@ -811,31 +646,20 @@ class ExamApp {
                 parentDiv.setAttribute('aria-checked', 'false');
             }
         });
-
-        // 添加當前選項的選中狀態
         optionElement.classList.add('selected');
         optionElement.setAttribute('aria-checked', 'true');
-
-        // 保存用戶選擇
         this.userAnswers[questionId] = optionValue;
-
-        // 自動保存進度
         if (this.config.autoSave) {
             this.saveProgress();
         }
-
-        // 更新導航狀態
         this.updateNavigation();
         this.updateAnswerStatus();
-
-        // 添加視覺反饋
         optionElement.classList.add('transform-bump');
         setTimeout(() => {
             optionElement.classList.remove('transform-bump');
         }, 200);
     }
 
-    // 更新「已答 / 未答」統計
     updateAnswerStatus() {
         try {
             const total = this.questions.length;
@@ -847,13 +671,11 @@ class ExamApp {
                 return acc + (v ? 1 : 0);
             }, 0);
             const unanswered = Math.max(0, total - answered);
-
             const answeredEl = document.getElementById('answered-count');
             const unansweredEl = document.getElementById('unanswered-count');
             if (answeredEl) answeredEl.textContent = answered;
             if (unansweredEl) unansweredEl.textContent = unanswered;
         } catch (e) {
-            // 忽略 UI 缺失
         }
     }
 
@@ -864,12 +686,9 @@ class ExamApp {
             progressFill.style.setProperty('width', `${progressPercentage}%`);
             progressFill.setAttribute('aria-valuenow', Math.round(progressPercentage));
         }
-        
-        // 通知螢幕閱讀器題目已切換
         this._announceToScreenReader(`第 ${this.currentQuestionIndex + 1} 題，共 ${this.questions.length} 題`);
     }
 
-    // 輔助：通知螢幕閱讀器
     _announceToScreenReader(message) {
         let announcer = this._getElement('sr-announcer', false);
         if (!announcer) {
@@ -888,11 +707,7 @@ class ExamApp {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
         const submitBtn = document.getElementById('submit-btn');
-
-        // 更新上一題按鈕
         prevBtn.disabled = this.currentQuestionIndex === 0;
-
-        // 更新下一題/提交按鈕
         if (this.currentQuestionIndex === this.questions.length - 1) {
             nextBtn.classList.add('hidden');
             submitBtn.classList.remove('hidden');
@@ -900,8 +715,6 @@ class ExamApp {
             nextBtn.classList.remove('hidden');
             submitBtn.classList.add('hidden');
         }
-
-        // 同步更新題號網格高亮
         this.updateQuestionGridHighlight();
     }
 
@@ -925,12 +738,10 @@ class ExamApp {
         }
     }
 
-    // 題號按鈕網格：渲染
     renderQuestionGrid() {
         const grid = document.getElementById('question-grid');
         if (!grid) return;
-    while (grid.firstChild) grid.removeChild(grid.firstChild);
-
+        while (grid.firstChild) grid.removeChild(grid.firstChild);
         this.questions.forEach((q, idx) => {
             const btn = document.createElement('button');
             btn.type = 'button';
@@ -947,11 +758,9 @@ class ExamApp {
             });
             grid.appendChild(btn);
         });
-
         this.updateQuestionGridHighlight();
     }
 
-    // 題號按鈕網格：更新高亮與已答/未答標示
     updateQuestionGridHighlight() {
         const grid = document.getElementById('question-grid');
         if (!grid) return;
@@ -967,32 +776,25 @@ class ExamApp {
             btn.classList.add(answered ? 'question-grid__btn--answered' : 'question-grid__btn--unanswered');
         });
     }
+
     submitExam() {
-        // 防呆鎖，避免重複觸發
         if (this._isSubmitting) return;
         this._isSubmitting = true;
         setTimeout(() => { this._isSubmitting = false; }, 1000);
-        // 檢查是否所有題目都已回答
         const unansweredQuestions = this.questions.filter(q => !this.userAnswers[q.id]);
-
         if (unansweredQuestions.length > 0) {
             const confirmSubmit = confirm(`您還有 ${unansweredQuestions.length} 題未回答，確定要提交考試嗎？未回答的題目將視為錯誤。`);
             if (!confirmSubmit) return;
         }
-
         this.examEndTime = new Date();
         this.isExamCompleted = true;
         this.stopTimer();
-
-        // 清除自動保存的進度
         this.clearSavedProgress();
-
         this.calculateResults();
         this.showPage('result');
-
-        // 保存考試記錄
         this.saveExamRecord();
     }
+
     calculateResults() {
         let correctCount = 0;
         const totalCount = this.questions.length;
@@ -1007,10 +809,8 @@ class ExamApp {
                     wrongAnswers.push({ question, userAnswer: userAnswer || '未作答', correctAnswer: question.answer });
                 }
             } else if (question.type === 'SAQ') {
-                // 簡答題自動比對（進行更靈活的比對，考慮空格和大小寫）
                 const userAns = userAnswer ? userAnswer.trim().toLowerCase() : '';
                 const correctAns = typeof question.answer === 'string' ? question.answer.trim().toLowerCase() : '';
-
                 if (userAns && correctAns && userAns === correctAns) {
                     correctCount++;
                 } else {
@@ -1021,19 +821,13 @@ class ExamApp {
         const score = Math.round((correctCount / totalCount) * 100);
         const accuracy = Math.round((correctCount / totalCount) * 100);
         const isPassed = score >= this.config.passingScore;
-
-        // 格式化考試時長
         const durationMinutes = Math.floor(examDuration / 60000);
         const durationSeconds = Math.floor((examDuration % 60000) / 1000);
         const durationText = `${durationMinutes}分${durationSeconds}秒`;
-
-        // 更新結果顯示
         document.getElementById('final-score').textContent = score;
         document.getElementById('correct-count').textContent = correctCount;
         document.getElementById('total-count').textContent = totalCount;
         document.getElementById('accuracy-rate').textContent = `${accuracy}%`;
-
-        // 添加考試時長顯示
         const scoreDetails = document.querySelector('.score-details');
         let durationElement = document.getElementById('exam-duration');
         if (!durationElement) {
@@ -1042,25 +836,18 @@ class ExamApp {
             durationElement.className = 'score-item';
             scoreDetails.appendChild(durationElement);
         }
-    while (durationElement.firstChild) durationElement.removeChild(durationElement.firstChild);
-    const durLabel = document.createElement('span');
-    durLabel.textContent = '考試時長：';
-    const durVal = document.createElement('span');
-    durVal.textContent = durationText;
-    durationElement.appendChild(durLabel);
-    durationElement.appendChild(durVal);
-
+        while (durationElement.firstChild) durationElement.removeChild(durationElement.firstChild);
+        const durLabel = document.createElement('span');
+        durLabel.textContent = '考試時長：';
+        const durVal = document.createElement('span');
+        durVal.textContent = durationText;
+        durationElement.appendChild(durLabel);
+        durationElement.appendChild(durVal);
         const statusElement = document.getElementById('exam-status');
         statusElement.textContent = isPassed ? '通過' : '未通過';
         statusElement.className = `status ${isPassed ? 'status--success' : 'status--error'}`;
-
-        // 生成詳細的答題回顧
         this.generateReview();
-
-        // 生成統計分析
         this.generateAnalysis(wrongAnswers, examDuration);
-
-        // 保存結果數據供後續分析
         this.lastExamResult = {
             score,
             correctCount,
@@ -1071,17 +858,14 @@ class ExamApp {
         };
     }
 
-    // 匯出結果（JSON/CSV）
     exportResults(format = 'json') {
         if (!this.isExamCompleted) {
             alert('請先完成考試再匯出結果');
             return;
         }
-
         const bankInfo = this._getSelectedBankInfo();
         const startedAt = this.examStartTime ? new Date(this.examStartTime) : null;
         const endedAt = this.examEndTime ? new Date(this.examEndTime) : null;
-
         const durationSec = this.lastExamResult?.duration ? Math.round(this.lastExamResult.duration / 1000) : 0;
         const meta = {
             bankFile: bankInfo.value,
@@ -1097,17 +881,13 @@ class ExamApp {
             endedAt: endedAt ? endedAt.toISOString() : '',
             exportedAt: new Date().toISOString()
         };
-
-        // 每題結果（含中文型別名稱、題目選項與解釋）
         const perQuestion = this.questions.map((q, idx) => {
             const userAnswer = this.userAnswers[q.id];
             const correct = q.type === 'single'
                 ? userAnswer === q.answer
                 : (userAnswer && q.answer && userAnswer.toString().trim().toLowerCase() === q.answer.toString().trim().toLowerCase());
-
             const typeLabel = q.type === 'SAQ' ? '簡答題' : '單選題';
             const optionsText = Array.isArray(q.options) ? q.options.join('\n') : '';
-
             return {
                 no: idx + 1,
                 id: q.id,
@@ -1121,11 +901,8 @@ class ExamApp {
                 isCorrect: !!correct
             };
         });
-
         const fileBase = `exam_result_${this._slugify(bankInfo.label || bankInfo.value)}_${this._formatDateForFile(new Date())}`;
-
         if (format === 'json') {
-            // 以每題為一列，鍵名使用中文並與 CSV 對齊
             const data = perQuestion.map(r => ({
                 '編號': r.no,
                 'ID': r.id,
@@ -1142,8 +919,7 @@ class ExamApp {
             const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
             this._downloadBlob(blob, `${fileBase}.json`);
         } else {
-            // CSV（中文欄位與指定順序）
-            const headers = ['編號','ID','類型','題目','選項','作答','解答','是否正確','解釋','題庫標籤','匯出時間'];
+            const headers = ['編號', 'ID', '類型', '題目', '選項', '作答', '解答', '是否正確', '解釋', '題庫標籤', '匯出時間'];
             const rows = perQuestion.map(r => [
                 r.no,
                 r.id,
@@ -1158,7 +934,6 @@ class ExamApp {
                 meta.exportedAt
             ]);
             const csv = [headers.join(','), ...rows.map(row => row.join(','))].join('\r\n');
-            // 加入 UTF-8 BOM，避免 Excel 開啟時出現亂碼
             const BOM = '\ufeff';
             const blob = new Blob([BOM, csv], { type: 'text/csv;charset=utf-8' });
             this._downloadBlob(blob, `${fileBase}.csv`);
@@ -1173,7 +948,6 @@ class ExamApp {
         return s;
     }
 
-    // 防 CSV 公式注入：若值以 =、+、-、@ 開頭（允許前置空白），前面加上單引號
     _csvSanitize(val) {
         const s = (val ?? '').toString();
         if (/^\s*[=+\-@]/.test(s)) {
@@ -1205,9 +979,8 @@ class ExamApp {
     }
 
     generateReview() {
-    const reviewContainer = document.getElementById('review-container');
-    while (reviewContainer.firstChild) reviewContainer.removeChild(reviewContainer.firstChild);
-
+        const reviewContainer = document.getElementById('review-container');
+        while (reviewContainer.firstChild) reviewContainer.removeChild(reviewContainer.firstChild);
         this.questions.forEach((question, index) => {
             const reviewItem = this.createReviewItem(question, index + 1);
             reviewContainer.appendChild(reviewItem);
@@ -1215,8 +988,6 @@ class ExamApp {
     } createReviewItem(question, questionNumber) {
         const userAnswer = this.userAnswers[question.id];
         const correctAnswer = question.answer;
-
-        // 判斷答案是否正確，單選題和簡答題使用不同的判斷邏輯
         let isCorrect = false;
         if (question.type === 'single') {
             isCorrect = (userAnswer === correctAnswer);
@@ -1225,13 +996,9 @@ class ExamApp {
             const correctAns = typeof correctAnswer === 'string' ? correctAnswer.trim().toLowerCase() : '';
             isCorrect = (userAns && correctAns && userAns === correctAns);
         }
-
-    const reviewDiv = document.createElement('div');
-    reviewDiv.className = 'review-item card';
-
-    let displayQuestion = question.question;
-
-        // 內容區塊 DOM 建構
+        const reviewDiv = document.createElement('div');
+        reviewDiv.className = 'review-item card';
+        let displayQuestion = question.question;
         let answersBlock = null;
         if (question.type === 'single') {
             answersBlock = document.createElement('div');
@@ -1253,7 +1020,6 @@ class ExamApp {
                 }
                 const div = document.createElement('div');
                 div.className = className;
-                // 使用 textContent 安全設置，並附加指示符
                 div.textContent = option + indicator;
                 answersBlock.appendChild(div);
             });
@@ -1269,7 +1035,6 @@ class ExamApp {
             userContent.textContent = userAnswer ? userAnswer : '未作答';
             itemUser.appendChild(userLabel);
             itemUser.appendChild(userContent);
-
             const itemStd = document.createElement('div');
             itemStd.className = 'SAQ-answer-item';
             const stdLabel = document.createElement('strong');
@@ -1279,7 +1044,6 @@ class ExamApp {
             stdContent.textContent = correctAnswer ? String(correctAnswer) : '（無標準答案）';
             itemStd.appendChild(stdLabel);
             itemStd.appendChild(stdContent);
-
             answersBlock.appendChild(itemUser);
             answersBlock.appendChild(itemStd);
         }
@@ -1295,12 +1059,11 @@ class ExamApp {
         status.textContent = isCorrect ? '正確' : (userAnswer ? '錯誤' : '未作答');
         header.appendChild(qNum);
         header.appendChild(status);
-
-    const content = document.createElement('div');
+        const content = document.createElement('div');
         content.className = 'review-content';
         const qDiv = document.createElement('div');
         qDiv.className = 'review-question';
-    qDiv.textContent = displayQuestion || '';
+        qDiv.textContent = displayQuestion || '';
         content.appendChild(qDiv);
         if (answersBlock) content.appendChild(answersBlock);
         if (question.explanation && this.config.showExplanation) {
@@ -1314,57 +1077,40 @@ class ExamApp {
             expl.appendChild(span);
             content.appendChild(expl);
         }
-
         body.appendChild(header);
         body.appendChild(content);
         reviewDiv.appendChild(body);
-
         return reviewDiv;
     }
-    restartExam() {
-        // 清除計時器
-        this.stopTimer();
 
-        // 重置所有狀態
+    restartExam() {
+        this.stopTimer();
         this.currentQuestionIndex = 0;
         this.userAnswers = {};
         this.isExamCompleted = false;
         this.examStartTime = null;
         this.examEndTime = null;
-
-        // 清除自動保存的進度
         this.clearSavedProgress();
-
-        // 移除所有計時器元素
         document.querySelectorAll('.exam-timer').forEach(el => el.remove());
-
-        // 移除分析區塊
         const analysisSection = document.querySelector('.analysis-section');
         if (analysisSection) {
             analysisSection.remove();
         }
-
-        // 移除所有 success/error message
         document.querySelectorAll('.success-message, .error-message').forEach(el => el.remove());
-        // 移除所有 modal-overlay（歷史紀錄彈窗）
         document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
-
         this.showPage('home');
     }
 
-    // 本地存儲相關方法
     saveProgress() {
         if (!this.config.autoSave) return;
-
         const progressData = {
             currentQuestionIndex: this.currentQuestionIndex,
             userAnswers: this.userAnswers,
             examStartTime: this.examStartTime,
             questions: this.questions,
-            questionBank: this.selectedQuestionBank, // 保存當前題庫名稱
+            questionBank: this.selectedQuestionBank,
             timestamp: new Date().toISOString()
         };
-
         try {
             this._lsSetWithTtl('examProgress', progressData, this.storageTtlMs);
         } catch (error) {
@@ -1377,26 +1123,19 @@ class ExamApp {
             const savedData = this._lsGetWithTtl('examProgress');
             if (savedData) {
                 const progressData = savedData;
-                
-                // 檢查保存的進度是否有題庫名稱,且是否與當前選擇的題庫一致
                 if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
                     logger.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
                     return false;
                 }
-                
                 if (progressData.userAnswers && Object.keys(progressData.userAnswers).length > 0) {
                     const continueExam = confirm('發現未完成的考試進度，是否繼續之前的考試？');
                     if (continueExam) {
                         this.currentQuestionIndex = progressData.currentQuestionIndex || 0;
                         this.userAnswers = progressData.userAnswers || {};
                         this.examStartTime = new Date(progressData.examStartTime);
-                        
-                        // 如果保存的進度包含題目數據，恢復題目順序
                         if (progressData.questions && Array.isArray(progressData.questions) && progressData.questions.length > 0) {
                             this.questions = progressData.questions;
                         }
-
-                        // 自動進入考試頁面並顯示當前題目
                         this.showPage('exam');
                         this.displayQuestion();
                         this.updateProgress();
@@ -1404,13 +1143,9 @@ class ExamApp {
                         this.updateAnswerStatus();
                         this.renderQuestionGrid();
                         this.startTimer();
-
-                        // 顯示恢復進度的提示
                         this.showSuccessMessage('已恢復之前的考試進度');
-                        
                         return true;
                     } else {
-                        // 用戶選擇不繼續，清除進度
                         this.clearSavedProgress();
                         return false;
                     }
@@ -1444,8 +1179,6 @@ class ExamApp {
             const savedConfig = this._lsGetWithTtl('examConfig');
             if (savedConfig) {
                 this.config = { ...this.config, ...savedConfig };
-
-                // 更新UI
                 const sqEl = document.getElementById('shuffle-questions');
                 if (sqEl) sqEl.checked = this.config.shuffleQuestions;
                 const soEl = document.getElementById('shuffle-options');
@@ -1460,15 +1193,12 @@ class ExamApp {
         }
     }
 
-    // 快捷鍵選擇選項
     selectOptionByNumber(optionIndex) {
         const question = this.questions[this.currentQuestionIndex];
         if (!question || optionIndex >= question.options.length) return;
-
-        const optionValue = String.fromCharCode(65 + optionIndex); // A, B, C, D
-    const container = document.getElementById('options-container');
-    const optionElement = container ? container.querySelector(`input[value="${optionValue}"]`) : null;
-
+        const optionValue = String.fromCharCode(65 + optionIndex);
+        const container = document.getElementById('options-container');
+        const optionElement = container ? container.querySelector(`input[value="${optionValue}"]`) : null;
         if (optionElement) {
             optionElement.checked = true;
             optionElement.closest('.option').classList.add('selected');
@@ -1476,7 +1206,6 @@ class ExamApp {
         }
     }
 
-    // 簡易 debounce 實作
     _debounce(fn, delay = 400) {
         let t;
         return (...args) => {
@@ -1485,21 +1214,16 @@ class ExamApp {
         };
     }
 
-    // 成功訊息顯示
     showSuccessMessage(message) {
         const existingMsg = document.querySelector('.success-message');
         if (existingMsg) {
             existingMsg.remove();
         }
-
-    const successDiv = document.createElement('div');
-    successDiv.className = 'success-message';
+        const successDiv = document.createElement('div');
+        successDiv.className = 'success-message';
         successDiv.textContent = message;
-
         const examInfo = document.querySelector('.exam-info');
         examInfo.parentNode.insertBefore(successDiv, examInfo);
-
-        // 3秒後自動移除
         setTimeout(() => {
             if (successDiv.parentNode) {
                 successDiv.remove();
@@ -1507,15 +1231,11 @@ class ExamApp {
         }, 3000);
     }
 
-    // 生成統計分析
     generateAnalysis(wrongAnswers, examDuration) {
-        // 先移除所有舊的分析區塊，避免重複
         document.querySelectorAll('.analysis-section').forEach(el => el.remove());
-    const analysisContainer = this.createAnalysisSection();
+        const analysisContainer = this.createAnalysisSection();
         const reviewSection = document.querySelector('.review-section');
         reviewSection.parentNode.insertBefore(analysisContainer, reviewSection);
-
-        // 錯誤分析
         if (wrongAnswers.length > 0) {
             const errorAnalysis = document.createElement('div');
             errorAnalysis.className = 'error-analysis';
@@ -1540,8 +1260,6 @@ class ExamApp {
             errorAnalysis.appendChild(ul);
             analysisContainer.appendChild(errorAnalysis);
         }
-
-        // 時間分析
         const avgTimePerQuestion = examDuration / this.questions.length / 1000;
         const timeAnalysis = document.createElement('div');
         timeAnalysis.className = 'time-analysis';
@@ -1574,7 +1292,6 @@ class ExamApp {
         return analysisDiv;
     }
 
-    // 保存考試記錄
     saveExamRecord() {
         try {
             const records = this._lsGetWithTtl('examRecords') || [];
@@ -1589,10 +1306,7 @@ class ExamApp {
                 bankFile: bankInfo.value,
                 bankLabel: bankInfo.label
             };
-
-            records.unshift(newRecord); // 最新記錄在前
-
-            // 只保留最近10次記錄
+            records.unshift(newRecord);
             if (records.length > 10) {
                 records.splice(10);
             }
@@ -1602,26 +1316,21 @@ class ExamApp {
         }
     }
 
-    // 顯示歷史記錄
     showExamHistory() {
         try {
-            // 移除所有已存在的 modal
             document.querySelectorAll('.modal-overlay').forEach(modal => {
                 if (document.body.contains(modal)) {
                     document.body.removeChild(modal);
                 }
             });
-
             const records = this._lsGetWithTtl('examRecords') || [];
             if (records.length === 0) {
                 alert('暫無考試記錄');
                 return;
             }
-
             const historyModal = this.createHistoryModal();
             document.body.appendChild(historyModal);
             const list = historyModal.querySelector('.history-list');
-            // 清除預設的無紀錄占位符
             const placeholder = list.querySelector('.no-records');
             if (placeholder) placeholder.remove();
             records.forEach(record => {
@@ -1653,10 +1362,8 @@ class ExamApp {
         modal.setAttribute('role', 'dialog');
         modal.setAttribute('aria-modal', 'true');
         modal.setAttribute('aria-labelledby', 'history-modal-title');
-
         const contentWrap = document.createElement('div');
         contentWrap.className = 'modal-content';
-
         const header = document.createElement('div');
         header.className = 'modal-header';
         const h3 = document.createElement('h3');
@@ -1668,29 +1375,23 @@ class ExamApp {
         closeBtn.textContent = '×';
         header.appendChild(h3);
         header.appendChild(closeBtn);
-
         const body = document.createElement('div');
         body.className = 'modal-body';
-    const list = document.createElement('div');
+        const list = document.createElement('div');
         list.className = 'history-list';
-    const empty = document.createElement('div');
-    empty.className = 'no-records';
-    empty.textContent = '無歷史記錄';
-    list.appendChild(empty);
+        const empty = document.createElement('div');
+        empty.className = 'no-records';
+        empty.textContent = '無歷史記錄';
+        list.appendChild(empty);
         body.appendChild(list);
-
         contentWrap.appendChild(header);
         contentWrap.appendChild(body);
         modal.appendChild(contentWrap);
-
-        // 綁定關閉事件
-    closeBtn.addEventListener('click', () => {
+        closeBtn.addEventListener('click', () => {
             if (document.body.contains(modal)) {
                 document.body.removeChild(modal);
             }
         });
-
-        // 點擊背景關閉
         modal.addEventListener('click', (e) => {
             if (e.target === modal) {
                 if (document.body.contains(modal)) {
@@ -1698,8 +1399,6 @@ class ExamApp {
                 }
             }
         });
-
-        // 按 ESC 鍵關閉 modal
         const escKeyHandler = (e) => {
             if (e.key === 'Escape' && document.body.contains(modal)) {
                 document.body.removeChild(modal);
@@ -1707,11 +1406,9 @@ class ExamApp {
             }
         };
         document.addEventListener('keydown', escKeyHandler);
-
         return modal;
     }
 
-    // 一鍵清除本機資料
     clearAllLocalData() {
         try {
             localStorage.removeItem('examProgress');
@@ -1723,7 +1420,6 @@ class ExamApp {
         }
     }
 
-    // localStorage with TTL helpers
     _lsSetWithTtl(key, value, ttlMs) {
         try {
             const now = Date.now();
@@ -1732,13 +1428,10 @@ class ExamApp {
         } catch (error) {
             if (error.name === 'QuotaExceededError') {
                 console.warn('LocalStorage 容量已滿，嘗試清理舊資料...');
-                // 嘗試清理歷史記錄以釋放空間
                 try {
                     const records = JSON.parse(localStorage.getItem('examRecords') || '[]');
                     if (records.length > 5) {
-                        // 只保留最近 5 筆
                         localStorage.setItem('examRecords', JSON.stringify(records.slice(0, 5)));
-                        // 重試儲存
                         localStorage.setItem(key, JSON.stringify({ value, _ts: now, _ttl: ttlMs }));
                         console.log('已清理部分歷史記錄並成功儲存');
                     } else {
@@ -1773,7 +1466,6 @@ class ExamApp {
         }
     }
 
-    // 輔助：取得題庫顯示文字與檔名
     _getSelectedBankInfo() {
         try {
             const sel = document.getElementById('question-bank-select');
@@ -1781,11 +1473,10 @@ class ExamApp {
                 const opt = sel.selectedOptions && sel.selectedOptions[0];
                 return { value: sel.value || this.selectedQuestionBank, label: (opt && opt.textContent) || sel.value };
             }
-        } catch {}
+        } catch { }
         return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
     }
 
-    // 輔助：HTML escape，防止 XSS
     escapeHtml(str) {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -1795,7 +1486,6 @@ class ExamApp {
             .replace(/'/g, '&#39;');
     }
 
-    // 輔助：安全獲取 DOM 元素
     _getElement(id, warnIfMissing = true) {
         const element = document.getElementById(id);
         if (!element && warnIfMissing) {
@@ -1812,10 +1502,7 @@ class ExamApp {
         return element;
     }
 }
-
-// 應用程式啟動
-let examApp; // 全域變數供HTML中使用
-
+let examApp;
 document.addEventListener('DOMContentLoaded', () => {
     examApp = new ExamApp();
 });
