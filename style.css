@@ -6,6 +6,19 @@
 .grid-col-full { grid-column: 1 / -1; }
 .text-secondary-sm { color: var(--color-text-secondary); font-size: 12px; }
 
+/* Screen reader only - 僅供螢幕閱讀器讀取 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Feedback message blocks */
 .error-message, .success-message {
   background: var(--color-error);
