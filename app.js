@@ -1271,11 +1271,29 @@ class ExamApp {
             logger.warn('保存配置失敗:', error);
         }
     }
+    _sanitizeConfig(raw) {
+        const d = this.config;
+        return {
+            shuffleQuestions: typeof raw.shuffleQuestions === 'boolean' ? raw.shuffleQuestions : d.shuffleQuestions,
+            shuffleOptions: typeof raw.shuffleOptions === 'boolean' ? raw.shuffleOptions : d.shuffleOptions,
+            autoSave: typeof raw.autoSave === 'boolean' ? raw.autoSave : d.autoSave,
+            showExplanation: typeof raw.showExplanation === 'boolean' ? raw.showExplanation : d.showExplanation,
+            passingScore: Number.isInteger(raw.passingScore)
+                ? Math.min(100, Math.max(0, raw.passingScore))
+                : d.passingScore,
+            drawQuestionCount: Number.isInteger(raw.drawQuestionCount) && raw.drawQuestionCount >= 0
+                ? raw.drawQuestionCount
+                : d.drawQuestionCount,
+            customDrawCount: Number.isInteger(raw.customDrawCount) && raw.customDrawCount >= 1
+                ? raw.customDrawCount
+                : d.customDrawCount
+        };
+    }
     loadConfig() {
         try {
             const savedConfig = this._lsGetWithTtl('examConfig');
             if (savedConfig) {
-                this.config = { ...this.config, ...savedConfig };
+                this.config = this._sanitizeConfig(savedConfig);
                 const sqEl = document.getElementById('shuffle-questions');
                 if (sqEl) sqEl.checked = this.config.shuffleQuestions;
                 const soEl = document.getElementById('shuffle-options');
