@@ -22,7 +22,9 @@ class ExamApp {
             shuffleOptions: false,
             autoSave: true,
             showExplanation: true,
-            passingScore: 60
+            passingScore: 60,
+            drawQuestionCount: 0,
+            customDrawCount: 20
         };
         this.selectedQuestionBank = 'ERP規劃師_參考題型202509_V06.json';
         this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
@@ -295,6 +297,67 @@ class ExamApp {
         options.appendChild(shuffleOWrap);
         options.appendChild(showExpWrap);
         options.appendChild(passingWrap);
+
+        // 抽題數量設定
+        const drawGroup = document.createElement('div');
+        drawGroup.className = 'config-option-group';
+        drawGroup.style.display = 'flex';
+        drawGroup.style.alignItems = 'center';
+        drawGroup.style.gap = '8px';
+        drawGroup.style.marginTop = '8px';
+        drawGroup.style.width = '100%';
+
+        const drawLabel = document.createElement('span');
+        drawLabel.style.minWidth = '88px';
+        drawLabel.style.display = 'inline-block';
+        drawLabel.textContent = '抽題數量：';
+        drawGroup.appendChild(drawLabel);
+
+        const drawSelect = document.createElement('select');
+        drawSelect.id = 'draw-question-select';
+        drawSelect.className = 'form-control';
+        drawSelect.style.maxWidth = '120px';
+        drawSelect.style.padding = '4px 8px';
+
+        const drawOptions = [
+            { value: '0', label: '全部題目' },
+            { value: '10', label: '10 題' },
+            { value: '20', label: '20 題' },
+            { value: '30', label: '30 題' },
+            { value: '50', label: '50 題' },
+            { value: '100', label: '100 題' },
+            { value: 'custom', label: '自訂數量' }
+        ];
+
+        drawOptions.forEach(opt => {
+            const o = document.createElement('option');
+            o.value = opt.value;
+            o.textContent = opt.label;
+            drawSelect.appendChild(o);
+        });
+
+        const currentDrawCount = this.config.drawQuestionCount;
+        const knownValues = ['0', '10', '20', '30', '50', '100'];
+        if (knownValues.includes(String(currentDrawCount))) {
+            drawSelect.value = String(currentDrawCount);
+        } else {
+            drawSelect.value = 'custom';
+        }
+        drawGroup.appendChild(drawSelect);
+
+        const drawCustomInput = document.createElement('input');
+        drawCustomInput.type = 'number';
+        drawCustomInput.id = 'draw-custom-input';
+        drawCustomInput.min = '1';
+        drawCustomInput.value = String(this.config.customDrawCount || 20);
+        drawCustomInput.className = 'form-control';
+        drawCustomInput.style.maxWidth = '80px';
+        drawCustomInput.style.padding = '4px 8px';
+        drawCustomInput.style.display = drawSelect.value === 'custom' ? 'block' : 'none';
+        drawGroup.appendChild(drawCustomInput);
+
+        options.appendChild(drawGroup);
+
         const privacySection = document.createElement('div');
         privacySection.className = 'config-privacy mt-12px';
         const privacyNote = document.createElement('p');
@@ -331,13 +394,48 @@ class ExamApp {
             e.target.value = safe;
             this.saveConfig();
         });
+
+        drawSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'custom') {
+                drawCustomInput.style.display = 'block';
+                const inputVal = parseInt(drawCustomInput.value, 10) || 20;
+                this.config.drawQuestionCount = inputVal;
+            } else {
+                drawCustomInput.style.display = 'none';
+                this.config.drawQuestionCount = parseInt(val, 10);
+            }
+            this.saveConfig();
+            this.updateExamInfo();
+        });
+
+        drawCustomInput.addEventListener('input', (e) => {
+            let val = parseInt(e.target.value, 10);
+            if (isNaN(val) || val < 1) val = 1;
+            this.config.customDrawCount = val;
+            if (drawSelect.value === 'custom') {
+                this.config.drawQuestionCount = val;
+                this.saveConfig();
+                this.updateExamInfo();
+            }
+        });
+
         clearBtn.addEventListener('click', () => this.clearAllLocalData());
         this.loadConfig();
     }
 
     updateExamInfo() {
-        const totalQuestions = this.questions.length;
-        document.getElementById('total-questions').textContent = totalQuestions;
+        const totalQuestions = this.originalQuestions.length || this.questions.length;
+        const drawCount = parseInt(this.config.drawQuestionCount, 10) || 0;
+        let displayCount = totalQuestions;
+        let suffixText = '';
+
+        if (drawCount > 0 && drawCount < totalQuestions) {
+            displayCount = drawCount;
+            suffixText = ` (從 ${totalQuestions} 題中隨機抽取)`;
+        }
+
+        document.getElementById('total-questions').textContent = displayCount;
         const examDetails = document.querySelector('.exam-details');
         if (examDetails) {
             const firstLi = examDetails.querySelector('li');
@@ -346,7 +444,7 @@ class ExamApp {
                 const strong = document.createElement('strong');
                 strong.textContent = '題目數量：';
                 firstLi.appendChild(strong);
-                firstLi.appendChild(document.createTextNode(`${totalQuestions} 題`));
+                firstLi.appendChild(document.createTextNode(`${displayCount} 題${suffixText}`));
             }
         }
     }
@@ -449,6 +547,19 @@ class ExamApp {
 
     startExam() {
         this.questions = [...this.originalQuestions];
+        const drawCount = parseInt(this.config.drawQuestionCount, 10) || 0;
+        if (drawCount > 0 && drawCount < this.questions.length) {
+            const tempQuestions = [...this.questions];
+            this.shuffleArray(tempQuestions);
+            const selectedQuestions = tempQuestions.slice(0, drawCount);
+            if (!this.config.shuffleQuestions) {
+                selectedQuestions.sort((a, b) => {
+                    return this.originalQuestions.indexOf(a) - this.originalQuestions.indexOf(b);
+                });
+            }
+            this.questions = selectedQuestions;
+        }
+
         if (this.config.shuffleQuestions) {
             this.shuffleArray(this.questions);
         }
@@ -1187,6 +1298,25 @@ class ExamApp {
                 if (seEl) seEl.checked = this.config.showExplanation;
                 const psEl = document.getElementById('passing-score');
                 if (psEl) psEl.value = this.config.passingScore;
+
+                const dsEl = document.getElementById('draw-question-select');
+                const dciEl = document.getElementById('draw-custom-input');
+                if (dsEl) {
+                    const val = this.config.drawQuestionCount;
+                    if (['0', '10', '20', '30', '50', '100'].includes(String(val))) {
+                        dsEl.value = String(val);
+                        if (dciEl) dciEl.style.display = 'none';
+                    } else {
+                        dsEl.value = 'custom';
+                        if (dciEl) {
+                            dciEl.value = String(val);
+                            dciEl.style.display = 'block';
+                        }
+                    }
+                }
+                if (dciEl && this.config.customDrawCount) {
+                    dciEl.value = String(this.config.customDrawCount);
+                }
             }
         } catch (error) {
             logger.warn('載入配置失敗:', error);
