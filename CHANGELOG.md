@@ -7,6 +7,26 @@
 
 ---
 
+## [3.5.1] - 2026-06-01
+
+### 新增 (Added)
+- **題庫白名單驗證**：新增 `ALLOWED_BANKS` 白名單機制，載入與切換題庫時嚴格驗證來源，阻擋非法題庫路徑注入
+- **LocalStorage 進度資料驗證**：新增 `_validateProgressSchema()` 方法，恢復進度前驗證資料結構（型別、範圍、長度），異常資料自動清除
+- **LocalStorage 歷史紀錄驗證**：新增 `_validateRecordsSchema()` 方法，讀取考試紀錄前驗證陣列結構與各欄位型別
+- **配置清理函式**：新增 `_sanitizeConfig()` 方法，載入設定時逐欄位驗證型別與範圍，取代原先不安全的物件展開合併（`{ ...config, ...savedConfig }`）
+
+### 改進 (Changed)
+- **CSP 政策收緊**：移除 `img-src` 與 `font-src` 中的 `data:` URI，僅允許 `'self'`，進一步降低資料外洩風險
+- **下載連結安全改進**：檔案匯出改用 `dispatchEvent(new MouseEvent(...))` 觸發下載，不再將 `<a>` 元素插入 DOM，避免潛在的 DOM 污染
+- **Logger 分級調整**：`warn` 與 `error` 層級訊息在生產環境中仍保留輸出，僅 `log` 與 `info` 受條件化控制，確保關鍵警告不被隱藏
+
+### 安全性 (Security)
+- 修補 `loadConfig()` 中因直接展開合併外部資料可能導致的狀態污染漏洞
+- 修補題庫選擇器可被注入任意檔案路徑的漏洞
+- 修補 `examProgress` 與 `examRecords` 未經驗證直接使用可能導致的邏輯異常
+
+---
+
 ## [3.5.0] - 2026-06-01
 
 ### 新增 (Added)
