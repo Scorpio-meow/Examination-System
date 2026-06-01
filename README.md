@@ -3,7 +3,7 @@
 一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
 
 ![更新日期](https://img.shields.io/badge/更新日期-2026年6月1日-blue)
-![版本](https://img.shields.io/badge/版本-3.5.0-brightgreen)
+![版本](https://img.shields.io/badge/版本-3.5.1-brightgreen)
 ![授權](https://img.shields.io/badge/授權-MIT-orange)
 
 ## 功能特色
@@ -100,14 +100,17 @@
 - **XSS 防護**：移除 innerHTML/字串模板插入，全面改用 DOM API 與 textContent
 - **內容安全政策（CSP）**：
   - default-src/script-src/style-src 僅允許 'self'，已移除 style-src 'unsafe-inline'
-  - font-src 僅 'self' 與 data:，移除外部字體供應鏈風險
+  - img-src/font-src 僅允許 'self'，已移除 data: URI，進一步降低資料外洩風險
+- **題庫白名單驗證**：載入與切換題庫時透過 `ALLOWED_BANKS` 白名單嚴格驗證來源，阻擋路徑注入攻擊
+- **LocalStorage 資料驗證**：進度恢復、歷史紀錄讀取及設定載入皆透過專用驗證函式檢查型別、範圍與結構，異常資料自動清除
+- **配置清理（Sanitization）**：載入設定時逐欄位驗證型別與範圍，取代不安全的物件展開合併
 - **本機資料 TTL**：LocalStorage 內容（進度/設定/歷史）預設保存 7 天，逾期自動清除
 - **一鍵清除本機資料**：設定面板提供「清除所有本機資料」按鈕
 - **CSV 公式注入防護**：匯出時自動為以 =、+、-、@ 開頭的儲存格值加前置單引號，避免被 Excel/Sheets 當成公式執行
 - **LocalStorage 容量管理**：自動偵測容量不足並清理舊資料
 - **JSON Schema 驗證**：載入題庫時驗證資料格式完整性
 - **防禦性程式設計**：DOM 操作前檢查元素存在，避免 null 參考錯誤
-- **條件化日誌**：生產環境自動隱藏所有 console 除錯訊息，避免洩漏內部邏輯
+- **條件化日誌**：生產環境隱藏 log/info 除錯訊息，但保留 warn/error 以利問題追蹤
 
 ### 🛡️ 安全實踐摘要
 本專案已通過全面資安審計，實施以下安全措施：
@@ -115,15 +118,20 @@
 #### ✅ 已實施的安全控制
 1. **前端安全**
    - 完全移除 `innerHTML` 使用，100% 使用 `textContent` 防止 XSS
-   - 嚴格 CSP 政策（無 unsafe-inline/unsafe-eval）
-   - 條件化 logger（生產環境不顯示除錯訊息）
+   - 嚴格 CSP 政策（無 unsafe-inline/unsafe-eval/data: URI）
+   - 條件化 logger（生產環境隱藏 log/info，保留 warn/error）
 
 2. **資料保護**
    - LocalStorage TTL 機制（7 天自動過期）
    - CSV 匯出公式注入防護
    - JSON Schema 驗證防止格式錯誤
 
-3. **部署安全**
+3. **輸入驗證**
+   - 題庫白名單（`ALLOWED_BANKS`）防止路徑注入
+   - LocalStorage 進度/紀錄/設定讀取前結構驗證
+   - 配置載入使用清理函式取代不安全的物件合併
+
+4. **部署安全**
    - GitHub Pages HTTPS 強制啟用
    - .gitignore 防止敏感檔案外洩
    - 零外部依賴（無供應鏈風險）
@@ -369,14 +377,14 @@ A: 在首頁「考試設定」面板按下「清除所有本機資料」即可�
 
 完整的版本更新記錄請參閱 [CHANGELOG.md](CHANGELOG.md)。
 
-**目前版本**: v3.5.0 (2026-06-01)
+**目前版本**: v3.5.1 (2026-06-01)
 
 **主要更新**:
-- 新增隨機抽題數量設定功能（支援全部題目、部分數量及自訂數量設定，並自動隨機抽選）
-- 新增 ERP 規劃師、ERP 基礎檢定及 114年 iPAS AI 應用規劃師等新題庫
-- 全面優化網頁佈局與樣式，提升使用者介面美感與可讀性
-- 網站圖示統一使用 favicon.png
-- 重構程式碼結構，清理多餘空行，優化效能與維護性
+- 新增題庫白名單驗證機制，阻擋非法題庫路徑注入
+- 新增 LocalStorage 資料結構驗證（進度、紀錄、設定），異常資料自動清除
+- CSP 政策再收緊，移除 img-src/font-src 中的 data: URI
+- 配置載入改用清理函式，修補狀態污染漏洞
+- Logger 分級調整，生產環境保留 warn/error 輸出
 
 ---
 
