@@ -24,7 +24,7 @@ class ExamApp {
             showExplanation: true,
             passingScore: 60
         };
-        this.selectedQuestionBank = 'IPAS-AI-L11-A.json';
+        this.selectedQuestionBank = 'ERP規劃師_參考題型202509_V06.json';
         this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
         this.loadQuestions().then(() => {
             this.init();
