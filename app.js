@@ -32,7 +32,6 @@ class ExamApp {
             this.init();
         });
     }
-
     async loadQuestions(forceReload = false) {
         this.isLoading = true;
         this.showLoadingState(true);
@@ -64,7 +63,6 @@ class ExamApp {
             this.showLoadingState(false);
         }
     }
-
     validateQuestionSchema(questions) {
         const errors = [];
         if (!Array.isArray(questions)) {
@@ -105,7 +103,6 @@ class ExamApp {
             validQuestions: questions.length - errors.length
         };
     }
-
     validateAndNormalizeQuestions(rawQuestions) {
         return rawQuestions.map((q, index) => {
             let type = q.type ? q.type.toString().toLowerCase() : 'single';
@@ -147,7 +144,6 @@ class ExamApp {
             return question;
         }).filter(q => q.id != null);
     }
-
     handleLoadError() {
         logger.error('題庫載入失敗，嘗試備用內容');
         logger.log('目前題庫:', this.selectedQuestionBank);
@@ -161,7 +157,6 @@ class ExamApp {
         }];
         this.showErrorMessage(`題目載入失敗 (${this.selectedQuestionBank})，請重新整理頁面重試。`);
     }
-
     showLoadingState(show) {
         const startBtn = document.getElementById('start-exam-btn');
         if (show) {
@@ -172,7 +167,6 @@ class ExamApp {
             startBtn.disabled = false;
         }
     }
-
     showErrorMessage(message) {
         const existingError = document.querySelector('.error-message');
         if (existingError) {
@@ -184,7 +178,6 @@ class ExamApp {
         const examInfo = document.querySelector('.exam-info');
         examInfo.parentNode.insertBefore(errorDiv, examInfo);
     }
-
     init() {
         this.loadConfig();
         this.bindEvents();
@@ -196,7 +189,6 @@ class ExamApp {
         logger.log('當前題庫:', this.selectedQuestionBank);
         logger.log('題目數量:', this.questions.length);
     }
-
     setupQuestionBankSelect() {
         const select = document.getElementById('question-bank-select');
         if (select) {
@@ -243,7 +235,6 @@ class ExamApp {
             logger.error('找不到題庫選擇元素 (question-bank-select)');
         }
     }
-
     setupConfigPanel() {
         const oldPanel = document.querySelector('.config-panel');
         if (oldPanel) oldPanel.remove();
@@ -297,7 +288,6 @@ class ExamApp {
         options.appendChild(shuffleOWrap);
         options.appendChild(showExpWrap);
         options.appendChild(passingWrap);
-
         // 抽題數量設定
         const drawGroup = document.createElement('div');
         drawGroup.className = 'config-option-group';
@@ -306,19 +296,16 @@ class ExamApp {
         drawGroup.style.gap = '8px';
         drawGroup.style.marginTop = '8px';
         drawGroup.style.width = '100%';
-
         const drawLabel = document.createElement('span');
         drawLabel.style.minWidth = '88px';
         drawLabel.style.display = 'inline-block';
         drawLabel.textContent = '抽題數量：';
         drawGroup.appendChild(drawLabel);
-
         const drawSelect = document.createElement('select');
         drawSelect.id = 'draw-question-select';
         drawSelect.className = 'form-control';
         drawSelect.style.maxWidth = '120px';
         drawSelect.style.padding = '4px 8px';
-
         const drawOptions = [
             { value: '0', label: '全部題目' },
             { value: '10', label: '10 題' },
@@ -328,14 +315,12 @@ class ExamApp {
             { value: '100', label: '100 題' },
             { value: 'custom', label: '自訂數量' }
         ];
-
         drawOptions.forEach(opt => {
             const o = document.createElement('option');
             o.value = opt.value;
             o.textContent = opt.label;
             drawSelect.appendChild(o);
         });
-
         const currentDrawCount = this.config.drawQuestionCount;
         const knownValues = ['0', '10', '20', '30', '50', '100'];
         if (knownValues.includes(String(currentDrawCount))) {
@@ -344,7 +329,6 @@ class ExamApp {
             drawSelect.value = 'custom';
         }
         drawGroup.appendChild(drawSelect);
-
         const drawCustomInput = document.createElement('input');
         drawCustomInput.type = 'number';
         drawCustomInput.id = 'draw-custom-input';
@@ -355,9 +339,7 @@ class ExamApp {
         drawCustomInput.style.padding = '4px 8px';
         drawCustomInput.style.display = drawSelect.value === 'custom' ? 'block' : 'none';
         drawGroup.appendChild(drawCustomInput);
-
         options.appendChild(drawGroup);
-
         const privacySection = document.createElement('div');
         privacySection.className = 'config-privacy mt-12px';
         const privacyNote = document.createElement('p');
@@ -394,7 +376,6 @@ class ExamApp {
             e.target.value = safe;
             this.saveConfig();
         });
-
         drawSelect.addEventListener('change', (e) => {
             const val = e.target.value;
             if (val === 'custom') {
@@ -408,7 +389,6 @@ class ExamApp {
             this.saveConfig();
             this.updateExamInfo();
         });
-
         drawCustomInput.addEventListener('input', (e) => {
             let val = parseInt(e.target.value, 10);
             if (isNaN(val) || val < 1) val = 1;
@@ -419,22 +399,18 @@ class ExamApp {
                 this.updateExamInfo();
             }
         });
-
         clearBtn.addEventListener('click', () => this.clearAllLocalData());
         this.loadConfig();
     }
-
     updateExamInfo() {
         const totalQuestions = this.originalQuestions.length || this.questions.length;
         const drawCount = parseInt(this.config.drawQuestionCount, 10) || 0;
         let displayCount = totalQuestions;
         let suffixText = '';
-
         if (drawCount > 0 && drawCount < totalQuestions) {
             displayCount = drawCount;
             suffixText = ` (從 ${totalQuestions} 題中隨機抽取)`;
         }
-
         document.getElementById('total-questions').textContent = displayCount;
         const examDetails = document.querySelector('.exam-details');
         if (examDetails) {
@@ -448,7 +424,6 @@ class ExamApp {
             }
         }
     }
-
     bindEvents() {
         document.getElementById('start-exam-btn').addEventListener('click', () => {
             this.startExam();
@@ -537,14 +512,12 @@ class ExamApp {
             }
         });
     }
-
     showPage(pageId) {
         document.querySelectorAll('.page').forEach(page => {
             page.classList.remove('active');
         });
         document.getElementById(`${pageId}-page`).classList.add('active');
     }
-
     startExam() {
         this.questions = [...this.originalQuestions];
         const drawCount = parseInt(this.config.drawQuestionCount, 10) || 0;
@@ -559,7 +532,6 @@ class ExamApp {
             }
             this.questions = selectedQuestions;
         }
-
         if (this.config.shuffleQuestions) {
             this.shuffleArray(this.questions);
         }
@@ -583,7 +555,6 @@ class ExamApp {
         this.renderQuestionGrid();
         this.startTimer();
     }
-
     shuffleQuestionOptions(question) {
         try {
             const currentAnswer = (question.answer || '').toString().trim().toUpperCase();
@@ -609,14 +580,12 @@ class ExamApp {
             logger.warn('隨機選項順序時發生問題，已跳過該題：', e);
         }
     }
-
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
-
     startTimer() {
         document.querySelectorAll('.exam-timer').forEach(el => el.remove());
         const timerElement = this.createTimerElement();
@@ -634,7 +603,6 @@ class ExamApp {
             }
         }, 1000);
     }
-
     createTimerElement() {
         const timerDiv = document.createElement('div');
         timerDiv.className = 'exam-timer';
@@ -644,13 +612,11 @@ class ExamApp {
         timerDiv.appendChild(inner);
         return timerDiv;
     }
-
     stopTimer() {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
     }
-
     displayQuestion() {
         const question = this.questions[this.currentQuestionIndex];
         if (!question) return;
@@ -722,7 +688,6 @@ class ExamApp {
             }
         }
     }
-
     createOptionElement(optionText, index, questionId) {
         const optionDiv = document.createElement('div');
         optionDiv.className = 'option';
@@ -748,7 +713,6 @@ class ExamApp {
         });
         return optionDiv;
     }
-
     selectOption(questionId, optionValue, optionElement) {
         document.querySelectorAll(`input[name="question-${questionId}"]`).forEach(input => {
             const parentDiv = input.closest('.option');
@@ -770,7 +734,6 @@ class ExamApp {
             optionElement.classList.remove('transform-bump');
         }, 200);
     }
-
     updateAnswerStatus() {
         try {
             const total = this.questions.length;
@@ -789,7 +752,6 @@ class ExamApp {
         } catch (e) {
         }
     }
-
     updateProgress() {
         const progressFill = this._getElement('progress-fill', false);
         if (progressFill) {
@@ -799,7 +761,6 @@ class ExamApp {
         }
         this._announceToScreenReader(`第 ${this.currentQuestionIndex + 1} 題，共 ${this.questions.length} 題`);
     }
-
     _announceToScreenReader(message) {
         let announcer = this._getElement('sr-announcer', false);
         if (!announcer) {
@@ -813,7 +774,6 @@ class ExamApp {
         }
         announcer.textContent = message;
     }
-
     updateNavigation() {
         const prevBtn = document.getElementById('prev-btn');
         const nextBtn = document.getElementById('next-btn');
@@ -828,7 +788,6 @@ class ExamApp {
         }
         this.updateQuestionGridHighlight();
     }
-
     previousQuestion() {
         if (this.currentQuestionIndex > 0) {
             this.currentQuestionIndex--;
@@ -838,7 +797,6 @@ class ExamApp {
             this.updateQuestionGridHighlight();
         }
     }
-
     nextQuestion() {
         if (this.currentQuestionIndex < this.questions.length - 1) {
             this.currentQuestionIndex++;
@@ -848,7 +806,6 @@ class ExamApp {
             this.updateQuestionGridHighlight();
         }
     }
-
     renderQuestionGrid() {
         const grid = document.getElementById('question-grid');
         if (!grid) return;
@@ -871,7 +828,6 @@ class ExamApp {
         });
         this.updateQuestionGridHighlight();
     }
-
     updateQuestionGridHighlight() {
         const grid = document.getElementById('question-grid');
         if (!grid) return;
@@ -887,7 +843,6 @@ class ExamApp {
             btn.classList.add(answered ? 'question-grid__btn--answered' : 'question-grid__btn--unanswered');
         });
     }
-
     submitExam() {
         if (this._isSubmitting) return;
         this._isSubmitting = true;
@@ -905,7 +860,6 @@ class ExamApp {
         this.showPage('result');
         this.saveExamRecord();
     }
-
     calculateResults() {
         let correctCount = 0;
         const totalCount = this.questions.length;
@@ -968,7 +922,6 @@ class ExamApp {
             wrongAnswers
         };
     }
-
     exportResults(format = 'json') {
         if (!this.isExamCompleted) {
             alert('請先完成考試再匯出結果');
@@ -1050,7 +1003,6 @@ class ExamApp {
             this._downloadBlob(blob, `${fileBase}.csv`);
         }
     }
-
     _csvEscape(val) {
         const s = (val ?? '').toString();
         if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
@@ -1058,7 +1010,6 @@ class ExamApp {
         }
         return s;
     }
-
     _csvSanitize(val) {
         const s = (val ?? '').toString();
         if (/^\s*[=+\-@]/.test(s)) {
@@ -1066,7 +1017,6 @@ class ExamApp {
         }
         return s;
     }
-
     _downloadBlob(blob, filename) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -1079,16 +1029,13 @@ class ExamApp {
             URL.revokeObjectURL(url);
         }, 0);
     }
-
     _formatDateForFile(d) {
         const pad = (n) => n.toString().padStart(2, '0');
         return `${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}_${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
     }
-
     _slugify(s) {
         return (s || '').toString().trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-_.]+/g, '');
     }
-
     generateReview() {
         const reviewContainer = document.getElementById('review-container');
         while (reviewContainer.firstChild) reviewContainer.removeChild(reviewContainer.firstChild);
@@ -1193,7 +1140,6 @@ class ExamApp {
         reviewDiv.appendChild(body);
         return reviewDiv;
     }
-
     restartExam() {
         this.stopTimer();
         this.currentQuestionIndex = 0;
@@ -1211,7 +1157,6 @@ class ExamApp {
         document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
         this.showPage('home');
     }
-
     saveProgress() {
         if (!this.config.autoSave) return;
         const progressData = {
@@ -1228,7 +1173,6 @@ class ExamApp {
             logger.warn('保存進度失敗:', error);
         }
     }
-
     loadSavedProgress() {
         try {
             const savedData = this._lsGetWithTtl('examProgress');
@@ -1268,7 +1212,6 @@ class ExamApp {
             return false;
         }
     }
-
     clearSavedProgress() {
         try {
             localStorage.removeItem('examProgress');
@@ -1276,7 +1219,6 @@ class ExamApp {
             logger.warn('清除保存的進度失敗:', error);
         }
     }
-
     saveConfig() {
         try {
             this._lsSetWithTtl('examConfig', this.config, this.storageTtlMs);
@@ -1284,7 +1226,6 @@ class ExamApp {
             logger.warn('保存配置失敗:', error);
         }
     }
-
     loadConfig() {
         try {
             const savedConfig = this._lsGetWithTtl('examConfig');
@@ -1298,7 +1239,6 @@ class ExamApp {
                 if (seEl) seEl.checked = this.config.showExplanation;
                 const psEl = document.getElementById('passing-score');
                 if (psEl) psEl.value = this.config.passingScore;
-
                 const dsEl = document.getElementById('draw-question-select');
                 const dciEl = document.getElementById('draw-custom-input');
                 if (dsEl) {
@@ -1322,7 +1262,6 @@ class ExamApp {
             logger.warn('載入配置失敗:', error);
         }
     }
-
     selectOptionByNumber(optionIndex) {
         const question = this.questions[this.currentQuestionIndex];
         if (!question || optionIndex >= question.options.length) return;
@@ -1335,7 +1274,6 @@ class ExamApp {
             this.selectOption(question.id, optionValue, optionElement.closest('.option'));
         }
     }
-
     _debounce(fn, delay = 400) {
         let t;
         return (...args) => {
@@ -1343,7 +1281,6 @@ class ExamApp {
             t = setTimeout(() => fn.apply(this, args), delay);
         };
     }
-
     showSuccessMessage(message) {
         const existingMsg = document.querySelector('.success-message');
         if (existingMsg) {
@@ -1360,7 +1297,6 @@ class ExamApp {
             }
         }, 3000);
     }
-
     generateAnalysis(wrongAnswers, examDuration) {
         document.querySelectorAll('.analysis-section').forEach(el => el.remove());
         const analysisContainer = this.createAnalysisSection();
@@ -1406,7 +1342,6 @@ class ExamApp {
         timeAnalysis.appendChild(pTip);
         analysisContainer.appendChild(timeAnalysis);
     }
-
     createAnalysisSection() {
         const analysisDiv = document.createElement('div');
         analysisDiv.className = 'analysis-section';
@@ -1421,7 +1356,6 @@ class ExamApp {
         analysisDiv.appendChild(header);
         return analysisDiv;
     }
-
     saveExamRecord() {
         try {
             const records = this._lsGetWithTtl('examRecords') || [];
@@ -1445,7 +1379,6 @@ class ExamApp {
             logger.warn('保存考試記錄失敗:', error);
         }
     }
-
     showExamHistory() {
         try {
             document.querySelectorAll('.modal-overlay').forEach(modal => {
@@ -1484,7 +1417,6 @@ class ExamApp {
             console.warn('載入考試記錄失敗:', error);
         }
     }
-
     createHistoryModal() {
         const modal = document.createElement('div');
         modal.className = 'modal-overlay';
@@ -1538,7 +1470,6 @@ class ExamApp {
         document.addEventListener('keydown', escKeyHandler);
         return modal;
     }
-
     clearAllLocalData() {
         try {
             localStorage.removeItem('examProgress');
@@ -1549,7 +1480,6 @@ class ExamApp {
             console.warn('清除本機資料失敗:', e);
         }
     }
-
     _lsSetWithTtl(key, value, ttlMs) {
         try {
             const now = Date.now();
@@ -1577,7 +1507,6 @@ class ExamApp {
             }
         }
     }
-
     _lsGetWithTtl(key) {
         try {
             const raw = localStorage.getItem(key);
@@ -1595,7 +1524,6 @@ class ExamApp {
             return null;
         }
     }
-
     _getSelectedBankInfo() {
         try {
             const sel = document.getElementById('question-bank-select');
@@ -1606,7 +1534,6 @@ class ExamApp {
         } catch { }
         return { value: this.selectedQuestionBank, label: this.selectedQuestionBank };
     }
-
     escapeHtml(str) {
         return String(str)
             .replace(/&/g, '&amp;')
@@ -1615,7 +1542,6 @@ class ExamApp {
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
     }
-
     _getElement(id, warnIfMissing = true) {
         const element = document.getElementById(id);
         if (!element && warnIfMissing) {
@@ -1623,7 +1549,6 @@ class ExamApp {
         }
         return element;
     }
-
     _querySelector(selector, warnIfMissing = true) {
         const element = document.querySelector(selector);
         if (!element && warnIfMissing) {
