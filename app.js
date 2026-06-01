@@ -3,10 +3,23 @@ const IS_PRODUCTION = window.location.hostname !== 'localhost' &&
     !window.location.hostname.includes('192.168');
 const logger = {
     log: (...args) => !IS_PRODUCTION && console.log(...args),
-    warn: (...args) => !IS_PRODUCTION && console.warn(...args),
-    error: (...args) => !IS_PRODUCTION && console.error(...args),
+    warn: (...args) => console.warn(...args),
+    error: (...args) => console.error(...args),
     info: (...args) => !IS_PRODUCTION && console.info(...args)
 };
+const ALLOWED_BANKS = new Set([
+    'ERP規劃師_參考題型202509_V06.json',
+    'IPAS-AI-L11-A.json',
+    'IPAS-AI-L11-B.json',
+    'IPAS-AI-L12-A.json',
+    'IPAS-AI-L12-B.json',
+    'IPAS-AI-L12-C.json',
+    'IPAS-AI-L12-D.json',
+    'IPAS-AI-L11-130994.json',
+    'Project_Management.json',
+    'Basic_Financial_Planning.json',
+    'PFERP_Reference119_20240201.json'
+]);
 class ExamApp {
     constructor() {
         this.questions = [];
@@ -38,6 +51,9 @@ class ExamApp {
         try {
             let response;
             let questions = [];
+            if (!ALLOWED_BANKS.has(this.selectedQuestionBank)) {
+                throw new Error(`非法的題庫來源：${this.selectedQuestionBank}`);
+            }
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
             const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
             logger.log(`嘗試從 ${questionBankUrl} 載入題庫`);
@@ -208,6 +224,11 @@ class ExamApp {
             select.onchange = (e) => {
                 const previousQuestionBank = this.selectedQuestionBank;
                 const newQuestionBank = e.target.value;
+                if (!ALLOWED_BANKS.has(newQuestionBank)) {
+                    logger.error(`嘗試切換至非法題庫：${newQuestionBank}`);
+                    e.target.value = previousQuestionBank;
+                    return;
+                }
                 const hasProgress = !this.isExamCompleted && Object.keys(this.userAnswers).length > 0;
                 if (hasProgress) {
                     const confirmSwitch = confirm(
@@ -1022,10 +1043,8 @@ class ExamApp {
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
-        document.body.appendChild(a);
-        a.click();
+        a.dispatchEvent(new MouseEvent('click', { bubbles: false, cancelable: false }));
         setTimeout(() => {
-            document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 0);
     }
@@ -1173,10 +1192,36 @@ class ExamApp {
             logger.warn('保存進度失敗:', error);
         }
     }
+    _validateProgressSchema(data) {
+        if (!data || typeof data !== 'object' || Array.isArray(data)) return false;
+        if (typeof data.currentQuestionIndex !== 'number' ||
+            !Number.isInteger(data.currentQuestionIndex) ||
+            data.currentQuestionIndex < 0) return false;
+        if (typeof data.userAnswers !== 'object' ||
+            data.userAnswers === null ||
+            Array.isArray(data.userAnswers)) return false;
+        for (const val of Object.values(data.userAnswers)) {
+            if (typeof val !== 'string') return false;
+            if (val.length > 2000) return false;
+        }
+        if (data.questionBank !== undefined) {
+            if (typeof data.questionBank !== 'string') return false;
+            if (!ALLOWED_BANKS.has(data.questionBank)) return false;
+        }
+        if (data.questions !== undefined) {
+            if (!Array.isArray(data.questions) || data.questions.length > 5000) return false;
+        }
+        return true;
+    }
     loadSavedProgress() {
         try {
             const savedData = this._lsGetWithTtl('examProgress');
             if (savedData) {
+                if (!this._validateProgressSchema(savedData)) {
+                    logger.warn('examProgress 資料結構異常，已忽略並清除');
+                    this.clearSavedProgress();
+                    return false;
+                }
                 const progressData = savedData;
                 if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
                     logger.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
@@ -1356,9 +1401,25 @@ class ExamApp {
         analysisDiv.appendChild(header);
         return analysisDiv;
     }
+    _validateRecordsSchema(records) {
+        if (!Array.isArray(records)) return false;
+        if (records.length > 100) return false;
+        for (const r of records) {
+            if (!r || typeof r !== 'object' || Array.isArray(r)) return false;
+            if (typeof r.score !== 'number' || r.score < 0 || r.score > 100) return false;
+            if (typeof r.correctCount !== 'number' || !Number.isInteger(r.correctCount) || r.correctCount < 0) return false;
+            if (typeof r.totalCount !== 'number' || !Number.isInteger(r.totalCount) || r.totalCount < 0) return false;
+            if (typeof r.isPassed !== 'boolean') return false;
+            if (typeof r.date !== 'string') return false;
+        }
+        return true;
+    }
     saveExamRecord() {
         try {
-            const records = this._lsGetWithTtl('examRecords') || [];
+            const rawRecords = this._lsGetWithTtl('examRecords');
+            const records = (rawRecords !== null && this._validateRecordsSchema(rawRecords))
+                ? rawRecords
+                : [];
             const bankInfo = this._getSelectedBankInfo();
             const newRecord = {
                 date: new Date().toISOString(),
@@ -1386,7 +1447,10 @@ class ExamApp {
                     document.body.removeChild(modal);
                 }
             });
-            const records = this._lsGetWithTtl('examRecords') || [];
+            const rawRecords = this._lsGetWithTtl('examRecords');
+            const records = (rawRecords !== null && this._validateRecordsSchema(rawRecords))
+                ? rawRecords
+                : [];
             if (records.length === 0) {
                 alert('暫無考試記錄');
                 return;
