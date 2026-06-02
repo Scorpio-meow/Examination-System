@@ -197,17 +197,18 @@
 ├── app.js                  # 應用程式邏輯
 ├── style.css               # 樣式表
 ├── CHANGELOG.md            # 版本更新歷史
-├── Project_Management.json # 專案管理題庫
-├── Basic_Financial_Planning.json # 理財規劃題庫
-├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
-├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
-├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
-├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
-├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
-├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
+├── json/                   # 題庫目錄
+│   ├── Project_Management.json # 專案管理題庫
+│   ├── Basic_Financial_Planning.json # 理財規劃題庫
+│   ├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
+│   ├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
+│   ├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
+│   ├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
+│   ├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
+│   ├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
+│   ├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
+│   ├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
+│   └── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
 ├── LICENSE                 # MIT 授權條款
 ├── README.md               # 專案說明
 ├── docs/                   # 文件與截圖
@@ -314,7 +315,7 @@
 
 ### 切換題庫與新增選項
 - 介面中的下拉選單（`question-bank-select`）會列出可用題庫。
-- 若新增新的 JSON 題庫檔，請在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，檔名會由 `app.js` 直接載入（使用相對路徑 fetch）。
+- 若新增新的 JSON 題庫檔，請將檔案放入 `json/` 目錄下，並在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，其 `value` 設為 JSON 檔名（例如 `My_New_Bank.json`），檔名會由 `app.js` 自動自 `json/` 目錄下載入（使用相對路徑 fetch）。
 - 檔名建議使用易辨識規則（例如：`<Domain>_<Topic>.json` 或 `ipass-<Letter>.json`）。
 
 ## 使用指南
@@ -359,7 +360,7 @@
 A: 只需在手機瀏覽器中開啟 (https://scorpio-meow.github.io/Examination-System/) 。系統採用響應式設計，會自動適應您的手機螢幕大小。
 
 ### Q: 如何添加新的題庫？
-A: 參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到題庫映射）。
+A: 在 `json/` 目錄下參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到 `ALLOWED_BANKS` 題庫對應）。
 
 ### Q: 考試系統是否會記錄我的考試歷史？
 A: 是的，系統會使用瀏覽器的 LocalStorage 功能記錄您的考試歷史。但請注意，如果您清除瀏覽器數據或使用隱私瀏覽模式，歷史記錄將會丟失。
