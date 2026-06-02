@@ -7,6 +7,22 @@
 
 ---
 
+## [3.5.2] - 2026-06-03
+
+### 新增 (Added)
+- **ERP 規劃師題庫解析補完**：為 ERP 規劃師參考題型（`ERP Planner_Reference Question Types_202509_V06.json`）所有題目補上完整的繁體中文答案解析（explanation）
+
+### 改進 (Changed)
+- **題庫檔案結構統一**：將所有題庫 JSON 檔案統一搬移至 `json/` 目錄下，包含 IPAS-AI-L11-A/B、IPAS-AI-L12-A/B/C/D、Basic_Financial_Planning、Project_Management 等
+- **題庫載入路徑修正**：更新 `app.js` 中的題庫基本 URL 路徑，改為包含 `/json/` 子目錄，確保所有題庫均可正確載入
+- **ERP 題庫檔案名統一**：修正 ERP 相關題庫檔名，確保文件、程式碼與選單選項三者一致
+
+### 修正 (Fixed)
+- 修正部分題庫檔案因未放在 `json/` 目錄下導致載入失敗的問題
+- 修正 ERP 題庫檔案名稱不一致造成切換題庫失敗的問題
+
+---
+
 ## [3.5.1] - 2026-06-01
 
 ### 新增 (Added)
