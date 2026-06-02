@@ -8,7 +8,7 @@ const logger = {
     info: (...args) => !IS_PRODUCTION && console.info(...args)
 };
 const ALLOWED_BANKS = new Set([
-    'ERP規劃師_參考題型202509_V06.json',
+    'ERP Planner_Reference Question Types_202509_V06.json',
     'IPAS-AI-L11-A.json',
     'IPAS-AI-L11-B.json',
     'IPAS-AI-L12-A.json',
@@ -39,7 +39,7 @@ class ExamApp {
             drawQuestionCount: 0,
             customDrawCount: 20
         };
-        this.selectedQuestionBank = 'ERP規劃師_參考題型202509_V06.json';
+        this.selectedQuestionBank = 'ERP Planner_Reference Question Types_202509_V06.json';
         this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
         this.loadQuestions().then(() => {
             this.init();

@@ -16,7 +16,7 @@
     - L11 基礎與治理 (A卷、B卷)
     - L12 生成式 AI 應用與規劃 (A卷、B卷、C卷、D卷)
     - 114年科目一 L1101#130994 (IPAS-AI-L11-130994.json)
-  - **ERP 規劃師 參考題型** (ERP規劃師_參考題型202509_V06.json)：企業資源規劃的核心概念與參考題型
+  - **ERP 規劃師 參考題型** (ERP Planner_Reference Question Types_202509_V06.json)：企業資源規劃的核心概念與參考題型
   - **ERP 基礎檢定考試 參考題型** (PFERP_Reference119_20240201.json)：ERP 基礎檢定學科題型
 - **多樣題型**：
   - **單選題**：每題提供4個選項，選擇最適合的答案
@@ -199,7 +199,7 @@
 ├── CHANGELOG.md            # 版本更新歷史
 ├── Project_Management.json # 專案管理題庫
 ├── Basic_Financial_Planning.json # 理財規劃題庫
-├── ERP規劃師_參考題型202509_V06.json # ERP 規劃師參考題型
+├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
 ├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
 ├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
 ├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
@@ -278,7 +278,7 @@
 
 ### ERP 相關題庫
 包含企業資源規劃的基礎概念與進階實務：
-- **ERP 規劃師 參考題型** (`ERP規劃師_參考題型202509_V06.json`)
+- **ERP 規劃師 參考題型** (`ERP Planner_Reference Question Types_202509_V06.json`)
 - **ERP 基礎檢定考試 參考題型** (`PFERP_Reference119_20240201.json`)
 
 各題庫為獨立 JSON 檔，可直接於介面下拉選單中切換使用。
