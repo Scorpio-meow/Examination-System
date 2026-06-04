@@ -386,6 +386,19 @@ A: 在首頁「考試設定」面板按下「清除所有本機資料」即可�
 - 配置載入改用清理函式，修補狀態污染漏洞
 - Logger 分級調整，生產環境保留 warn/error 輸出
 
+## 聯絡方式
+
+如果您在使用過程中遇到任何問題，或對本系統有任何建議，歡迎透過以下管道與我們聯繫：
+
+| 管道 | 連結與狀態 |
+| :--- | :--- |
+| **電子郵件** | [![Email](https://img.shields.io/badge/Email-yao921024%40gmail.com-blue?style=flat-square)](mailto:yao921024@gmail.com) |
+| **Instagram** | [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=flat-square&logo=Instagram&logoColor=white)](https://www.instagram.com/scorpio_meow_1024) |
+| **Threads** | [![Threads](https://img.shields.io/badge/Threads-%23000000.svg?style=flat-square&logo=Threads&logoColor=white)](https://www.threads.com/@scorpio_meow_1024) |
+| **問題回報** | [![GitHub issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/issues) |
+| **協作開發** | [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/pulls) |
+| **專案首頁** | [![GitHub repo](https://img.shields.io/badge/GitHub-Repository-lightgrey?style=flat-square)](https://github.com/Scorpio-meow/Examination-System) |
+
 ---
 
 **考試系統** - 持續更新中 - 助您掌握專業知識，提升考試能力！
