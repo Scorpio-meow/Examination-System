@@ -54,7 +54,7 @@ class ExamApp {
             if (!ALLOWED_BANKS.has(this.selectedQuestionBank)) {
                 throw new Error(`非法的題庫來源：${this.selectedQuestionBank}`);
             }
-            const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/';
+            const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/json/';
             const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
             logger.log(`嘗試從 ${questionBankUrl} 載入題庫`);
             response = await fetch(questionBankUrl);
