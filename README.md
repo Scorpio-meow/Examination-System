@@ -2,8 +2,8 @@
 
 一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
 
-![更新日期](https://img.shields.io/badge/更新日期-2026年6月1日-blue)
-![版本](https://img.shields.io/badge/版本-3.5.1-brightgreen)
+![更新日期](https://img.shields.io/badge/更新日期-2026年6月3日-blue)
+![版本](https://img.shields.io/badge/版本-3.5.2-brightgreen)
 ![授權](https://img.shields.io/badge/授權-MIT-orange)
 
 ## 功能特色
@@ -36,7 +36,7 @@
 - **順序保持**：即使啟用隨機打亂功能，恢復進度後題目順序保持一致
 - **智慧恢復**：提供清晰的提示訊息，讓您選擇是否繼續之前的考試
 - **答案解釋顯示**：幫助理解錯誤原因
-- **題庫切換**：可隨時在專案管理、理財規劃與 IPAS 題庫（L11 A/B、L12 A–D）之間切換
+- **題庫切換**：可隨時在專案管理、理財規劃、IPAS 題庫（L11 A/B、L12 A–D、114年 L11 #130994）與 ERP 題庫（規劃師參考題型、基礎檢定）之間切換
 - **深色/淺色主題**：自動適應系統偏好設定
 
 ### 🎨 使用者體驗
@@ -141,8 +141,6 @@
 - **適用場景**：僅適合個人練習/學習，不適用於需要防弊的正式考試
 - **無後端驗證**：所有邏輯在瀏覽器端執行，無伺服器端防護
 
-> 📋 完整安全審計報告請參閱：[security-fixes.md](./security-fixes.md)
-
 ### ♿ 無障礙支援
 - **ARIA 標籤**：選項按鈕包含 `aria-checked`、`aria-label` 等屬性
 - **螢幕閱讀器通知**：題目切換時自動通知輔助技術
@@ -186,9 +184,10 @@
      # 然後在瀏覽器中前往: http://localhost:8000
      ```
 3. 在首頁的「選擇題庫」下拉選單選擇：
-  - 專案管理 / 理財規劃
-  - IPAS L11：IPAS-AI-L11-A / IPAS-AI-L11-B
+  - ERP 規劃師參考題型（預設）/ ERP 基礎檢定考試參考題型
+  - IPAS L11：IPAS-AI-L11-A / IPAS-AI-L11-B / 114年 L11 #130994
   - IPAS L12：IPAS-AI-L12-A / B / C / D
+  - 專案管理 / 理財規劃
   之後按「開始考試」。
 
 ### 檔案結構
@@ -197,22 +196,22 @@
 ├── app.js                  # 應用程式邏輯
 ├── style.css               # 樣式表
 ├── CHANGELOG.md            # 版本更新歷史
-├── Project_Management.json # 專案管理題庫
-├── Basic_Financial_Planning.json # 理財規劃題庫
-├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
-├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
-├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
-├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
-├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
-├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
-├── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
+├── json/                   # 題庫目錄
+│   ├── Project_Management.json # 專案管理題庫
+│   ├── Basic_Financial_Planning.json # 理財規劃題庫
+│   ├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
+│   ├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
+│   ├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
+│   ├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
+│   ├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
+│   ├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
+│   ├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
+│   ├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
+│   └── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
 ├── LICENSE                 # MIT 授權條款
 ├── README.md               # 專案說明
-├── docs/                   # 文件與截圖
-│   └── screenshots/        # 功能截圖
-└── Tech Support            # 技術支援資訊
+└── docs/                   # 文件與截圖
+    └── screenshots/        # 功能截圖
 ```
 
 ## 技術架構
@@ -314,7 +313,7 @@
 
 ### 切換題庫與新增選項
 - 介面中的下拉選單（`question-bank-select`）會列出可用題庫。
-- 若新增新的 JSON 題庫檔，請在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，檔名會由 `app.js` 直接載入（使用相對路徑 fetch）。
+- 若新增新的 JSON 題庫檔，請將檔案放入 `json/` 目錄下，並在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，其 `value` 設為 JSON 檔名（例如 `My_New_Bank.json`），檔名會由 `app.js` 自動自 `json/` 目錄下載入（使用相對路徑 fetch）。
 - 檔名建議使用易辨識規則（例如：`<Domain>_<Topic>.json` 或 `ipass-<Letter>.json`）。
 
 ## 使用指南
@@ -334,10 +333,10 @@
 ### 自訂設定
 
 在考試開始前，您可以調整以下設定：
-- **選擇題庫**：選擇「專案管理」或「理財規劃」題庫
+- **選擇題庫**：從下拉選單選擇任一可用題庫（ERP、IPAS、專案管理、理財規劃等）
 - **隨機打亂題目順序**：是否隨機排列考題（預設關閉）
 - **隨機打亂選項順序**：是否隨機排列選項（預設關閉）
-- **自動保存進度**：是否自動保存答題進度（預設開啟）
+- **自動保存進度**：系統自動保存答題進度（固定開啟）
 - **顯示答案解釋**：結果頁面是否顯示詳細解釋（預設開啟）
 - **及格分數設定**：自訂及格標準（預設60分）
   - 可於首頁「考試設定」面板直接輸入 0–100，會自動保存到本機
@@ -359,7 +358,7 @@
 A: 只需在手機瀏覽器中開啟 (https://scorpio-meow.github.io/Examination-System/) 。系統採用響應式設計，會自動適應您的手機螢幕大小。
 
 ### Q: 如何添加新的題庫？
-A: 參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到題庫映射）。
+A: 在 `json/` 目錄下參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到 `ALLOWED_BANKS` 題庫對應）。
 
 ### Q: 考試系統是否會記錄我的考試歷史？
 A: 是的，系統會使用瀏覽器的 LocalStorage 功能記錄您的考試歷史。但請注意，如果您清除瀏覽器數據或使用隱私瀏覽模式，歷史記錄將會丟失。
@@ -377,14 +376,13 @@ A: 在首頁「考試設定」面板按下「清除所有本機資料」即可�
 
 完整的版本更新記錄請參閱 [CHANGELOG.md](CHANGELOG.md)。
 
-**目前版本**: v3.5.1 (2026-06-01)
+**目前版本**: v3.5.2 (2026-06-03)
 
 **主要更新**:
-- 新增題庫白名單驗證機制，阻擋非法題庫路徑注入
-- 新增 LocalStorage 資料結構驗證（進度、紀錄、設定），異常資料自動清除
-- CSP 政策再收緊，移除 img-src/font-src 中的 data: URI
-- 配置載入改用清理函式，修補狀態污染漏洞
-- Logger 分級調整，生產環境保留 warn/error 輸出
+- ERP 規劃師參考題型補完所有題目的繁體中文答案解析
+- 所有題庫 JSON 檔案統一搬移至 `json/` 目錄，結構更清晰
+- 修正題庫載入路徑，確保所有題庫均可正確載入
+- 修正 ERP 題庫檔案名稱不一致問題
 
 ## 聯絡方式
 
