@@ -9,6 +9,8 @@ const logger = {
 };
 const ALLOWED_BANKS = new Set([
     'ERP Planner_Reference Question Types_202509_V06.json',
+    '118002A15.json',
+    '118003A14.json',
     'IPAS-AI-L11-A.json',
     'IPAS-AI-L11-B.json',
     'IPAS-AI-L12-A.json',
