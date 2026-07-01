@@ -41,10 +41,38 @@ class ExamApp {
             drawQuestionCount: 0,
             customDrawCount: 20
         };
-        this.selectedQuestionBank = 'ERP Planner_Reference Question Types_202509_V06.json';
+        const urlParams = new URLSearchParams(window.location.search);
+        const bankParam = urlParams.get('bank');
+        if (bankParam && ALLOWED_BANKS.has(bankParam)) {
+            this.selectedQuestionBank = bankParam;
+        } else {
+            this.selectedQuestionBank = 'ERP Planner_Reference Question Types_202509_V06.json';
+        }
         this.storageTtlMs = 7 * 24 * 60 * 60 * 1000;
         this.loadQuestions().then(() => {
             this.init();
+        });
+        window.addEventListener('popstate', () => {
+            const currentParams = new URLSearchParams(window.location.search);
+            const bank = currentParams.get('bank');
+            const targetBank = (bank && ALLOWED_BANKS.has(bank)) ? bank : 'ERP Planner_Reference Question Types_202509_V06.json';
+
+            if (targetBank !== this.selectedQuestionBank) {
+                this.selectedQuestionBank = targetBank;
+                const select = document.getElementById('question-bank-select');
+                if (select) select.value = targetBank;
+
+                this.clearSavedProgress();
+                this.loadQuestions(true).then(() => {
+                    this.currentQuestionIndex = 0;
+                    this.userAnswers = {};
+                    this.isExamCompleted = false;
+                    this.examStartTime = null;
+                    this.examEndTime = null;
+                    this.showPage('home');
+                    this.updateExamInfo();
+                });
+            }
         });
     }
     async loadQuestions(forceReload = false) {
@@ -203,6 +231,7 @@ class ExamApp {
         this.setupQuestionBankSelect();
         this.showPage('home');
         this.updateExamInfo();
+        this.updateDynamicMeta();
         logger.log('考試系統初始化完成');
         logger.log('當前題庫:', this.selectedQuestionBank);
         logger.log('題目數量:', this.questions.length);
@@ -242,6 +271,9 @@ class ExamApp {
                     }
                 }
                 this.selectedQuestionBank = newQuestionBank;
+                const url = new URL(window.location.href);
+                url.searchParams.set('bank', newQuestionBank);
+                window.history.pushState({}, '', url);
                 logger.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
                 this.clearSavedProgress();
                 this.loadQuestions(true).then(() => {
@@ -252,6 +284,7 @@ class ExamApp {
                     this.examEndTime = null;
                     this.showPage('home');
                     this.updateExamInfo();
+                    this.updateDynamicMeta();
                 });
             };
         } else {
@@ -311,7 +344,6 @@ class ExamApp {
         options.appendChild(shuffleOWrap);
         options.appendChild(showExpWrap);
         options.appendChild(passingWrap);
-        // 抽題數量設定
         const drawGroup = document.createElement('div');
         drawGroup.className = 'config-option-group';
         drawGroup.style.display = 'flex';
@@ -447,6 +479,59 @@ class ExamApp {
             }
         }
     }
+    updateDynamicMeta() {
+        const select = document.getElementById('question-bank-select');
+        let currentBankName = '線上考試系統';
+        if (select) {
+            const option = Array.from(select.options).find(opt => opt.value === this.selectedQuestionBank);
+            if (option) {
+                currentBankName = option.textContent.trim().replace(/\s+/g, ' ');
+            }
+        }
+        const titleText = `${currentBankName} - 線上模擬考試與題庫練習`;
+        const descText = `提供 ${currentBankName} 題庫模擬練習。本系統支援隨機出題、即時批改、答題回顧與歷史紀錄功能，助您高效備考！`;
+        const baseUrl = 'https://scorpio-meow.github.io/Examination-System/';
+        const canonicalUrl = `${baseUrl}?bank=${encodeURIComponent(this.selectedQuestionBank)}`;
+        document.title = titleText;
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc) {
+            metaDesc.setAttribute('content', descText);
+        }
+        const canonicalLink = document.querySelector('link[rel="canonical"]');
+        if (canonicalLink) {
+            canonicalLink.setAttribute('href', canonicalUrl);
+        }
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        if (ogTitle) ogTitle.setAttribute('content', titleText);
+        const ogDesc = document.querySelector('meta[property="og:description"]');
+        if (ogDesc) ogDesc.setAttribute('content', descText);
+        const ogUrl = document.querySelector('meta[property="og:url"]');
+        if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+        const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+        if (twitterTitle) twitterTitle.setAttribute('content', titleText);
+        const twitterDesc = document.querySelector('meta[name="twitter:description"]');
+        if (twitterDesc) twitterDesc.setAttribute('content', descText);
+        try {
+            let dynamicJsonLd = document.getElementById('dynamic-jsonld');
+            if (!dynamicJsonLd) {
+                dynamicJsonLd = document.createElement('script');
+                dynamicJsonLd.id = 'dynamic-jsonld';
+                dynamicJsonLd.type = 'application/ld+json';
+                document.head.appendChild(dynamicJsonLd);
+            }
+            dynamicJsonLd.textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Quiz",
+                "name": currentBankName,
+                "description": descText,
+                "learningResourceType": "Exam",
+                "educationalUse": "practice exam",
+                "url": canonicalUrl
+            });
+        } catch (e) {
+            logger.error('無法更新結構化資料:', e);
+        }
+    }
     bindEvents() {
         document.getElementById('start-exam-btn').addEventListener('click', () => {
             this.startExam();
@@ -527,6 +612,20 @@ class ExamApp {
                 }
             }, 30000);
         }
+        document.querySelectorAll('.exam-link-item').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const url = new URL(link.href);
+                const bank = url.searchParams.get('bank');
+                if (bank && ALLOWED_BANKS.has(bank)) {
+                    const select = document.getElementById('question-bank-select');
+                    if (select) {
+                        select.value = bank;
+                        select.dispatchEvent(new Event('change'));
+                    }
+                }
+            });
+        });
         window.addEventListener('beforeunload', (e) => {
             if (!this.isExamCompleted && Object.keys(this.userAnswers).length > 0) {
                 e.preventDefault();
@@ -541,24 +640,27 @@ class ExamApp {
         });
         document.getElementById(`${pageId}-page`).classList.add('active');
         if (pageId === 'home') {
-            document.title = '線上考試系統 - 模擬考試、題庫練習與學習評估工具';
+            this.updateDynamicMeta();
         } else if (pageId === 'exam') {
-            document.title = '進行考試 | 線上考試系統';
+            const select = document.getElementById('question-bank-select');
+            const bankName = select ? select.options[select.selectedIndex].text.trim().replace(/\s+/g, ' ') : '指定題庫';
+            document.title = `正在進行：${bankName} - 線上模擬考試`;
         } else if (pageId === 'result') {
-            document.title = '考試結果 | 線上考試系統';
+            const select = document.getElementById('question-bank-select');
+            const bankName = select ? select.options[select.selectedIndex].text.trim().replace(/\s+/g, ' ') : '指定題庫';
+            document.title = `考試結果：${bankName} - 線上模擬考試`;
         }
         const descMeta = document.querySelector('meta[name="description"]');
         if (descMeta) {
             if (pageId === 'home') {
-                descMeta.content = '提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。';
             } else if (pageId === 'exam') {
                 const select = document.getElementById('question-bank-select');
-                const bankName = select ? select.options[select.selectedIndex].text : '指定題庫';
+                const bankName = select ? select.options[select.selectedIndex].text.trim().replace(/\s+/g, ' ') : '指定題庫';
                 const totalQ = this.questions ? this.questions.length : 0;
                 descMeta.content = `${bankName} 模擬考試 — 包含 ${totalQ} 題，支援鍵盤快捷鍵與隨機出題，立即免費練習。`;
             } else if (pageId === 'result') {
                 const select = document.getElementById('question-bank-select');
-                const bankName = select ? select.options[select.selectedIndex].text : '指定題庫';
+                const bankName = select ? select.options[select.selectedIndex].text.trim().replace(/\s+/g, ' ') : '指定題庫';
                 if (this.lastExamResult) {
                     const { score, correctCount, totalCount, isPassed } = this.lastExamResult;
                     descMeta.content = `模擬考試完成！題庫：${bankName}。得分：${score}分（${isPassed ? '已通過' : '未通過'}），答對 ${correctCount}/${totalCount} 題。立即檢視詳細答題回顧與正確答案。`;
