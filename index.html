@@ -20,27 +20,17 @@
     <meta name="twitter:description" content="提供多種專業考試模擬題庫練習。支援隨機出題、即時批改、答題回顧與歷史紀錄功能，助您高效備考！">
     <meta name="twitter:image" content="https://scorpio-meow.github.io/Examination-System/favicon.png">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+        content="default-src 'self'; script-src 'self' 'sha256-QRAJamlj4mJvBj1wFAbIMgWbEk7FGBsYUD8Tf3qowe4='; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <meta name="msapplication-TileImage" content="favicon.png">
+    <script
+        type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"線上考試系統","alternateName":"Examination System","url":"https://scorpio-meow.github.io/Examination-System/","image":"https://scorpio-meow.github.io/Examination-System/favicon.png","description":"提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。","applicationCategory":"EducationalApplication","operatingSystem":"All","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"}}</script>
 </head>
 
 <body>
-    <main class="container" itemscope itemtype="https://schema.org/WebApplication">
-        <meta itemprop="name" content="線上考試系統">
-        <meta itemprop="alternateName" content="Examination System">
-        <meta itemprop="url" content="https://scorpio-meow.github.io/Examination-System/">
-        <meta itemprop="image" content="https://scorpio-meow.github.io/Examination-System/favicon.png">
-        <meta itemprop="description"
-            content="提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。">
-        <meta itemprop="applicationCategory" content="EducationalApplication">
-        <meta itemprop="operatingSystem" content="All">
-        <div itemprop="offers" itemscope itemtype="https://schema.org/Offer" class="hidden">
-            <meta itemprop="price" content="0">
-            <meta itemprop="priceCurrency" content="TWD">
-        </div>
+    <main class="container">
         <div id="home-page" class="page active">
             <div class="hero-section">
                 <h1>考試系統</h1>
@@ -61,7 +51,8 @@
                         <div class="form-group">
                             <label for="question-bank-select"><strong>選擇題庫：</strong></label>
                             <select id="question-bank-select" class="form-control">
-                                <option value="ERP Planner_Reference Question Types_202509_V06.json">ERP規劃師_參考題型202509_V06</option>
+                                <option value="ERP Planner_Reference Question Types_202509_V06.json">
+                                    ERP規劃師_參考題型202509_V06</option>
                                 <option value="118002A15.json">技術士技能檢定電腦軟體應用乙級學科測試參考資料</option>
                                 <option value="118003A14.json">技術士技能檢定電腦軟體應用丙級學科測試參考資料</option>
                                 <option value="IPAS-AI-L11-A.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)</option>

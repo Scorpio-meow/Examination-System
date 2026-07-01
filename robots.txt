@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://scorpio-meow.github.io/Examination-System/sitemap.xml
