@@ -540,6 +540,13 @@ class ExamApp {
             page.classList.remove('active');
         });
         document.getElementById(`${pageId}-page`).classList.add('active');
+        if (pageId === 'home') {
+            document.title = '線上考試系統 - 模擬考試、題庫練習與學習評估工具';
+        } else if (pageId === 'exam') {
+            document.title = '進行考試 | 線上考試系統';
+        } else if (pageId === 'result') {
+            document.title = '考試結果 | 線上考試系統';
+        }
     }
     startExam() {
         this.questions = [...this.originalQuestions];
