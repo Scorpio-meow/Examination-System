@@ -547,6 +547,26 @@ class ExamApp {
         } else if (pageId === 'result') {
             document.title = '考試結果 | 線上考試系統';
         }
+        const descMeta = document.querySelector('meta[name="description"]');
+        if (descMeta) {
+            if (pageId === 'home') {
+                descMeta.content = '提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。';
+            } else if (pageId === 'exam') {
+                const select = document.getElementById('question-bank-select');
+                const bankName = select ? select.options[select.selectedIndex].text : '指定題庫';
+                const totalQ = this.questions ? this.questions.length : 0;
+                descMeta.content = `${bankName} 模擬考試 — 包含 ${totalQ} 題，支援鍵盤快捷鍵與隨機出題，立即免費練習。`;
+            } else if (pageId === 'result') {
+                const select = document.getElementById('question-bank-select');
+                const bankName = select ? select.options[select.selectedIndex].text : '指定題庫';
+                if (this.lastExamResult) {
+                    const { score, correctCount, totalCount, isPassed } = this.lastExamResult;
+                    descMeta.content = `模擬考試完成！題庫：${bankName}。得分：${score}分（${isPassed ? '已通過' : '未通過'}），答對 ${correctCount}/${totalCount} 題。立即檢視詳細答題回顧與正確答案。`;
+                } else {
+                    descMeta.content = `模擬考試完成，立即檢視詳細得分、答題回顧與正確答案。`;
+                }
+            }
+        }
     }
     startExam() {
         this.questions = [...this.originalQuestions];
