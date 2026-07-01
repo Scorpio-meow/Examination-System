@@ -1478,3 +1478,42 @@ select.form-control {
   list-style-type: disc;
   color: var(--color-text-secondary);
 }
+
+.exam-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-12);
+  margin-top: var(--space-16);
+}
+
+.exam-link-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-12) var(--space-16);
+  background-color: var(--color-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-base);
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  transition: all var(--duration-normal) var(--ease-standard);
+  text-decoration: none;
+}
+
+.exam-link-item:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.exam-link-item:active {
+  transform: translateY(0);
+}
+
+.exam-list-title {
+  margin-top: 0;
+  margin-bottom: var(--space-12);
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+}
