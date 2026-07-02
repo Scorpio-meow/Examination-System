@@ -1,77 +1,126 @@
-# 考試系統 📚
+# 考試系統 (Examination System)
 
-一個基於 Web 的知識測驗系統，提供多種題庫（專案管理、理財規劃，以及 IPAS模擬題），包含單選題與簡答題，涵蓋核心知識與實務應用。適合大學生、專業人士或任何希望評估其專業知識的使用者。
+> 基於純前端技術打造的知識測驗平台，支援多種專業題庫、隨機抽題、進度自動保存與結果匯出。
 
-![更新日期](https://img.shields.io/badge/更新日期-2026年6月3日-blue)
-![版本](https://img.shields.io/badge/版本-3.5.2-brightgreen)
-![授權](https://img.shields.io/badge/授權-MIT-orange)
+[![版本](https://img.shields.io/badge/版本-3.5.2-brightgreen?style=flat-square)](CHANGELOG.md)
+[![授權](https://img.shields.io/badge/授權-MIT-orange?style=flat-square)](LICENSE)
+[![更新日期](https://img.shields.io/badge/更新日期-2026--06--03-blue?style=flat-square)](CHANGELOG.md)
+[![GitHub Pages](https://img.shields.io/badge/線上試用-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
+[![Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/pulls)
+
+---
+
+## 目錄
+
+- [快速開始](#快速開始)
+- [線上試用](#線上試用)
+- [功能特色](#功能特色)
+- [題庫內容](#題庫內容)
+- [檔案結構](#檔案結構)
+- [技術架構](#技術架構)
+- [開發指南](#開發指南)
+- [使用說明](#使用說明)
+- [安全與隱私](#安全與隱私)
+- [疑難排解](#疑難排解)
+- [常見問題](#常見問題)
+- [版本記錄](#版本記錄)
+- [貢獻指南](#貢獻指南)
+- [聯絡方式](#聯絡方式)
+
+---
+
+## 快速開始
+
+**線上使用（最快）**：直接前往 [https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/)，無需任何安裝。
+
+**本機執行**：
+
+1. 下載或 Clone 本專案：
+   ```bash
+   git clone https://github.com/Scorpio-meow/Examination-System.git
+   cd Examination-System
+   ```
+
+2. 啟動本機伺服器（必要，避免瀏覽器對 `file://` 的安全限制）：
+
+   - **macOS / Linux**
+     ```bash
+     python3 -m http.server 8000
+     ```
+   - **Windows（PowerShell）**
+     ```powershell
+     py -3 -m http.server 8000
+     ```
+
+3. 在瀏覽器中開啟 [http://localhost:8000](http://localhost:8000)
+
+4. 從「選擇題庫」下拉選單選擇題庫，按「開始考試」即可。
+
+> **注意**：直接用檔案總管雙擊 `index.html` 開啟，會因瀏覽器安全限制導致題庫 JSON 載入失敗，請務必使用本機伺服器。
+
+---
+
+## 線上試用
+
+本專案已部署於 GitHub Pages，無需安裝，開箱即用：
+
+**[https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/)**
+
+---
 
 ## 功能特色
 
-### 🎯 考試功能
-- **多種專業題庫**：
-  - **專案管理** (Project_Management.json)：涵蓋專案管理12項原則、8大績效領域等核心知識
-  - **理財規劃** (Basic_Financial_Planning.json)：涵蓋基本理財知識與規劃策略
-  - **IPAS AI 應用規劃師模擬題與考題**：
-    - L11 基礎與治理 (A卷、B卷)
-    - L12 生成式 AI 應用與規劃 (A卷、B卷、C卷、D卷)
-    - 114年科目一 L1101#130994 (IPAS-AI-L11-130994.json)
-  - **ERP 規劃師 參考題型** (ERP Planner_Reference Question Types_202509_V06.json)：企業資源規劃的核心概念與參考題型
-  - **ERP 基礎檢定考試 參考題型** (PFERP_Reference119_20240201.json)：ERP 基礎檢定學科題型
-- **多樣題型**：
-  - **單選題**：每題提供4個選項，選擇最適合的答案
-  - **簡答題**：需要提供簡短文字回答
-- **詳細解釋**：每題附有詳細解釋，幫助理解概念
-- **無時間限制**：讓您充分思考每個問題
-- **及格分數可自訂（預設60分）**：標準化評分機制，支援在設定面板調整
-- **答題記錄**：記錄您的答題選擇，方便查看結果
-- **題號導覽與快速跳題**：右側顯示題號按鈕陣列，可點擊任意題號直接跳轉
+### 考試功能
 
-### ⚙️ 個人化設置
-- **隨機抽題設定**：支援於設定面板選擇隨機抽取全部題目、10題、20題、30題、50題、100題或「自訂數量」進行測驗，系統會自題庫中隨機抽取指定題數
-- **題目隨機打亂**：每次考試順序不同，增加挑戰性
-- **選項隨機排列**：避免記憶位置影響學習效果（自動重新標註 A–D，並同步更新正確答案以確保判分正確）
-- **自動保存進度**：意外關閉瀏覽器也不怕遺失進度
-- **題庫隔離**：不同題庫的進度互不干擾，切換題庫時自動忽略不相關的進度
-- **順序保持**：即使啟用隨機打亂功能，恢復進度後題目順序保持一致
-- **智慧恢復**：提供清晰的提示訊息，讓您選擇是否繼續之前的考試
-- **答案解釋顯示**：幫助理解錯誤原因
-- **題庫切換**：可隨時在專案管理、理財規劃、IPAS 題庫（L11 A/B、L12 A–D、114年 L11 #130994）與 ERP 題庫（規劃師參考題型、基礎檢定）之間切換
-- **深色/淺色主題**：自動適應系統偏好設定
+| 功能 | 說明 |
+|------|------|
+| 多種專業題庫 | 涵蓋專案管理、理財規劃、IPAS AI、ERP 等多個領域 |
+| 多樣題型 | 單選題（4 選項）與簡答題（SAQ） |
+| 隨機抽題 | 支援抽取全部、10、20、30、50、100 題或自訂數量 |
+| 題目與選項亂序 | 每次考試順序不同，避免記憶位置 |
+| 詳細解釋 | 每題附解析，幫助深度理解 |
+| 無時間限制 | 自由掌控答題節奏 |
+| 自訂及格分數 | 預設 60 分，可於設定面板調整（0–100） |
+| 題號快速跳轉 | 右側側邊欄顯示所有題號，已答/未答即時標示 |
 
-### 🎨 使用者體驗
-- **響應式設計**：支援桌機、平板、手機等各種裝置
-- **深色/淺色主題**：自動適應系統偏好設定
-- **鍵盤快捷鍵**：提升操作效率（含 Enter 快速送出/換題）
-- **無障礙設計**：考慮各種使用者需求
-- **直覺式介面**：清晰易用的使用者界面
-- **即時反饋**：選擇選項時提供視覺反饋
-- **右側側邊欄導覽**：題號按鈕陣列 + 已答/未答統計，狀態即時同步
+### 進度與設定
 
-### 📊 結果分析
-- **詳細成績報告**：顯示總分、正確率和考試結果
-- **錯題分析**：針對答錯題目提供解釋
-- **歷史記錄**：查看之前的考試記錄（含題庫名稱）
-- **結果匯出**：一鍵匯出 JSON 或 CSV（CSV 以 UTF‑8 with BOM，避免 Excel 亂碼，並加入公式注入防護）
+| 功能 | 說明 |
+|------|------|
+| 自動保存進度 | 意外關閉後仍可繼續作答 |
+| 題庫隔離 | 不同題庫進度互不干擾 |
+| 智慧恢復提示 | 重開頁面時提供選擇：繼續 or 重新開始 |
+| 本機資料 TTL | 進度、設定、歷史預設保存 7 天後自動清除 |
+| 深色/淺色主題 | 自動偵測系統偏好，亦可手動切換 |
+| 答案解釋顯示 | 結果頁可選擇是否展開詳細解析 |
 
-#### 結果匯出欄位與格式
+### 結果分析與匯出
 
-支援 CSV 與 JSON 兩種格式；兩者皆以「每題一列/一筆」輸出，欄位鍵名一致（中文）。
+- 詳細成績報告（總分、正確率、是否及格）
+- 錯題列表，附解析說明
+- 歷史記錄（含題庫名稱）
+- 一鍵匯出 **JSON** 或 **CSV**（UTF-8 with BOM，Excel 友好，含公式注入防護）
 
-- CSV 欄位順序：
-  1. 編號
-  2. ID
-  3. 類型
-  4. 題目
-  5. 選項
-  6. 作答
-  7. 解答
-  8. 是否正確
-  9. 解釋
-  10. 題庫標籤
-  11. 匯出時間
+#### 匯出欄位
 
-- JSON 格式：輸出為陣列（Array），每一筆為一題，鍵名同上。例如：
+CSV 與 JSON 均以「每題一筆」輸出，欄位如下：
+
+| # | 欄位名稱 | 說明 |
+|---|----------|------|
+| 1 | 編號 | 題目序號 |
+| 2 | ID | 題庫原始 ID |
+| 3 | 類型 | `單選題` / `簡答題` |
+| 4 | 題目 | 題目內容 |
+| 5 | 選項 | 各選項文字（換行分隔） |
+| 6 | 作答 | 使用者作答 |
+| 7 | 解答 | 正確答案 |
+| 8 | 是否正確 | `是` / `否` |
+| 9 | 解釋 | 答題解析 |
+| 10 | 題庫標籤 | 題庫名稱 |
+| 11 | 匯出時間 | ISO 8601 格式 |
+
+**JSON 輸出範例：**
 
 ```json
 [
@@ -91,305 +140,330 @@
 ]
 ```
 
-注意事項：
-- CSV 內已加入 UTF‑8 BOM，並對以 =、+、-、@ 開頭的儲存格自動加前置單引號，避免被 Excel/Google 試算表誤判為公式。
-- 「題目選項」在 CSV 中為單一儲存格內多行（可於 Excel 以 Alt+Enter 顯示換行）。
-- 類型輸出固定為「單選題」或「簡答題」。
+### 使用者體驗
 
-### 🔒 安全與隱私
-- **XSS 防護**：移除 innerHTML/字串模板插入，全面改用 DOM API 與 textContent
-- **內容安全政策（CSP）**：
-  - default-src/script-src/style-src 僅允許 'self'，已移除 style-src 'unsafe-inline'
-  - img-src/font-src 僅允許 'self'，已移除 data: URI，進一步降低資料外洩風險
-- **題庫白名單驗證**：載入與切換題庫時透過 `ALLOWED_BANKS` 白名單嚴格驗證來源，阻擋路徑注入攻擊
-- **LocalStorage 資料驗證**：進度恢復、歷史紀錄讀取及設定載入皆透過專用驗證函式檢查型別、範圍與結構，異常資料自動清除
-- **配置清理（Sanitization）**：載入設定時逐欄位驗證型別與範圍，取代不安全的物件展開合併
-- **本機資料 TTL**：LocalStorage 內容（進度/設定/歷史）預設保存 7 天，逾期自動清除
-- **一鍵清除本機資料**：設定面板提供「清除所有本機資料」按鈕
-- **CSV 公式注入防護**：匯出時自動為以 =、+、-、@ 開頭的儲存格值加前置單引號，避免被 Excel/Sheets 當成公式執行
-- **LocalStorage 容量管理**：自動偵測容量不足並清理舊資料
-- **JSON Schema 驗證**：載入題庫時驗證資料格式完整性
-- **防禦性程式設計**：DOM 操作前檢查元素存在，避免 null 參考錯誤
-- **條件化日誌**：生產環境隱藏 log/info 除錯訊息，但保留 warn/error 以利問題追蹤
+- **響應式設計**：桌機、平板、手機全支援
+- **鍵盤快捷鍵**：提升操作效率（詳見[使用說明](#使用說明)）
+- **無障礙支援**：ARIA 標籤、螢幕閱讀器通知、完整鍵盤導航、WCAG AA 對比度
+- **即時視覺反饋**：選擇選項時即時高亮
 
-### 🛡️ 安全實踐摘要
-本專案已通過全面資安審計，實施以下安全措施：
-
-#### ✅ 已實施的安全控制
-1. **前端安全**
-   - 完全移除 `innerHTML` 使用，100% 使用 `textContent` 防止 XSS
-   - 嚴格 CSP 政策（無 unsafe-inline/unsafe-eval/data: URI）
-   - 條件化 logger（生產環境隱藏 log/info，保留 warn/error）
-
-2. **資料保護**
-   - LocalStorage TTL 機制（7 天自動過期）
-   - CSV 匯出公式注入防護
-   - JSON Schema 驗證防止格式錯誤
-
-3. **輸入驗證**
-   - 題庫白名單（`ALLOWED_BANKS`）防止路徑注入
-   - LocalStorage 進度/紀錄/設定讀取前結構驗證
-   - 配置載入使用清理函式取代不安全的物件合併
-
-4. **部署安全**
-   - GitHub Pages HTTPS 強制啟用
-   - .gitignore 防止敏感檔案外洩
-   - 零外部依賴（無供應鏈風險）
-
-#### ⚠️ 架構限制說明
-- **答案可見性**：本系統為純前端學習工具，所有題庫 JSON 檔案公開可見
-- **適用場景**：僅適合個人練習/學習，不適用於需要防弊的正式考試
-- **無後端驗證**：所有邏輯在瀏覽器端執行，無伺服器端防護
-
-### ♿ 無障礙支援
-- **ARIA 標籤**：選項按鈕包含 `aria-checked`、`aria-label` 等屬性
-- **螢幕閱讀器通知**：題目切換時自動通知輔助技術
-- **鍵盤導航**：完整支援鍵盤操作，無需滑鼠
-- **語意化 HTML**：正確使用 `role`、`aria-live` 等屬性
-- **對比度優化**：深色/淺色主題皆符合 WCAG AA 標準
-
-### 🧪 程式碼品質
-- **防禦性程式設計**：DOM 操作前檢查元素存在，避免 null 參考錯誤
-- **錯誤處理機制**：Try-catch 包覆關鍵操作，優雅處理異常
-- **JSON Schema 驗證**：載入題庫時驗證資料格式完整性
-- **LocalStorage 容量管理**：自動偵測容量不足並清理舊資料
-
-## 安裝與使用
-
-### 快速預覽
-
-> 下圖為考試頁主畫面與右側題號側邊欄示意。
-
-![Main Preview](docs/screenshots/preview.svg)
-
-![Sidebar Preview](docs/screenshots/sidebar.svg)
-
-> 新增功能示意：
-
-![Settings Panel](docs/screenshots/settings-panel.svg)
-
-![Result Export](docs/screenshots/result-export.svg)
-
-### 快速開始
-1. 下載專案檔案到本地
-2. 使用本機伺服器開啟 `index.html`（避免瀏覽器對 `file://` 的限制導致題庫 JSON 載入失敗）
-   - macOS/Linux（bash）
-     ```bash
-     python3 -m http.server 8000
-     # 然後在瀏覽器中前往: http://localhost:8000
-     ```
-   - Windows（PowerShell）
-     ```powershell
-     py -3 -m http.server 8000
-     # 然後在瀏覽器中前往: http://localhost:8000
-     ```
-3. 在首頁的「選擇題庫」下拉選單選擇：
-  - ERP 規劃師參考題型（預設）/ ERP 基礎檢定考試參考題型
-  - IPAS L11：IPAS-AI-L11-A / IPAS-AI-L11-B / 114年 L11 #130994
-  - IPAS L12：IPAS-AI-L12-A / B / C / D
-  - 專案管理 / 理財規劃
-  之後按「開始考試」。
-
-### 檔案結構
-```
-├── index.html              # 主頁面
-├── app.js                  # 應用程式邏輯
-├── style.css               # 樣式表
-├── CHANGELOG.md            # 版本更新歷史
-├── json/                   # 題庫目錄
-│   ├── Project_Management.json # 專案管理題庫
-│   ├── Basic_Financial_Planning.json # 理財規劃題庫
-│   ├── ERP Planner_Reference Question Types_202509_V06.json # ERP 規劃師參考題型
-│   ├── PFERP_Reference119_20240201.json # ERP 基礎檢定考試學科題型
-│   ├── IPAS-AI-L11-130994.json # 114年 iPAS AI 應用規劃師初級科目一題庫
-│   ├── IPAS-AI-L11-A.json     # IPAS L11 題庫 A（AI 基礎與治理）
-│   ├── IPAS-AI-L11-B.json     # IPAS L11 題庫 B（AI 基礎與治理）
-│   ├── IPAS-AI-L12-A.json     # IPAS L12 題庫 A（生成式 AI 應用與規劃）
-│   ├── IPAS-AI-L12-B.json     # IPAS L12 題庫 B（生成式 AI 應用與規劃）
-│   ├── IPAS-AI-L12-C.json     # IPAS L12 題庫 C（生成式 AI 應用與規劃）
-│   └── IPAS-AI-L12-D.json     # IPAS L12 題庫 D（生成式 AI 應用與規劃）
-├── LICENSE                 # MIT 授權條款
-├── README.md               # 專案說明
-└── docs/                   # 文件與截圖
-    └── screenshots/        # 功能截圖
-```
-
-## 技術架構
-
-### 技術特點
-- **純JavaScript開發**：無需任何框架或外部依賴
-- **本地存儲功能**：使用LocalStorage保存進度和設定
-- **JSON格式題庫**：易於維護和擴展
-- **CSS變數應用**：輕鬆支援深色/淺色主題切換
-- **語義化HTML結構**：提升可訪問性和SEO表現
-- **離線可用**：所有資源都在本地，無需網絡連接
-
-### 系統需求
-- **瀏覽器**：Chrome 70+、Firefox 65+、Safari 12+、Edge 79+、Opera 60+
-- **JavaScript**：需要啟用
-- **本地存儲**：用於保存進度和設定（確保未開啟無痕/隱私模式）
+---
 
 ## 題庫內容
 
-### 專案管理題庫
-包含多樣題型，主要涵蓋以下內容：
-#### 專案管理12項原則 (題目1-10)
-- 管家式服務：負責任地使用資源，公平考量利害關係人利益
-- 協作：促進團隊合作、資訊分享和共同解決問題
-- 價值：強調創造實質的業務效益和長期價值
-- 系統思考：考慮專案內外部因素的相互作用
-- 領導力：激勵團隊、提升士氣和協助解決問題
-- 品質：確保產品滿足甚至超越客戶期望
-- 複雜性：分解、迭代解決相依與不確定的問題
-- 風險：識別和應對潛在威脅和機會
-- 適應性與韌性：面對重大變更的靈活調整能力
-- 變革管理：協助組織和人員順利過渡並接受變化
+### 可用題庫一覽
 
-#### 8大績效領域 (題目11-18)
-- 利害關係人績效領域：識別和管理所有相關人員
-- 團隊績效領域：提升團隊溝通和合作效率
-- 開發方法與生命週期：選擇最適合的開發模式
-- 規劃績效領域：詳細定義專案執行策略
-- 專案工作績效領域：執行實際工作和管理日常障礙
-- 交付績效領域：確保專案交付物的品質和完成度
-- 衡量績效領域：資料收集與績效評估
-- 不確定性績效領域：討論風險與應對策略
+| 題庫名稱 | 檔案 | 說明 |
+|----------|------|------|
+| 專案管理 | `Project_Management.json` | 12 項原則、8 大績效領域等 PMI 核心知識 |
+| 理財規劃 | `Basic_Financial_Planning.json` | 基本財務觀念、投資、保險、退休規劃 |
+| IPAS L11-A | `IPAS-AI-L11-A.json` | AI 基礎與治理（A 卷） |
+| IPAS L11-B | `IPAS-AI-L11-B.json` | AI 基礎與治理（B 卷） |
+| IPAS L11 #130994 | `IPAS-AI-L11-130994.json` | 114 年科目一 L1101 正式考題 |
+| IPAS L12-A | `IPAS-AI-L12-A.json` | 生成式 AI 應用與規劃（A 卷） |
+| IPAS L12-B | `IPAS-AI-L12-B.json` | 生成式 AI 應用與規劃（B 卷） |
+| IPAS L12-C | `IPAS-AI-L12-C.json` | 生成式 AI 應用與規劃（C 卷） |
+| IPAS L12-D | `IPAS-AI-L12-D.json` | 生成式 AI 應用與規劃（D 卷） |
+| ERP 規劃師參考題型 | `ERP Planner_Reference Question Types_202509_V06.json` | ERP 規劃師核心概念與參考題型 |
+| ERP 基礎檢定 | `PFERP_Reference119_20240201.json` | ERP 基礎檢定學科題型 |
 
-#### 專案管理基本概念
-涵蓋專案定義、專案集合、生命週期、敏捷方法、管理過程等核心知識點
+### 各題庫重點說明
 
-### 理財規劃題庫
-包含基本財務規劃、投資策略、風險管理、退休規劃等重要理財知識，依章節分類，涵蓋：
+**專案管理（PMI PMBOK）**
+- 12 項原則：管家式服務、協作、價值、系統思考、領導力、品質、複雜性、風險、適應性與韌性、變革管理等
+- 8 大績效領域：利害關係人、團隊、開發方法與生命週期、規劃、專案工作、交付、衡量、不確定性
+
+**理財規劃**
 - 基本財務觀念與計算
 - 投資工具與策略
 - 風險評估與管理
 - 退休規劃與資產配置
 - 保險與稅務規劃
 
-### IPAS 題庫（L11、L12）
-聚焦於企業實務數位化與 AI 應用情境，包括但不限於：
+**IPAS AI 應用規劃師（L11、L12）**
 - No Code / Low Code 選型、擴充、效能與成本考量
-- 生成式 AI 在內容、生產力與多媒體應用（提示策略、seed 控制、一致性）
+- 生成式 AI 應用（提示策略、seed 控制、一致性）
 - RAG、微調、合規/隱私與治理框架
-- 敏捷與產品交付實務、風險控管與實驗設計
+- 敏捷與產品交付實務、風險控管
 
-各題庫為獨立 JSON 檔（`IPAS-AI-L11-*.json`、`IPAS-AI-L12-*.json`），可直接於介面中切換使用。
+**ERP 題庫**
+- 企業資源規劃基礎概念
+- ERP 規劃師與基礎檢定考題
 
-### ERP 相關題庫
-包含企業資源規劃的基礎概念與進階實務：
-- **ERP 規劃師 參考題型** (`ERP Planner_Reference Question Types_202509_V06.json`)
-- **ERP 基礎檢定考試 參考題型** (`PFERP_Reference119_20240201.json`)
+---
 
-各題庫為獨立 JSON 檔，可直接於介面下拉選單中切換使用。
+## 檔案結構
+
+```
+Examination-System/
+├── index.html                  # 主頁面（UI 結構與設定面板）
+├── app.js                      # 核心應用程式邏輯
+├── style.css                   # 樣式表（CSS 變數、深/淺色主題）
+├── favicon.png                 # 網站圖示
+├── robots.txt                  # 搜尋引擎爬蟲設定
+├── sitemap.xml                 # SEO Sitemap
+├── CHANGELOG.md                # 版本更新歷史
+├── LICENSE                     # MIT 授權條款
+├── README.md                   # 本說明文件
+├── json/                       # 題庫目錄
+│   ├── Project_Management.json
+│   ├── Basic_Financial_Planning.json
+│   ├── IPAS-AI-L11-A.json
+│   ├── IPAS-AI-L11-B.json
+│   ├── IPAS-AI-L11-130994.json
+│   ├── IPAS-AI-L12-A.json
+│   ├── IPAS-AI-L12-B.json
+│   ├── IPAS-AI-L12-C.json
+│   ├── IPAS-AI-L12-D.json
+│   ├── ERP Planner_Reference Question Types_202509_V06.json
+│   └── PFERP_Reference119_20240201.json
+└── docs/
+    └── screenshots/            # 功能截圖
+```
+
+---
+
+## 技術架構
+
+| 項目 | 說明 |
+|------|------|
+| 核心技術 | 純 HTML5 + CSS3 + Vanilla JavaScript（無任何框架依賴） |
+| 本地儲存 | LocalStorage（含 TTL 機制與結構驗證） |
+| 題庫格式 | JSON（含 Schema 驗證） |
+| 主題系統 | CSS 變數 + `prefers-color-scheme` 媒體查詢 |
+| 部署平台 | GitHub Pages（HTTPS 強制） |
+| 外部依賴 | 零（無供應鏈風險） |
+
+### 系統需求
+
+| 瀏覽器 | 最低版本 |
+|--------|----------|
+| Chrome | 70+ |
+| Firefox | 65+ |
+| Safari | 12+ |
+| Edge | 79+ |
+| Opera | 60+ |
+
+- 需啟用 **JavaScript**
+- 需允許 **LocalStorage**（請勿使用無痕/隱私模式，否則進度無法保存）
+
+---
 
 ## 開發指南
 
-### 擴展題庫
-如需添加新題庫或修改現有題庫，請遵循以下 JSON 格式：
+### 新增題庫
 
-```json
-[
-  {
-    "id": 1,
-    "question": "題目內容",
-    "options": [
-      "A. 選項A",
-      "B. 選項B",
-      "C. 選項C",
-      "D. 選項D"
-    ],
-    "answer": "B",
-    "explanation": "答案解釋"
-  },
-  {
-    "id": 2,
-    "question": "簡答題內容",
-    "type": "SAQ",
-    "answer": "標準答案",
-    "explanation": "答案解釋"
-  }
-]
-```
+1. 依照以下 JSON 格式建立題庫檔案，放入 `json/` 目錄：
 
-### 切換題庫與新增選項
-- 介面中的下拉選單（`question-bank-select`）會列出可用題庫。
-- 若新增新的 JSON 題庫檔，請將檔案放入 `json/` 目錄下，並在 `index.html` 的 `question-bank-select` 內加入對應 `<option>`，其 `value` 設為 JSON 檔名（例如 `My_New_Bank.json`），檔名會由 `app.js` 自動自 `json/` 目錄下載入（使用相對路徑 fetch）。
-- 檔名建議使用易辨識規則（例如：`<Domain>_<Topic>.json` 或 `ipass-<Letter>.json`）。
+   **單選題格式：**
+   ```json
+   [
+     {
+       "id": 1,
+       "question": "題目內容",
+       "options": [
+         "A. 選項A",
+         "B. 選項B",
+         "C. 選項C",
+         "D. 選項D"
+       ],
+       "answer": "B",
+       "explanation": "答案解釋"
+     }
+   ]
+   ```
 
-## 使用指南
+   **簡答題格式：**
+   ```json
+   [
+     {
+       "id": 2,
+       "question": "簡答題內容",
+       "type": "SAQ",
+       "answer": "標準答案",
+       "explanation": "答案解釋"
+     }
+   ]
+   ```
+
+2. 在 `index.html` 的 `question-bank-select` 下拉選單新增對應 `<option>`：
+   ```html
+   <option value="My_New_Bank.json">我的新題庫</option>
+   ```
+
+3. 在 `app.js` 的 `ALLOWED_BANKS` 白名單陣列中加入檔名：
+   ```javascript
+   const ALLOWED_BANKS = [
+     // ... 現有項目
+     'My_New_Bank.json',
+   ];
+   ```
+
+> **命名建議**：使用 `<Domain>_<Topic>.json` 或 `IPAS-<Letter>.json` 格式，便於識別。
+
+### 本機開發建議
+
+- 使用 Python 的 `http.server` 或任何靜態檔案伺服器（如 VS Code Live Server）
+- 開發環境下 `console.log` / `console.info` 訊息完整可見；生產環境（GitHub Pages）自動隱藏，僅保留 `warn` / `error`
+
+---
+
+## 使用說明
+
+### 考試流程
+
+1. **設定題庫與選項**：首頁選擇題庫、設定隨機抽題數量、調整其他偏好
+2. **開始考試**：按「開始考試」進入答題頁
+3. **答題**：點擊選項（單選題）或輸入文字（簡答題），可隨時跳題
+4. **提交**：最後一題作答完畢後按「提交」或按 Enter
+5. **查看結果**：成績頁面顯示總分、正確率、錯題解析
+6. **匯出**：可一鍵匯出 JSON 或 CSV 結果檔
 
 ### 鍵盤快捷鍵
 
-- **← →**：上一題/下一題導航
-- **1-4**：快速選擇選項A-D（僅適用於單選題）
-- **Enter（考試頁）**：未到最後一題則跳下一題；最後一題時提交考試
-- **Enter（結果頁）**：重新考試
+| 快捷鍵 | 功能 |
+|--------|------|
+| `←` / `→` | 上一題 / 下一題 |
+| `1` – `4` | 快速選擇選項 A–D（僅單選題） |
+| `Enter`（答題中） | 跳至下一題；最後一題時提交考試 |
+| `Enter`（結果頁） | 重新開始考試 |
 
-### 題號按鈕導覽
+### 題號側邊欄
 
-- 右側題號按鈕陣列可直接點擊跳到指定題目
-- 已答題以綠色描邊標示，未答題透明度較低；當前題會高亮顯示
+- 右側顯示所有題號按鈕，點擊可直接跳轉至該題
+- **綠色描邊**：已作答；**低透明度**：未作答；**高亮**：目前所在題目
+- 側邊欄同步顯示已答/未答題數統計
 
-### 自訂設定
+### 考試設定選項
 
-在考試開始前，您可以調整以下設定：
-- **選擇題庫**：從下拉選單選擇任一可用題庫（ERP、IPAS、專案管理、理財規劃等）
-- **隨機打亂題目順序**：是否隨機排列考題（預設關閉）
-- **隨機打亂選項順序**：是否隨機排列選項（預設關閉）
-- **自動保存進度**：系統自動保存答題進度（固定開啟）
-- **顯示答案解釋**：結果頁面是否顯示詳細解釋（預設開啟）
-- **及格分數設定**：自訂及格標準（預設60分）
-  - 可於首頁「考試設定」面板直接輸入 0–100，會自動保存到本機
+| 設定 | 說明 | 預設值 |
+|------|------|--------|
+| 選擇題庫 | 從下拉選單選擇任一題庫 | ERP 規劃師 |
+| 抽題數量 | 全部 / 10 / 20 / 30 / 50 / 100 / 自訂 | 全部 |
+| 隨機打亂題目 | 每次考試題目順序不同 | 關閉 |
+| 隨機打亂選項 | 選項順序隨機排列，自動更新正確答案 | 關閉 |
+| 顯示答案解釋 | 結果頁是否展示詳細解析 | 開啟 |
+| 及格分數 | 自訂及格標準（0–100） | 60 分 |
 
-## 授權條款
+---
 
-本專案採用 MIT 授權條款，允許自由使用、修改和分發。詳見 [LICENSE](LICENSE) 檔案。
+## 安全與隱私
 
-## 疑難排解（Troubleshooting）
+### 已實施的安全控制
 
-- 題庫載入失敗或顯示「題目載入失敗」：請務必以本機伺服器開啟（見「快速開始」第 2 步），直接用檔案總管雙擊 `index.html` 可能因瀏覽器安全限制導致 `fetch` JSON 失敗。
-- 匯出的 CSV 亂碼：本系統已在 CSV 檔前加入 UTF‑8 BOM。若 Excel 仍顯示亂碼，請使用「資料」>「自文字/CSV」匯入並選擇 UTF‑8 編碼。
-- 介面未更新或快捷鍵異常：請嘗試重新整理並清除瀏覽器快取；若要重置本機狀態，亦可清除 LocalStorage（將會移除歷史記錄與設定）。
-- 歷史記錄遺失：歷史記錄存放於瀏覽器 LocalStorage，若清除瀏覽器資料或使用隱私模式，記錄將不可用。
+**前端安全**
+- 完全移除 `innerHTML`，100% 使用 `textContent` 與 DOM API 防止 XSS
+- 嚴格 CSP 政策（無 `unsafe-inline` / `unsafe-eval` / `data:` URI）
+- 條件化 Logger：生產環境隱藏 `log` / `info`，保留 `warn` / `error`
 
-## 常見問題解答 (FAQ)
+**資料保護**
+- LocalStorage TTL 機制（預設 7 天自動過期）
+- CSV 匯出公式注入防護（前置單引號保護 `=`、`+`、`-`、`@` 開頭內容）
+- JSON Schema 驗證，防止格式錯誤的題庫資料載入
 
-### Q: 如何在手機上使用此考試系統？
-A: 只需在手機瀏覽器中開啟 (https://scorpio-meow.github.io/Examination-System/) 。系統採用響應式設計，會自動適應您的手機螢幕大小。
+**輸入驗證**
+- 題庫白名單（`ALLOWED_BANKS`）防止路徑注入攻擊
+- LocalStorage 進度 / 記錄 / 設定讀取前執行結構驗證
+- 配置載入使用 `_sanitizeConfig()` 清理函式，取代不安全的物件展開合併
 
-### Q: 如何添加新的題庫？
-A: 在 `json/` 目錄下參考 `Project_Management.json` 的格式，創建一個新的 JSON 檔，並在 `index.html` 的 `question-bank-select` 下拉選單中加入新選項；同時確保 `app.js` 能載入該檔案（例如加到 `ALLOWED_BANKS` 題庫對應）。
+**部署安全**
+- GitHub Pages HTTPS 強制啟用
+- `.gitignore` 防止敏感檔案意外提交
+- 零外部依賴，無供應鏈風險
 
-### Q: 考試系統是否會記錄我的考試歷史？
-A: 是的，系統會使用瀏覽器的 LocalStorage 功能記錄您的考試歷史。但請注意，如果您清除瀏覽器數據或使用隱私瀏覽模式，歷史記錄將會丟失。
+### 架構限制說明
 
-### Q: 能否匯出我的考試結果？
-A: 可以。在結果頁可直接「匯出結果（JSON/CSV）」。CSV 以 UTF‑8 with BOM 產生，通常可被 Excel 正確辨識；若仍遇到亂碼，請用 Excel 的「資料匯入」並選擇 UTF‑8 編碼，或先用記事本開啟確認編碼。
+> **本系統為純前端個人學習工具**，所有題庫 JSON 檔案於瀏覽器公開可見，不適用於需要防弊的正式考試場景。所有邏輯均在瀏覽器端執行，無伺服器端驗證。
 
-### Q: 考試時間有限制嗎？
-A: 預設情況下沒有時間限制，您可以按照自己的節奏完成測驗。
+---
 
-### Q: 如何清除或縮短本機資料保存？
-A: 在首頁「考試設定」面板按下「清除所有本機資料」即可移除進度、設定與歷史。系統預設保存 7 天；若需調整 TTL，請於程式中調整 `storageTtlMs`。
+## 快速預覽
 
-## 版本記錄 (Changelog)
+> 考試頁主畫面與右側題號側邊欄：
 
-完整的版本更新記錄請參閱 [CHANGELOG.md](CHANGELOG.md)。
+![Main Preview](docs/screenshots/preview.svg)
+![Sidebar Preview](docs/screenshots/sidebar.svg)
 
-**目前版本**: v3.5.2 (2026-06-03)
+> 設定面板與結果匯出：
 
-**主要更新**:
-- ERP 規劃師參考題型補完所有題目的繁體中文答案解析
-- 所有題庫 JSON 檔案統一搬移至 `json/` 目錄，結構更清晰
-- 修正題庫載入路徑，確保所有題庫均可正確載入
-- 修正 ERP 題庫檔案名稱不一致問題
+![Settings Panel](docs/screenshots/settings-panel.svg)
+![Result Export](docs/screenshots/result-export.svg)
+
+---
+
+## 疑難排解
+
+| 問題 | 解決方式 |
+|------|----------|
+| 題庫載入失敗 / 顯示「題目載入失敗」 | 請使用本機伺服器開啟（見[快速開始](#快速開始)），勿直接雙擊 `index.html` |
+| CSV 匯出後 Excel 顯示亂碼 | 使用「資料 > 自文字/CSV 匯入」並選擇 UTF-8 編碼；或先用記事本確認編碼 |
+| 介面未更新 / 快捷鍵異常 | 重新整理並清除瀏覽器快取（Ctrl+Shift+R） |
+| 歷史記錄遺失 | 歷史存於 LocalStorage；清除瀏覽器資料或使用隱私模式會導致記錄不可用 |
+| 想清除本機所有資料 | 首頁「考試設定」面板 > 「清除所有本機資料」按鈕 |
+
+---
+
+## 常見問題
+
+**Q：如何在手機上使用？**
+A：直接在手機瀏覽器開啟[線上版本](https://scorpio-meow.github.io/Examination-System/)，系統採響應式設計，自動適應各種螢幕尺寸。
+
+**Q：如何添加自己的題庫？**
+A：參考[新增題庫](#新增題庫)章節，按 JSON 格式建立檔案、放入 `json/` 目錄，並在 `index.html` 下拉選單與 `app.js` 白名單中新增對應項目。
+
+**Q：考試系統會記錄我的考試歷史嗎？**
+A：會。系統使用瀏覽器 LocalStorage 記錄歷史，預設保存 7 天。清除瀏覽器資料或使用隱私模式會導致記錄消失。
+
+**Q：如何匯出考試結果？**
+A：在結果頁面點擊「匯出結果（JSON/CSV）」。CSV 以 UTF-8 with BOM 產生，通常可被 Excel 正確辨識；若遇亂碼，請用 Excel 的「資料匯入」功能並選擇 UTF-8 編碼。
+
+**Q：考試有時間限制嗎？**
+A：預設沒有時間限制，可依自己的節奏作答。
+
+**Q：如何調整本機資料保存期限？**
+A：系統預設保存 7 天（由 `storageTtlMs` 控制）。若需即時清除，可在首頁設定面板按「清除所有本機資料」。
+
+**Q：選項亂序後，正確答案會跑掉嗎？**
+A：不會。啟用選項亂序時，系統會自動重新標註 A–D 並同步更新正確答案標記，判分結果保持正確。
+
+---
+
+## 版本記錄
+
+完整版本更新記錄請參閱 [CHANGELOG.md](CHANGELOG.md)。
+
+**目前版本**：v3.5.2（2026-06-03）
+
+**近期主要更新：**
+
+| 版本 | 日期 | 重點 |
+|------|------|------|
+| 3.5.2 | 2026-06-03 | ERP 題庫解析補完、題庫統一移至 `json/` 目錄 |
+| 3.5.1 | 2026-06-01 | 題庫白名單、LocalStorage 驗證、CSP 收緊 |
+| 3.5.0 | 2026-06-01 | 隨機抽題功能、ERP 新題庫、UI 重構 |
+| 3.4.1 | 2025-11-02 | 條件化日誌、系統定位說明、.gitignore |
+| 3.4.0 | 2025-11-01 | 詳見 CHANGELOG |
+
+---
+
+## 貢獻指南
+
+歡迎透過以下方式貢獻：
+
+1. **回報問題**：前往 [GitHub Issues](https://github.com/Scorpio-meow/Examination-System/issues) 描述問題與重現步驟
+2. **提交 PR**：
+   - Fork 本專案
+   - 建立功能分支（`git checkout -b feature/your-feature`）
+   - 提交變更（`git commit -m 'feat: 描述功能'`）
+   - 推送分支並開啟 Pull Request
+3. **新增題庫**：依照[開發指南](#開發指南)中的格式提交題庫 JSON 檔案
+
+---
 
 ## 聯絡方式
 
-如果您在使用過程中遇到任何問題，或對本系統有任何建議，歡迎透過以下管道與我們聯繫：
-
-| 管道 | 連結與狀態 |
-| :--- | :--- |
+| 管道 | 連結 |
+|------|------|
 | **電子郵件** | [![Email](https://img.shields.io/badge/Email-yao921024%40gmail.com-blue?style=flat-square)](mailto:yao921024@gmail.com) |
 | **Instagram** | [![Instagram](https://img.shields.io/badge/Instagram-%23E4405F.svg?style=flat-square&logo=Instagram&logoColor=white)](https://www.instagram.com/scorpio_meow_1024) |
 | **Threads** | [![Threads](https://img.shields.io/badge/Threads-%23000000.svg?style=flat-square&logo=Threads&logoColor=white)](https://www.threads.com/@scorpio_meow_1024) |
@@ -399,4 +473,10 @@ A: 在首頁「考試設定」面板按下「清除所有本機資料」即可�
 
 ---
 
-**考試系統** - 持續更新中 - 助您掌握專業知識，提升考試能力！
+## 授權條款
+
+本專案採用 [MIT 授權條款](LICENSE)，允許自由使用、修改和分發。
+
+---
+
+> **考試系統** - 持續更新中，助您掌握專業知識，提升考試能力。
