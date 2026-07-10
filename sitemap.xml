@@ -2,72 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
+    <lastmod>2026-07-01</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=ERP%20Planner_Reference%20Question%20Types_202509_V06.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-03</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=118002A15.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-05</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=118003A14.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-05</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L11-A.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L11-B.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L12-A.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L12-B.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L12-C.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L12-D.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=IPAS-AI-L11-130994.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=Project_Management.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=Basic_Financial_Planning.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
   <url>
     <loc>https://scorpio-meow.github.io/Examination-System/?bank=PFERP_Reference119_20240201.json</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <lastmod>2026-06-02</lastmod>
   </url>
 </urlset>
