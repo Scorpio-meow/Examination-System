@@ -205,6 +205,7 @@ Examination-System/
 ├── CHANGELOG.md                # 版本更新歷史
 ├── LICENSE                     # MIT 授權條款
 ├── README.md                   # 本說明文件
+├── llms.txt                    # AI 友善的專案說明文件
 ├── json/                       # 題庫目錄
 │   ├── Project_Management.json
 │   ├── Basic_Financial_Planning.json
@@ -218,7 +219,9 @@ Examination-System/
 │   ├── ERP Planner_Reference Question Types_202509_V06.json
 │   └── PFERP_Reference119_20240201.json
 └── docs/
-    └── screenshots/            # 功能截圖
+    ├── screenshots/            # 功能截圖
+    └── adr/                    # 架構決策紀錄 (ADR)
+        └── ADR-001-local-security-validation.md
 ```
 
 ---
@@ -348,6 +351,8 @@ Examination-System/
 ---
 
 ## 安全與隱私
+
+關於本系統的詳細安全控制決策與設計考量，請參閱 [ADR-001: 用戶端資料安全與防禦性驗證機制](docs/adr/ADR-001-local-security-validation.md)。
 
 ### 已實施的安全控制
 
