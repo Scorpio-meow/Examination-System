@@ -1,5 +1,7 @@
 # 考試系統 (Examination System)
 
+[English Version](README.en.md)
+
 > 基於純前端技術打造的知識測驗平台，支援多種專業題庫、隨機抽題、進度自動保存與結果匯出。
 
 [![版本](https://img.shields.io/badge/版本-3.5.2-brightgreen?style=flat-square)](CHANGELOG.md)
@@ -202,10 +204,12 @@ Examination-System/
 ├── favicon.png                 # 網站圖示
 ├── robots.txt                  # 搜尋引擎爬蟲設定
 ├── sitemap.xml                 # SEO Sitemap
-├── CHANGELOG.md                # 版本更新歷史
+├── CHANGELOG.md                # 版本更新歷史 (繁體中文)
+├── CHANGELOG.en.md             # 版本更新歷史 (英文)
 ├── LICENSE                     # MIT 授權條款
-├── README.md                   # 本說明文件
-├── llms.txt                    # AI 友善的專案說明文件
+├── README.md                   # 本說明文件 (繁體中文)
+├── README.en.md                # 本說明文件 (英文)
+├── llms.txt                    # AI 友善的專案說明文件 (中英雙語)
 ├── json/                       # 題庫目錄
 │   ├── Project_Management.json
 │   ├── Basic_Financial_Planning.json
@@ -221,7 +225,8 @@ Examination-System/
 └── docs/
     ├── screenshots/            # 功能截圖
     └── adr/                    # 架構決策紀錄 (ADR)
-        └── ADR-001-local-security-validation.md
+        ├── ADR-001-local-security-validation.md     # 繁體中文版
+        └── ADR-001-local-security-validation.en.md  # 英文版
 ```
 
 ---
