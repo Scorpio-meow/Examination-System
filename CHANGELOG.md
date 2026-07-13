@@ -1,5 +1,7 @@
 # 更新日誌 (Changelog)
 
+[English Version](CHANGELOG.en.md)
+
 所有值得注意的專案變更都會記錄在此文件中。
 
 格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)，

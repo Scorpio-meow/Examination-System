@@ -14,3 +14,22 @@
 - 多樣化考試設定：支援隨機抽題、題目亂序、選項亂序（會自動重新標記 A-D 並重新映射正確答案）、自訂及格分數。
 - 結果匯出與防護：支援將作答結果匯出為 JSON 與 CSV 格式。CSV 檔案包含 UTF-8 with BOM 以避免 Excel 開啟時亂碼，並在 "="、"+"、"-"、"@" 等字元開頭的欄位前加上單引號以防止 CSV 公式注入攻擊。
 - 無障礙網頁設計：實作鍵盤快捷鍵導航、ARIA 屬性標記與 `aria-live` 狀態即時通告，符合 WCAG AA 對比度標準。
+
+---
+
+# Examination System
+> A client-side mock examination platform built on pure HTML5/CSS3/Vanilla JS, featuring isolated bank loadings, auto-save mechanisms, performance analysis, and session exports.
+
+## Core Files
+- [index.html](index.html): Main page defining structural grids, test configurations, question cards, and evaluations.
+- [app.js](app.js): Primary application controller containing the `ExamApp` class, event binders, state managers, and security validators.
+- [style.css](style.css): Custom stylesheet hosting CSS variables, layout behaviors, contrast control, and theme variables.
+- [json/](json/): Question bank directory holding all exam metadata formatted as JSON.
+
+## Key Technical Concepts
+- **Pure Front-end Client Scope**: All logic runs locally inside the browser. Since the system contains no server-side logic, all answer configurations are readable on the client, making this a practice tool rather than an official exam manager.
+- **Bank Loading Security Whitelist**: Employs static `ALLOWED_BANKS` lookups during file fetches. To run locally, files must be served via http/https (e.g., Python `http.server` or Bun CLI) to bypass local file CORS constraints.
+- **LocalStorage State Auditing**: Exam sessions, preferences, and histories are saved with defensive schema checks (`_validateProgressSchema` & `_validateRecordsSchema`) and configuration filtering (`_sanitizeConfig`), expiring automatically after 7 days (TTL).
+- **Exam Customizations**: Allows shuffling question structures, shuffling option layouts (evaluations are automatically re-mapped to dynamic keys), drawing limits, and customizable pass/fail criteria.
+- **CSV/JSON Data Protection**: Exports CSV files with UTF-8 BOM encoding for Excel rendering. Mitigates CSV Injection vectors by pre-pending single quotes to text starting with `=`, `+`, `-`, or `@`.
+- **Accessible Interfaces (A11y)**: Built with native keyboard controls, custom ARIA states, and `aria-live` polite narration panels conforming to WCAG AA.
