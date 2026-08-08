@@ -2,31 +2,15 @@
 <html lang="zh-TW">
 
 <head>
-    <meta name="google-site-verification" content="jjQRA2mVrlVkjlSTMgxrNE9bMVfG6cNSKgpwz3CQm6Y" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>線上考試系統 - 模擬考試、題庫練習與學習評估工具</title>
-    <meta name="description"
-        content="提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。">
-    <link rel="canonical" href="https://scorpio-meow.github.io/Examination-System/">
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="線上考試系統 - 模擬考試、題庫練習與學習評估工具">
-    <meta property="og:description" content="提供 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等題庫模擬練習。支援隨機出題、即時批改、答題回顧與歷史紀錄功能，助您高效備考！">
-    <meta property="og:url" content="https://scorpio-meow.github.io/Examination-System/">
-    <meta property="og:site_name" content="線上考試系統">
-    <meta property="og:image" content="https://scorpio-meow.github.io/Examination-System/favicon.png">
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="線上考試系統 - 模擬考試、題庫練習與學習評估工具">
-    <meta name="twitter:description" content="提供多種專業考試模擬題庫練習。支援隨機出題、即時批改、答題回顧與歷史紀錄功能，助您高效備考！">
-    <meta name="twitter:image" content="https://scorpio-meow.github.io/Examination-System/favicon.png">
+    <title>線上考試系統</title>
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self' 'sha256-QRAJamlj4mJvBj1wFAbIMgWbEk7FGBsYUD8Tf3qowe4='; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="favicon.png">
     <meta name="msapplication-TileImage" content="favicon.png">
-    <script
-        type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"線上考試系統","alternateName":"Examination System","url":"https://scorpio-meow.github.io/Examination-System/","image":"https://scorpio-meow.github.io/Examination-System/favicon.png","description":"提供多種專業考試與檢定模擬考題庫練習，包括 ERP 規劃師、電腦軟體應用乙丙級、IPAS AI 應用規劃師等。本系統適合自我練習、知識複習與學習評估使用，支援鍵盤快捷鍵、隨機題目與歷史紀錄功能。","applicationCategory":"EducationalApplication","operatingSystem":"All","browserRequirements":"Requires JavaScript. Requires HTML5.","offers":{"@type":"Offer","price":"0","priceCurrency":"TWD"}}</script>
 </head>
 
 <body>
@@ -51,20 +35,23 @@
                         <div class="form-group">
                             <label for="question-bank-select"><strong>選擇題庫：</strong></label>
                             <select id="question-bank-select" class="form-control">
-                                <option value="ERP Planner_Reference Question Types_202509_V06.json">
-                                    ERP規劃師_參考題型202509_V06</option>
-                                <option value="118002A15.json">技術士技能檢定電腦軟體應用乙級學科測試參考資料</option>
-                                <option value="118003A14.json">技術士技能檢定電腦軟體應用丙級學科測試參考資料</option>
-                                <option value="IPAS-AI-L11-A.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)</option>
-                                <option value="IPAS-AI-L11-B.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(B卷)</option>
-                                <option value="IPAS-AI-L12-A.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(A卷)</option>
-                                <option value="IPAS-AI-L12-B.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)</option>
-                                <option value="IPAS-AI-L12-C.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)</option>
-                                <option value="IPAS-AI-L12-D.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)</option>
-                                <option value="IPAS-AI-L11-130994.json">114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994</option>
-                                <option value="Project_Management.json">專案管理</option>
-                                <option value="Basic_Financial_Planning.json">理財規劃</option>
-                                <option value="PFERP_Reference119_20240201.json">ERP 基礎檢定考試(學科)-參考題型</option>
+                                <optgroup label="ERP 企業資源規劃">
+                                    <option value="ERP Planner_Reference Question Types_202509_V06.json">ERP規劃師_參考題型202509_V06</option>
+                                    <option value="PFERP_Reference119_20240201.json">ERP 基礎檢定考試(學科)-參考題型</option>
+                                </optgroup>
+                                <optgroup label="IPAS AI 應用規劃師">
+                                    <option value="IPAS-AI-L11-A.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)</option>
+                                    <option value="IPAS-AI-L11-B.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(B卷)</option>
+                                    <option value="IPAS-AI-L12-A.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(A卷)</option>
+                                    <option value="IPAS-AI-L12-B.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)</option>
+                                    <option value="IPAS-AI-L12-C.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)</option>
+                                    <option value="IPAS-AI-L12-D.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)</option>
+                                    <option value="IPAS-AI-L11-130994.json">114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994</option>
+                                </optgroup>
+                                <optgroup label="專業管理與理財">
+                                    <option value="Project_Management.json">專案管理</option>
+                                    <option value="Basic_Financial_Planning.json">理財規劃</option>
+                                </optgroup>
                             </select>
                         </div>
                         <ul class="exam-details">
@@ -77,26 +64,6 @@
                         <button class="btn btn--primary btn--lg btn--full-width" id="start-exam-btn">
                             開始考試
                         </button>
-                    </div>
-                </div>
-                <div class="exam-list card mt-12px">
-                    <div class="card__body">
-                        <h3 class="exam-list-title">所有可練習題庫</h3>
-                        <div class="exam-links-grid">
-                            <a href="?bank=ERP%20Planner_Reference%20Question%20Types_202509_V06.json" class="exam-link-item">ERP規劃師_參考題型202509_V06</a>
-                            <a href="?bank=118002A15.json" class="exam-link-item">技術士技能檢定電腦軟體應用乙級學科測試參考資料</a>
-                            <a href="?bank=118003A14.json" class="exam-link-item">技術士技能檢定電腦軟體應用丙級學科測試參考資料</a>
-                            <a href="?bank=IPAS-AI-L11-A.json" class="exam-link-item">IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)</a>
-                            <a href="?bank=IPAS-AI-L11-B.json" class="exam-link-item">IPAS AI應用規劃師【L11 基礎與治理】模擬考(B卷)</a>
-                            <a href="?bank=IPAS-AI-L12-A.json" class="exam-link-item">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(A卷)</a>
-                            <a href="?bank=IPAS-AI-L12-B.json" class="exam-link-item">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)</a>
-                            <a href="?bank=IPAS-AI-L12-C.json" class="exam-link-item">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)</a>
-                            <a href="?bank=IPAS-AI-L12-D.json" class="exam-link-item">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)</a>
-                            <a href="?bank=IPAS-AI-L11-130994.json" class="exam-link-item">114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994</a>
-                            <a href="?bank=Project_Management.json" class="exam-link-item">專案管理</a>
-                            <a href="?bank=Basic_Financial_Planning.json" class="exam-link-item">理財規劃</a>
-                            <a href="?bank=PFERP_Reference119_20240201.json" class="exam-link-item">ERP 基礎檢定考試(學科)-參考題型</a>
-                        </div>
                     </div>
                 </div>
             </div>
