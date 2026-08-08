@@ -1,11 +1,15 @@
 # Examination System
 
-> A front-end knowledge testing and mock examination platform supporting multiple professional question banks, randomized questions, auto-saved progress, and results export.
+[繁體中文版](README.md)
+
+> A client-side mock examination and knowledge assessment platform featuring isolated question bank loading, custom drawing quantities, automatic progress preservation, real-time analytics, and defensive data exports.
 
 [![Version](https://img.shields.io/badge/Version-3.5.2-brightgreen?style=flat-square)](CHANGELOG.en.md)
 [![License](https://img.shields.io/badge/License-MIT-orange?style=flat-square)](LICENSE)
 [![Updated](https://img.shields.io/badge/Updated-2026--06--03-blue?style=flat-square)](CHANGELOG.en.md)
-[![GitHub Pages](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
+[![Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/pulls)
 
 ---
 
@@ -13,13 +17,15 @@
 
 - [Quick Start](#quick-start)
 - [Live Demo](#live-demo)
+- [Architecture & Data Flow](#architecture--data-flow)
 - [Features](#features)
-- [Question Banks](#question-banks)
+- [Available Question Banks](#available-question-banks)
+- [Configuration Settings](#configuration-settings)
+- [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Data Schema & Standards](#data-schema--standards)
 - [File Structure](#file-structure)
-- [Technical Architecture](#technical-architecture)
-- [Developer Guide](#developer-guide)
-- [Usage Instructions](#usage-instructions)
-- [Security & Privacy](#security-privacy)
+- [Security & Defensive Architecture](#security--defensive-architecture)
+- [Visual Previews](#visual-previews)
 - [Troubleshooting](#troubleshooting)
 - [FAQ](#faq)
 - [Changelog](#changelog)
@@ -31,139 +37,227 @@
 
 ## Quick Start
 
-**Online Version (Recommended)**: Go directly to [https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/) with no installation required.
+### Online Execution (Recommended)
 
-**Local Run**:
+Directly open [https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/) with zero dependencies or installation.
 
-1. Clone or download this project:
+### Local Execution
+
+1. Clone or download the repository:
    ```bash
    git clone https://github.com/Scorpio-meow/Examination-System.git
    cd Examination-System
    ```
 
-2. Start a local server (necessary to bypass browser security policies on the `file://` protocol):
-   - **Using Python**
-     ```bash
-     python3 -m http.server 8000
-     ```
-   - **Using Bun**
+2. Start a local static file server (required to bypass browser CORS constraints on the `file://` protocol when fetching JSON files):
+
+   - **Using Bun (Recommended)**:
      ```bash
      bun x http-server -p 8000
      ```
 
+   - **Using Python 3**:
+     ```bash
+     python3 -m http.server 8000
+     ```
+
+   - **Using Windows PowerShell**:
+     ```powershell
+     py -3 -m http.server 8000
+     ```
+
 3. Open your browser and navigate to [http://localhost:8000](http://localhost:8000).
 
-4. Select a question bank from the dropdown, click "Start Exam" and begin.
+4. Select a question bank from the dropdown, adjust exam settings, and click "Start Exam".
 
-> **Notice**: Directly double-clicking `index.html` to open it in a browser will fail due to CORS security restrictions blocking the loading of JSON question banks. Please use a local server.
+> **Important Notice**: Directly double-clicking `index.html` in file explorer will trigger browser security errors when loading JSON question banks. Please always use a local web server.
 
 ---
 
 ## Live Demo
 
-This project is deployed on GitHub Pages and is ready to use:
+This application is continuously deployed via GitHub Pages with full HTTPS support:
 
 **[https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/)**
 
 ---
 
+## Architecture & Data Flow
+
+The Examination System uses a pure client-side, zero-dependency architecture. Below is the operational lifecycle and data flow:
+
+```mermaid
+flowchart TD
+    subgraph ClientInit [Initialization & Bank Ingestion]
+        A[User Accesses Application] --> B[Read URL Parameter bank]
+        B --> C{Is bank in ALLOWED_BANKS Whitelist?}
+        C -- Yes --> D[Fetch Target Question Bank JSON]
+        C -- No --> E[Fallback to Default ERP Bank]
+        D --> F[validateQuestionSchema Schema Validation]
+        E --> F
+    end
+
+    subgraph ConfigState [Configuration & Storage Guard]
+        F --> G[Load LocalStorage Preferences]
+        G --> H[_sanitizeConfig Sanitization & Field Verification]
+        H --> I[_validateProgressSchema Progress Schema Audit]
+        I --> J[Check 7-Day TTL Expiration Policy]
+    end
+
+    subgraph ExamSession [Interactive Exam Execution]
+        J --> K[Draw Questions & Apply Shuffling]
+        K --> L[Render Question Card & Grid Sidebar]
+        L --> M[User Answers via Keyboard or Mouse]
+        M --> N[Auto-save Active Progress to LocalStorage]
+        N --> O[Submit on Final Question]
+    end
+
+    subgraph EvaluationExport [Scoring & Defensive Export]
+        O --> P[Score Evaluation & Incorrect Answers Analysis]
+        P --> Q{Choose Export Format}
+        Q -- JSON --> R[Generate Structured JSON Report]
+        Q -- CSV --> S[UTF-8 BOM + CSV Formula Injection Defense]
+        R --> T[Safe File Download via MouseEvent Dispatch]
+        S --> T
+    end
+```
+
+---
+
 ## Features
 
-### Examination Functions
+### Examination & Interaction
 
 | Feature | Description |
 |---------|-------------|
-| Diverse Question Banks | Covers Project Management, Financial Planning, IPAS AI, ERP, and more |
-| Multiple Question Types | Single-choice (4 options) and Short Answer Questions (SAQ) |
-| Random Question Drawing | Supports drawing all, 10, 20, 30, 50, 100, or a custom number of questions |
-| Shuffled Questions & Options | Randomizes order each time to prevent position-based memorization |
-| Detailed Explanations | Each question includes explanation notes for deep learning |
-| No Time Limit | Practice at your own pace |
-| Custom Passing Score | Default is 60, customizable via the settings panel (0-100) |
-| Question Sidebar | Quickly navigate to any question; immediately shows answered/unanswered status |
+| Professional Question Banks | 11 comprehensive banks across ERP, IPAS AI Planner, Project Management, and Financial Planning |
+| Dual Question Types | Full support for 4-option Single Choice questions and Short Answer Questions (SAQ) |
+| Flexible Drawing Modes | Draw all questions or randomly extract 10, 20, 30, 50, 100, or a custom number of questions |
+| Shuffled Sequences | Shuffle questions and option arrangements. Option shuffling dynamically re-maps answer keys |
+| In-depth Explanations | Each question contains detailed conceptual explanations for learning reinforcement |
+| Question Grid Sidebar | Visual navigation sidebar indicating current, answered, and unanswered states dynamically |
 
-### Progress and Settings
+### Data Persistence & Customization
 
 | Feature | Description |
 |---------|-------------|
-| Auto-save Progress | Keeps your progress safe even if the tab is closed accidentally |
-| Isolated Question Banks | Progress for different question banks is kept separate |
-| Smart Resume Prompt | Prompts you to resume from where you left off or start fresh |
-| Data Expiration (TTL) | Progress, settings, and histories automatically expire after 7 days |
-| Dark/Light Theme | Automatically detects system preferences with manual toggle support |
-| Toggle Explanations | Choose whether to display explanations on the results page |
+| Auto-save Progress | Answers are automatically persisted to LocalStorage to prevent accidental loss |
+| Bank Isolation | Session states and test histories are stored under isolated keys per question bank |
+| Smart Restoration | Prompts the user to continue from saved states or restart fresh upon revisits |
+| Expiration TTL (7 Days) | LocalStorage items automatically expire and purge after 7 days |
+| Dark/Light Theme System | Follows system theme preferences and allows manual toggle via CSS custom properties |
+| Manual Data Reset | Provides a one-click button in the settings panel to clear all local cache and history |
 
-### Result Analysis & Export
+### Evaluation & Defensive Export
 
-- Detailed performance report (total score, accuracy rate, pass/fail status)
-- Incorrect questions list with explanations
-- History records (with question bank titles)
-- One-click export to **JSON** or **CSV** (UTF-8 with BOM for Excel compatibility, with CSV Injection protection)
+| Export Field | Description | Example Format |
+|--------------|-------------|----------------|
+| Index | Question sequential order | `1` |
+| ID | Original question bank identifier | `101` |
+| Type | Question categorization | `Single Choice` / `SAQ` |
+| Question | Question statement | `What are the triple constraints in project management?` |
+| Options | Options block | `A. Scope\nB. Schedule\nC. Cost\nD. Quality` |
+| User Answer | Answer submitted by user | `A` |
+| Correct Answer | Standard correct answer | `A` |
+| Is Correct | Evaluation verdict | `Yes` / `No` |
+| Explanation | Knowledge clarification notes | `Traditional triple constraints are Scope, Schedule, and Cost.` |
+| Bank Label | Name of the active question bank | `Project Management` |
+| Export Time | Timestamp of export | `2026-06-03T10:15:30.000Z` |
 
-#### Export Fields
+- **CSV Formula Injection Mitigation**: CSV files prepend a single quote to cells beginning with `=`, `+`, `-`, or `@` to neutralize command execution in spreadsheet software.
+- **Safe Download Dispatch**: Files are triggered via `dispatchEvent(new MouseEvent(...))` without attaching anchor elements to the DOM tree.
 
-Both CSV and JSON outputs represent "one record per question" with the following fields:
+---
 
-| # | Field Name | Description |
-|---|------------|-------------|
-| 1 | Index | Question order number |
-| 2 | ID | Original question ID |
-| 3 | Type | `Single Choice` / `Short Answer` |
-| 4 | Question | Question description |
-| 5 | Options | Option texts (separated by newlines) |
-| 6 | User Answer | Answer chosen/entered by the user |
-| 7 | Correct Answer | Correct answer for the question |
-| 8 | Is Correct | `Yes` / `No` |
-| 9 | Explanation | Explanation details |
-| 10 | Bank Label | Name of the question bank |
-| 11 | Export Time | ISO 8601 format |
+## Available Question Banks
 
-**JSON Export Example:**
+The repository provides 11 curated question banks stored in the `./json/` directory:
+
+| Bank Name | File Path | Focus Area & Description |
+|-----------|-----------|--------------------------|
+| ERP Planner Reference Questions | `json/ERP Planner_Reference Question Types_202509_V06.json` | ERP framework, supply chain, production, sales, accounting, and implementations |
+| ERP Basic Certification Exam | `json/PFERP_Reference119_20240201.json` | Academic subject questions for enterprise resource planning fundamentals |
+| IPAS AI Application Planner L11 (A) | `json/IPAS-AI-L11-A.json` | AI fundamentals, machine learning models, validation algorithms, and AI governance |
+| IPAS AI Application Planner L11 (B) | `json/IPAS-AI-L11-B.json` | AI ethics, privacy regulations, data lifecycle management, and ML system verification |
+| IPAS AI Application Planner L1101 #130994 | `json/IPAS-AI-L11-130994.json` | Official Year 114 primary iPAS AI exam publication questions |
+| IPAS AI Application Planner L12 (A) | `json/IPAS-AI-L12-A.json` | Generative AI prompt engineering, LLM hyperparameters, and RAG architecture |
+| IPAS AI Application Planner L12 (B) | `json/IPAS-AI-L12-B.json` | Knowledge retrieval augmentation, fine-tuning methodologies, and vector databases |
+| IPAS AI Application Planner L12 (C) | `json/IPAS-AI-L12-C.json` | AI Agent workflows, evaluation benchmarks, and output consistency control |
+| IPAS AI Application Planner L12 (D) | `json/IPAS-AI-L12-D.json` | Enterprise GenAI deployment, security verification, cost optimization, and MLOps |
+| Project Management | `json/Project_Management.json` | PMI PMBOK 12 principles, 8 performance domains, and agile delivery practices |
+| Financial Planning | `json/Basic_Financial_Planning.json` | Household balance sheets, investment strategies, taxation, insurance, and retirement |
+
+---
+
+## Configuration Settings
+
+The "Exam Settings" modal provides the following configurable parameters:
+
+| Setting Key | Type | Default | Valid Options / Range | Description |
+|-------------|------|---------|-----------------------|-------------|
+| `selectedQuestionBank` | String | `ERP Planner...` | `ALLOWED_BANKS` Whitelist | Active question bank file to be loaded |
+| `drawQuestionCount` | Number | `0` | `0, 10, 20, 30, 50, 100, -1` | Extraction count (`0` = all questions, `-1` = custom count) |
+| `customDrawCount` | Number | `20` | `1 ~ 999` | Custom drawing count when `drawQuestionCount` is set to `-1` |
+| `shuffleQuestions` | Boolean | `false` | `true / false` | Randomizes question display sequence upon loading |
+| `shuffleOptions` | Boolean | `false` | `true / false` | Shuffles options A–D while preserving correct answer references |
+| `showExplanation` | Boolean | `true` | `true / false` | Expands detailed explanations automatically on the results screen |
+| `passingScore` | Number | `60` | `0 ~ 100` | Minimum score percentage required to pass the test |
+| `autoSave` | Boolean | `true` | `true / false` | Persists progress automatically to LocalStorage |
+
+---
+
+## Keyboard Shortcuts
+
+The platform is fully navigable via keyboard controls:
+
+| Key Binding | Context | Action |
+|-------------|---------|--------|
+| `←` (Left Arrow) | Active Exam | Navigate to previous question |
+| `→` (Right Arrow) | Active Exam | Navigate to next question |
+| `1` / `2` / `3` / `4` | Single Choice | Select option A / B / C / D |
+| `Enter` | Active Exam | Proceed to next question; submits exam on final question |
+| `Enter` | Result Screen | Restart a new exam immediately |
+
+---
+
+## Data Schema & Standards
+
+### Question Bank JSON Schema
+
+To add custom question banks, create JSON files in the `./json/` directory adhering to the schema below:
+
+#### Single Choice Question Format
 
 ```json
 [
   {
-    "Index": 1,
-    "ID": 101,
-    "Type": "Single Choice",
-    "Question": "What are the three constraints of a project?",
-    "Options": "A. Scope\nB. Schedule\nC. Cost\nD. Quality",
-    "User Answer": "A",
-    "Correct Answer": "A",
-    "Is Correct": "Yes",
-    "Explanation": "The traditional project management constraints are Scope, Schedule, and Cost.",
-    "Bank Label": "Project Management",
-    "Export Time": "2025-08-16T10:15:30.000Z"
+    "id": 1,
+    "question": "What are the triple constraints in traditional project management?",
+    "options": [
+      "A. Scope, Schedule, Cost",
+      "B. Quality, Communication, Risk",
+      "C. Resources, Equipment, Capital",
+      "D. Objectives, Plans, Execution"
+    ],
+    "answer": "A",
+    "explanation": "The traditional project management triangle constraints are Scope, Schedule (Time), and Cost."
   }
 ]
 ```
 
-### User Experience
+#### Short Answer Question (SAQ) Format
 
-- **Responsive Design**: Support for Desktop, Tablet, and Mobile devices
-- **Keyboard Shortcuts**: Enhanced efficiency (see [Usage Instructions](#usage-instructions))
-- **Accessibility (A11y)**: ARIA labels, screen reader notifications, full keyboard navigation, and WCAG AA contrast ratios
-- **Real-time Feedback**: Visual highlights when options are selected
-
----
-
-## Question Banks
-
-### Available Question Banks
-
-| Bank Name | File Name | Description |
-|-----------|-----------|-------------|
-| Project Management | `Project_Management.json` | 12 Principles and 8 Performance Domains (PMBOK Core) |
-| Financial Planning | `Basic_Financial_Planning.json` | Basic financial concepts, investment, insurance, and retirement planning |
-| IPAS L11-A | `IPAS-AI-L11-A.json` | AI Fundamentals & Governance (Mock Exam A) |
-| IPAS L11-B | `IPAS-AI-L11-B.json` | AI Fundamentals & Governance (Mock Exam B) |
-| IPAS L11 #130994 | `IPAS-AI-L11-130994.json` | Year 114 iPAS AI Application Planner official exam questions |
-| IPAS L12-A | `IPAS-AI-L12-A.json` | GenAI Applications & Planning (Mock Exam A) |
-| IPAS L12-B | `IPAS-AI-L12-B.json` | GenAI Applications & Planning (Mock Exam B) |
-| IPAS L12-C | `IPAS-AI-L12-C.json` | GenAI Applications & Planning (Mock Exam C) |
-| IPAS L12-D | `IPAS-AI-L12-D.json` | GenAI Applications & Planning (Mock Exam D) |
-| ERP Planner Reference Questions | `ERP Planner_Reference Question Types_202509_V06.json` | ERP Planner core concepts and reference questions |
-| ERP Basic Certificate Exam | `PFERP_Reference119_20240201.json` | ERP Basic Certificate Exam academic questions |
+```json
+[
+  {
+    "id": 2,
+    "type": "SAQ",
+    "question": "Explain the core operational concept of Retrieval-Augmented Generation (RAG).",
+    "answer": "RAG combines external document retrieval with LLMs to provide contextually accurate responses while mitigating hallucinations.",
+    "explanation": "RAG retrieves relevant document chunks from a vector database and injects them as context into the prompt before LLM generation."
+  }
+]
+```
 
 ---
 
@@ -171,198 +265,150 @@ Both CSV and JSON outputs represent "one record per question" with the following
 
 ```
 Examination-System/
-├── index.html                  # Main UI & settings panel
-├── app.js                      # Core application logic
-├── style.css                   # Styles (CSS variables, dark/light themes)
-├── favicon.png                 # Website icon
-├── robots.txt                  # Search engine crawl rules
-├── sitemap.xml                 # SEO Sitemap
-├── CHANGELOG.md                # Version update history (Traditional Chinese)
-├── CHANGELOG.en.md             # Version update history (English)
-├── LICENSE                     # MIT License
-├── README.md                   # Chinese documentation
-├── README.en.md                # English documentation (This file)
-├── llms.txt                    # AI-friendly project details
-├── json/                       # Question bank directory
+├── index.html                  # Core application HTML and accessible DOM layout
+├── app.js                      # Main application logic (ExamApp class & security filters)
+├── style.css                   # Stylesheet (CSS design tokens, dark/light themes, A11y)
+├── favicon.png                 # Standard favicon and Apple Touch Icon
+├── CHANGELOG.md                # Traditional Chinese update history (Keep a Changelog)
+├── CHANGELOG.en.md             # English update history
+├── README.md                   # Traditional Chinese project documentation
+├── README.en.md                # English project documentation (This file)
+├── llms.txt                    # Structured project index for LLMs and AI agents
+├── LICENSE                     # MIT Open Source License
+├── json/                       # Standardized question bank directory
+│   ├── ERP Planner_Reference Question Types_202509_V06.json
+│   ├── PFERP_Reference119_20240201.json
+│   ├── IPAS-AI-L11-A.json
+│   ├── IPAS-AI-L11-B.json
+│   ├── IPAS-AI-L11-130994.json
+│   ├── IPAS-AI-L12-A.json
+│   ├── IPAS-AI-L12-B.json
+│   ├── IPAS-AI-L12-C.json
+│   ├── IPAS-AI-L12-D.json
 │   ├── Project_Management.json
-│   └── ...
-└── docs/
-    ├── screenshots/            # UI screenshots
+│   └── Basic_Financial_Planning.json
+└── docs/                       # Architectural records and visual assets
+    ├── screenshots/            # UI vector screenshots (SVG)
+    │   ├── preview.svg
+    │   ├── sidebar.svg
+    │   ├── settings-panel.svg
+    │   └── result-export.svg
     └── adr/                    # Architecture Decision Records
-        └── ADR-001-local-security-validation.md
+        ├── ADR-001-local-security-validation.md     # Chinese ADR
+        └── ADR-001-local-security-validation.en.md  # English ADR
 ```
 
 ---
 
-## Technical Architecture
+## Security & Defensive Architecture
 
-| Aspect | Description |
-|--------|-------------|
-| Core Tech | HTML5, CSS3, Vanilla JavaScript (Zero-dependency framework) |
-| Storage | LocalStorage with TTL mechanism and schema verification |
-| Bank Format | JSON format with schema validation |
-| Theme System | CSS variables + `prefers-color-scheme` media query |
-| Deployment | GitHub Pages with forced HTTPS |
-| Dependencies | Zero (eliminating supply chain risks) |
-
-### System Requirements
-
-| Browser | Minimum Version |
-|---------|-----------------|
-| Chrome  | 70+             |
-| Firefox | 65+             |
-| Safari  | 12+             |
-| Edge    | 79+             |
-| Opera   | 60+             |
-
-- **JavaScript** must be enabled.
-- **LocalStorage** must be allowed (do not use incognito mode, otherwise progress cannot be saved).
-
----
-
-## Developer Guide
-
-### Adding a Question Bank
-
-1. Create a JSON question bank file in the `json/` directory according to the following formats:
-
-   **Single Choice Format:**
-   ```json
-   [
-     {
-       "id": 1,
-       "question": "Question content",
-       "options": [
-         "A. Option A",
-         "B. Option B",
-         "C. Option C",
-         "D. Option D"
-       ],
-       "answer": "B",
-       "explanation": "Explanation content"
-     }
-   ]
-   ```
-
-   **Short Answer Format (SAQ):**
-   ```json
-   [
-     {
-       "id": 2,
-       "question": "SAQ content",
-       "type": "SAQ",
-       "answer": "Standard Answer",
-       "explanation": "Explanation content"
-     }
-   ]
-   ```
-
-2. Add a new `<option>` to the `question-bank-select` dropdown in `index.html`:
-   ```html
-   <option value="My_New_Bank.json">My New Question Bank</option>
-   ```
-
-3. Append your file name to the `ALLOWED_BANKS` whitelist in `app.js`:
-   ```javascript
-   const ALLOWED_BANKS = [
-     // ... existing entries
-     'My_New_Bank.json',
-   ];
-   ```
-
-### Local Development Advice
-
-- Serve the static files using a Python server or VS Code Live Server to prevent CORS blocks.
-- Console `log`/`info` outputs are fully visible in local environments, but are automatically silenced in production (GitHub Pages) except for `warn`/`error`.
-
----
-
-## Usage Instructions
-
-### Exam Flow
-
-1. **Configure Exam**: Choose a question bank, set the drawing count, and configure randomizations.
-2. **Start Exam**: Click "Start Exam" to enter the question page.
-3. **Answering**: Click options (Single Choice) or input text (SAQ). You can navigate back and forth at any time.
-4. **Submission**: Click "Submit Exam" or press Enter on the last question.
-5. **Results**: View score, accuracy, and detailed correct/incorrect questions reports.
-6. **Export**: Export results to JSON or CSV.
-
-### Keyboard Shortcuts
-
-| Shortcut | Function |
-|----------|----------|
-| `←` / `→` | Prev / Next question |
-| `1` - `4` | Select option A-D (Single-choice only) |
-| `Enter` (During test) | Jump to next question; Submit on the last question |
-| `Enter` (On result page) | Restart the exam |
-
----
-
-## Security & Privacy
-
-For details on the architecture choices and security considerations, refer to [ADR-001: Local Data Security and Defensive Verification Mechanism](docs/adr/ADR-001-local-security-validation.en.md).
+For a comprehensive technical breakdown of our security decisions, please refer to [ADR-001: Client-Side Data Security and Defensive Verification Mechanism](docs/adr/ADR-001-local-security-validation.en.md).
 
 ### Implemented Controls
 
-- **Front-end Security**: Replaced all `innerHTML` usage with secure DOM APIs and `textContent`. Rigid CSP policies applied.
-- **Data Protection**: LocalStorage TTL mechanism. CSV Formula Injection mitigation. JSON schema verification.
-- **Input Sanitization**: Question bank whitelist checks. Defensive schema checks on LocalStorage content and configuration loading via `_sanitizeConfig`.
+```mermaid
+graph LR
+    subgraph Defenses [Security Layer]
+        D1[ALLOWED_BANKS Whitelist] --> S1[Blocks Path Injection]
+        D2[100% textContent & Safe DOM APIs] --> S2[Neutralizes XSS Attacks]
+        D3[Strict CSP default-src self] --> S3[Prevents Data Exfiltration]
+        D4[_sanitizeConfig Deserialization] --> S4[Prevents Prototype Pollution]
+        D5[_validateProgressSchema Audits] --> S5[Purges Corrupted LocalStorage]
+        D6[UTF-8 BOM + Quote Escaping] --> S6[Prevents CSV Formula Injections]
+    end
+```
 
-### Architecture Disclaimer
+### Architectural Scope Disclaimer
 
-> **This is a client-side practice tool**. All question bank JSON files are publicly readable on the client side. This application is not intended for high-stakes, fraud-controlled exams.
+> **This project is designed as a client-side practice and self-study tool**:
+> 1. All question bank files and standard answers reside publicly on the client side.
+> 2. All scoring logic runs inside browser JavaScript with no backend verification.
+> 3. This system is **not suitable** for official certification, proctored testing, or high-stakes assessments.
 
 ---
 
-## Quick Preview
+## Visual Previews
 
-> Question page with sidebar:
+### Exam Interface & Question Navigation Sidebar
 
-![Main Preview](docs/screenshots/preview.svg)
-![Sidebar Preview](docs/screenshots/sidebar.svg)
+![Exam Interface Preview](docs/screenshots/preview.svg)
 
-> Settings panel and export view:
+![Question Grid Sidebar](docs/screenshots/sidebar.svg)
+
+### Settings Panel & Result Analytics
 
 ![Settings Panel](docs/screenshots/settings-panel.svg)
+
 ![Result Export](docs/screenshots/result-export.svg)
 
 ---
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Question bank loading fails / "Loading Failed" | Make sure you run a local server (see [Quick Start](#quick-start)) rather than double-clicking `index.html`. |
-| CSV export shows garbled characters in Excel | Import the file using "Data > From Text/CSV" and choose UTF-8 encoding. |
-| Interface freeze / shortcut issues | Hard reload the browser (Ctrl+Shift+R) to clear outdated cache. |
-| Clear all local data | Go to "Exam Settings" on the home page and click "Clear All Local Data". |
+| Issue | Potential Cause | Recommended Solution |
+|-------|-----------------|----------------------|
+| "Failed to load question bank" | Opening via `file://` protocol triggers browser CORS blocks | Launch via Bun or Python local server as documented in [Quick Start](#quick-start) |
+| CSV export shows garbled text in Excel | Excel does not automatically detect UTF-8 encoding | Use Excel "Data > From Text/CSV" and explicitly choose "65001 : Unicode (UTF-8)" |
+| Shortcuts or option buttons unresponsive | Browser cached outdated JavaScript assets | Perform a hard refresh using `Ctrl + Shift + R` (Windows) or `Cmd + Shift + R` (macOS) |
+| Test progress or records lost | Incognito mode active or LocalStorage 7-day TTL elapsed | Use standard browser windows for long-term study preservation |
+| Need to reset all preferences and cache | Outdated cache states interfering with newer versions | Navigate to "Exam Settings" on the landing page and click "Clear All Local Data" |
 
 ---
 
 ## FAQ
 
-**Q: How do I use it on a mobile device?**
-A: Directly open the [Live Demo](https://scorpio-meow.github.io/Examination-System/) in your mobile browser. The UI is fully responsive.
+**Q: Can I use this on mobile phones or tablets?**
+A: Yes. The system is designed with a responsive fluid layout supporting modern mobile browsers on iOS Safari and Android Chrome.
 
-**Q: Will the correct answers get messed up if I shuffle options?**
-A: No. The option shuffler dynamically maps correct answers to newly generated indexes, ensuring evaluation accuracy.
+**Q: Will shuffling options cause scoring errors?**
+A: No. Option shuffling dynamically creates an index mapping between original options and randomized placements, ensuring accurate evaluation.
+
+**Q: How do I add a new question bank?**
+A: Follow three steps:
+1. Place your JSON question bank inside `./json/` following the [Data Schema](#data-schema--standards).
+2. Add an `<option>` element to the `<select id="question-bank-select">` inside `index.html`.
+3. Register the filename into the `ALLOWED_BANKS` Set in `app.js`.
 
 ---
 
 ## Changelog
 
-See [CHANGELOG.en.md](CHANGELOG.en.md) for full update details.
+Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
 
-**Current Version**: v3.5.2 (2026-06-03)
+- **Current Version**: `v3.5.2` (2026-06-03)
+  - Completed comprehensive explanations for ERP Planner reference questions
+  - Unified all question banks under `./json/` and adjusted loading paths
+  - Synchronized bank filenames across codebase and selectors
+- **Milestone Releases**:
+  - `v3.5.1`: Introduced bank whitelisting, defensive schema verification, CSP hardening, and safe file dispatching
+  - `v3.5.0`: Added random question extraction, multi-bank ERP additions, and UI aesthetic refactoring
+  - `v3.4.1`: Introduced conditional logging and explicit client-side scope boundaries
+  - `v3.3.2`: Added IPAS AI banks, question grid sidebar, CSV/JSON exports, and LocalStorage TTL
 
 ---
 
 ## Contribution Guide
 
-1. **Report Bugs**: Go to [GitHub Issues](https://github.com/Scorpio-meow/Examination-System/issues) and describe the problem.
-2. **Submit PR**: Fork this repository, create a branch (`feature/your-feature`), commit (`feat: describe it`), and push to open a PR.
-3. **Submit Bank**: Follow the [Developer Guide](#developer-guide) JSON format and submit a PR with your new question bank JSON.
+We welcome contributions to question banks, UI refinements, and architectural improvements:
+
+1. Fork this repository to your GitHub account.
+2. Create a feature branch: `git checkout -b feature/your-feature-name`.
+3. Commit your changes using Conventional Commits: `git commit -m 'feat: add new question bank'`.
+4. Push to your branch: `git push origin feature/your-feature-name`.
+5. Open a Pull Request detailing your changes and verification tests.
+
+---
+
+## Contact
+
+| Channel | Link |
+|---------|------|
+| Email | [yao921024@gmail.com](mailto:yao921024@gmail.com) |
+| Instagram | [@scorpio_meow_1024](https://www.instagram.com/scorpio_meow_1024) |
+| Threads | [@scorpio_meow_1024](https://www.threads.com/@scorpio_meow_1024) |
+| Issue Tracker | [GitHub Issues](https://github.com/Scorpio-meow/Examination-System/issues) |
+| Pull Requests | [GitHub Pull Requests](https://github.com/Scorpio-meow/Examination-System/pulls) |
+| Repository | [GitHub Repository](https://github.com/Scorpio-meow/Examination-System) |
 
 ---
 

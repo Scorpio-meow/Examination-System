@@ -426,6 +426,18 @@ select.form-control {
   outline: var(--focus-outline);
 }
 
+select.form-control optgroup {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-primary);
+  background-color: var(--color-surface);
+}
+
+select.form-control option {
+  font-weight: var(--font-weight-normal);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
 .form-label {
   display: block;
   margin-bottom: var(--space-8);

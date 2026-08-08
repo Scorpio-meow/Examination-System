@@ -1,35 +1,78 @@
 # 考試系統 (Examination System)
-> 基於純前端技術打造的專業知識測驗與模擬考試平台，支援多種題庫隔離載入、進度自動保存、答題狀態分析與結果匯出。
+> 純前端無伺服器架構之專業知識測驗與模擬考試平台，支援題庫隔離載入、進度自動保存、答題狀態分析與防禦性資料匯出。
 
-## 核心檔案
-- [index.html](index.html)：系統主頁面，定義 UI 結構、設定面板、答題卡及結果頁。
-- [app.js](app.js)：核心應用程式邏輯，包含 ExamApp 類別、事件綁定、狀態管理與安全驗證。
-- [style.css](style.css)：系統樣式表，定義 CSS 變數、版面配置、無障礙對比度與深/淺色主題。
-- [json/](json/)：題庫目錄，包含所有 JSON 格式的題庫檔案。
+## 核心檔案導航 (Core Files)
+- index.html: 系統主頁面，定義 UI 結構、設定面板、答題卡、題號導覽側邊欄及結果分析頁。
+- app.js: 核心應用程式控制器，包含 ExamApp 類別、事件綁定、狀態持久化、安全過濾與資料匯出邏輯。
+- style.css: 系統樣式表，包含 CSS 變數設計系統、深淺主題切換、響應式排版與 WCAG AA 無障礙高對比樣式。
+- json/: 題庫儲存目錄，包含 11 個標準化 JSON 格式之題庫資料檔案。
+- docs/adr/ADR-001-local-security-validation.md: 繁體中文架構決策記錄，闡述用戶端資料安全與防禦性驗證機制。
+- docs/adr/ADR-001-local-security-validation.en.md: 英文架構決策記錄。
 
-## 關鍵技術概念
-- 純前端無伺服器架構：系統所有運作（包含載入、解析、批改、儲存與匯出）均在瀏覽器端執行，無後端伺服器參與，不適用於需要防弊的正式考試。
-- 題庫載入與安全白名單：透過 `ALLOWED_BANKS` 白名單限制可載入的題庫檔名，防止惡意路徑注入攻擊。本地執行時須透過靜態網頁伺服器（如 Python http.server 或 Bun 的靜態伺服器），直接以 file 協定開啟會被瀏覽器安全原則阻擋。
-- 本機資料持久化與 TTL 機制：使用 LocalStorage保存考試進度、歷史紀錄與設定值。所有寫入與讀取皆經過 JSON Schema 結構驗證與欄位清理，並設有 7 天的過期機制 (TTL)。
-- 多樣化考試設定：支援隨機抽題、題目亂序、選項亂序（會自動重新標記 A-D 並重新映射正確答案）、自訂及格分數。
-- 結果匯出與防護：支援將作答結果匯出為 JSON 與 CSV 格式。CSV 檔案包含 UTF-8 with BOM 以避免 Excel 開啟時亂碼，並在 "="、"+"、"-"、"@" 等字元開頭的欄位前加上單引號以防止 CSV 公式注入攻擊。
-- 無障礙網頁設計：實作鍵盤快捷鍵導航、ARIA 屬性標記與 `aria-live` 狀態即時通告，符合 WCAG AA 對比度標準。
+## 題庫清單 (Question Banks)
+- json/ERP Planner_Reference Question Types_202509_V06.json: ERP 規劃師核心概念與參考題型（含完整繁中解析）
+- json/PFERP_Reference119_20240201.json: ERP 基礎檢定考試學科題型
+- json/IPAS-AI-L11-A.json: iPAS AI 應用規劃師 L11 基礎與治理 (A卷)
+- json/IPAS-AI-L11-B.json: iPAS AI 應用規劃師 L11 基礎與治理 (B卷)
+- json/IPAS-AI-L11-130994.json: 114 年度 iPAS AI 應用規劃師初級科目一精選試題
+- json/IPAS-AI-L12-A.json: iPAS AI 應用規劃師 L12 生成式 AI 應用與規劃 (A卷)
+- json/IPAS-AI-L12-B.json: iPAS AI 應用規劃師 L12 生成式 AI 應用與規劃 (B卷)
+- json/IPAS-AI-L12-C.json: iPAS AI 應用規劃師 L12 生成式 AI 應用與規劃 (C卷)
+- json/IPAS-AI-L12-D.json: iPAS AI 應用規劃師 L12 生成式 AI 應用與規劃 (D卷)
+- json/Project_Management.json: 專案管理 PMI PMBOK 核心原則與績效領域
+- json/Basic_Financial_Planning.json: 理財規劃基礎觀念、投資與退休配置
+
+## 核心架構與資料模型 (Data Models)
+
+### 單選題模型 (Single Choice Schema)
+```json
+{
+  "id": 1,
+  "question": "題目描述字串",
+  "options": [
+    "A. 選項文字A",
+    "B. 選項文字B",
+    "C. 選項文字C",
+    "D. 選項文字D"
+  ],
+  "answer": "A",
+  "explanation": "答題解析說明字串"
+}
+```
+
+### 簡答題模型 (SAQ Schema)
+```json
+{
+  "id": 2,
+  "type": "SAQ",
+  "question": "簡答題目描述字串",
+  "answer": "標準參考答案字串",
+  "explanation": "詳細知識點解析字串"
+}
+```
+
+## 安全邊界與關鍵概念 (Key Concepts & Security Boundaries)
+- 純前端執行邊界 (Client-Side Architecture): 系統所有邏輯（含解析、評分、儲存與匯出）均在瀏覽器端執行，題目與答案公開可見於 JSON 檔案中，定位為自學與練習工具，不具備防弊能力。
+- 題庫載入白名單 (Bank Whitelisting): 透過 `ALLOWED_BANKS` Set 結構嚴格比對請求之題庫名稱，阻擋路徑遍歷與任意檔案注入。
+- LocalStorage 防禦驗證 (Defensive Storage Audits): 進度與歷史資料載入前透過 `_validateProgressSchema` 與 `_validateRecordsSchema` 審核結構與數值範圍，資料預設保留 7 天 (TTL)。
+- 設定反序列化清理 (Config Sanitization): 使用 `_sanitizeConfig` 逐欄驗證外部設定值，取代不安全的物件展開合併（`{ ...config, ...savedConfig }`），防範原型污染。
+- 匯出安全防護 (CSV Formula Injection Defense): 匯出 CSV 採用 UTF-8 with BOM，並對以 `=`, `+`, `-`, `@` 開頭之欄位前置單引號處理；透過 `dispatchEvent` 觸發下載，避免 DOM 污染。
+- 無障礙相容 (A11y Standards): 實作全鍵盤快捷鍵（方向鍵導航、數字鍵選題、Enter 換題/提交）、ARIA 狀態標記與 `aria-live` 螢幕閱讀器狀態通告。
 
 ---
 
-# Examination System
-> A client-side mock examination platform built on pure HTML5/CSS3/Vanilla JS, featuring isolated bank loadings, auto-save mechanisms, performance analysis, and session exports.
+# Examination System (English Index)
+> A pure client-side, zero-dependency mock examination and knowledge assessment platform featuring isolated bank loading, auto-save state machines, performance analysis, and defensive exports.
 
-## Core Files
-- [index.html](index.html): Main page defining structural grids, test configurations, question cards, and evaluations.
-- [app.js](app.js): Primary application controller containing the `ExamApp` class, event binders, state managers, and security validators.
-- [style.css](style.css): Custom stylesheet hosting CSS variables, layout behaviors, contrast control, and theme variables.
-- [json/](json/): Question bank directory holding all exam metadata formatted as JSON.
+## Core Files Overview
+- index.html: Main application view containing structural grids, settings modal, question cards, sidebar navigation, and evaluation reports.
+- app.js: Primary application controller hosting the `ExamApp` class, state orchestration, defensive validation, and export routines.
+- style.css: Core stylesheet providing CSS design tokens, dark/light theme switching, responsive layouts, and WCAG AA contrast styles.
+- json/: Standardized directory containing 11 JSON formatted question banks.
+- docs/adr/ADR-001-local-security-validation.en.md: Architectural Decision Record for client-side defensive validation mechanisms.
 
-## Key Technical Concepts
-- **Pure Front-end Client Scope**: All logic runs locally inside the browser. Since the system contains no server-side logic, all answer configurations are readable on the client, making this a practice tool rather than an official exam manager.
-- **Bank Loading Security Whitelist**: Employs static `ALLOWED_BANKS` lookups during file fetches. To run locally, files must be served via http/https (e.g., Python `http.server` or Bun CLI) to bypass local file CORS constraints.
-- **LocalStorage State Auditing**: Exam sessions, preferences, and histories are saved with defensive schema checks (`_validateProgressSchema` & `_validateRecordsSchema`) and configuration filtering (`_sanitizeConfig`), expiring automatically after 7 days (TTL).
-- **Exam Customizations**: Allows shuffling question structures, shuffling option layouts (evaluations are automatically re-mapped to dynamic keys), drawing limits, and customizable pass/fail criteria.
-- **CSV/JSON Data Protection**: Exports CSV files with UTF-8 BOM encoding for Excel rendering. Mitigates CSV Injection vectors by pre-pending single quotes to text starting with `=`, `+`, `-`, or `@`.
-- **Accessible Interfaces (A11y)**: Built with native keyboard controls, custom ARIA states, and `aria-live` polite narration panels conforming to WCAG AA.
+## Operational Lifecycle
+1. Ingestion: Reads `bank` query parameter, verifies against `ALLOWED_BANKS`, and performs schema validation via `validateQuestionSchema`.
+2. State Restoration: Restores preferences through `_sanitizeConfig` and progress through `_validateProgressSchema` with 7-day TTL check.
+3. Execution: Draws questions, optionally applies shuffling algorithms, and manages keyboard/mouse answer events.
+4. Evaluation & Export: Calculates scores, formats review reports, and exports CSV/JSON files safely via custom MouseEvents.
