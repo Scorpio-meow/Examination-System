@@ -4,8 +4,8 @@
 Accepted
 
 ## Context
-In previous architectural iterations, the Examination System operated as a static client-side web application with several latent security weaknesses and defensive omissions:
-1. **Question Bank Path Injection**: The path to load question bank files was directly ingested from the URL `bank` query parameter or dropdown selectors without validation, risking attempts to load unintended local files.
+In previous architectural iterations, the Examination System operated as a static client-side single-page web application with several latent security weaknesses and defensive omissions:
+1. **Question Bank Path Injection**: The path to load question bank files was directly ingested from the URL `bank` query parameter or dropdown selectors without validation, risking attempts to load unintended local files or arbitrary paths.
 2. **Unvalidated LocalStorage State Restoration**: Active progress records (`examProgress`) and history archives (`examRecords`) were deserialized and applied without schema validation or boundary checks. Corrupted or tampered local states could trigger out-of-bounds exceptions or runtime crashes.
 3. **Prototype Pollution & Configuration State Contamination**: System configuration restoration used direct object spread operators (`{ ...config, ...savedConfig }`), exposing internal state variables to untrusted property overrides.
 4. **Permissive Content Security Policy (CSP)**: The legacy CSP rule included `data:` URIs for images and fonts, increasing potential attack surfaces for Cross-Site Scripting (XSS) and data exfiltration.
@@ -20,20 +20,20 @@ We decided to integrate multi-layered defensive verification structures within `
 
 ```mermaid
 flowchart TD
-    subgraph InputValidation [Input & Path Validation]
+    subgraph InputValidation [Layer 1: Input & Path Defense]
         A[URL bank Parameter / Selector Input] --> B{ALLOWED_BANKS Whitelist Check}
         B -- Match Found --> C[Allow Target JSON Ingestion]
         B -- Match Failed --> D[Fallback to Default ERP Bank]
     end
 
-    subgraph SchemaVerification [Data Integrity Audits]
+    subgraph SchemaVerification [Layer 2: Data Integrity Audits]
         C --> E[validateQuestionSchema Completeness Check]
         E --> F[_sanitizeConfig Range & Type Sanitization]
         F --> G[_validateProgressSchema Structure Audit]
         G --> H[_validateRecordsSchema History Array Audit]
     end
 
-    subgraph DefenseExecution [Execution & Safe Exports]
+    subgraph DefenseExecution [Layer 3: Safe Execution & Exports]
         H --> I[Strict CSP: Restrict Sources to self]
         I --> J[CSV Quote Prefix: Neutralize = + - @ Injections]
         J --> K[MouseEvent Dispatch: Clean File Triggering]

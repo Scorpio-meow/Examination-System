@@ -2,14 +2,16 @@
 
 [English Version](README.en.md)
 
-> 基於純前端技術打造的專業知識測驗與模擬考試平台，支援多種題庫隔離載入、自訂抽題、進度自動保存、答題狀態分析與防禦性資料匯出。
+> 基於純前端技術打造的專業知識測驗與模擬考試平台，支援題庫隔離載入、彈性隨機抽題、進度自動保存、答題狀態分析與防禦性資料匯出。
 
 [![版本](https://img.shields.io/badge/版本-3.5.2-brightgreen?style=flat-square)](CHANGELOG.md)
 [![授權](https://img.shields.io/badge/授權-MIT-orange?style=flat-square)](LICENSE)
-[![更新日期](https://img.shields.io/badge/更新日期-2026--06--03-blue?style=flat-square)](CHANGELOG.md)
+[![技術棧](https://img.shields.io/badge/技術棧-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-blue?style=flat-square)](https://developer.mozilla.org/zh-TW/)
+[![依賴項](https://img.shields.io/badge/外部依賴-零依賴%20(Zero%20Dependency)-success?style=flat-square)](app.js)
+[![無障礙標準](https://img.shields.io/badge/無障礙-WCAG%20AA%20Compliant-purple?style=flat-square)](style.css)
 [![線上試用](https://img.shields.io/badge/線上試用-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
-[![問題回報](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/issues)
-[![協作開發](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/pulls)
+[![問題回報](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/issues)
+[![協作開發](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/pulls)
 
 ---
 
@@ -19,7 +21,7 @@
 - [線上試用](#線上試用)
 - [系統架構與運作流程](#系統架構與運作流程)
 - [功能特色](#功能特色)
-- [題庫清單與規格](#題庫清單與規格)
+- [題庫規格與資料統計](#題庫規格與資料統計)
 - [設定選項規格](#設定選項規格)
 - [鍵盤快捷鍵](#鍵盤快捷鍵)
 - [資料結構規範](#資料結構規範)
@@ -39,17 +41,17 @@
 
 ### 線上使用（推薦）
 
-直接瀏覽 [https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/)，無需安裝任何依賴環境。
+直接造訪 [https://scorpio-meow.github.io/Examination-System/](https://scorpio-meow.github.io/Examination-System/)，無需安裝任何伺服器或依賴套件。
 
 ### 本機執行
 
-1. 複製或下載本專案儲存庫：
+1. 複製或下載專案原始碼：
    ```bash
    git clone https://github.com/Scorpio-meow/Examination-System.git
    cd Examination-System
    ```
 
-2. 啟動本機靜態伺服器（必要步驟：避免瀏覽器安全性原則阻擋 `file://` 協定下的 JSON 異步請求）：
+2. 啟動本機靜態網頁伺服器（必要步驟：避免瀏覽器安全性原則阻擋 `file://` 協定下的 JSON 異步請求）：
 
    - **使用 Bun（推薦）**：
      ```bash
@@ -66,7 +68,7 @@
      py -3 -m http.server 8000
      ```
 
-3. 開啟瀏覽器並造訪 [http://localhost:8000](http://localhost:8000)。
+3. 開啟瀏覽器造訪 [http://localhost:8000](http://localhost:8000)。
 
 4. 在首頁「選擇題庫」下拉選單中挑選目標題庫，設定抽題條件後點擊「開始考試」。
 
@@ -84,40 +86,40 @@
 
 ## 系統架構與運作流程
 
-本系統採純前端無伺服器（Serverless Client-Side）架構，整體核心模組與資料流如下圖所示：
+本系統採純前端無伺服器（Serverless Client-Side）架構，核心生命週期涵蓋題庫載入驗證、狀態恢復、考試互動循環與防禦性資料匯出：
 
 ```mermaid
 flowchart TD
     subgraph ClientInit [初始化與載入]
-        A[使用者造訪頁面] --> B[讀取 URL 參數 bank]
+        A[使用者造訪頁面] --> B[解析 URL 參數 bank]
         B --> C{是否於 ALLOWED_BANKS 白名單?}
-        C -- 是 --> D[載入對應題庫 JSON]
+        C -- 是 --> D[載入目標題庫 JSON]
         C -- 否 --> E[回退預設題庫 ERP 規劃師]
-        D --> F[validateQuestionSchema 結構驗證]
+        D --> F[validateQuestionSchema 題目結構校驗]
         E --> F
     end
 
-    subgraph ConfigStorage [設定與狀態管理]
-        F --> G[載入 LocalStorage 設定]
-        G --> H[_sanitizeConfig 欄位清理與驗證]
-        H --> I[_validateProgressSchema 進度結構審查]
-        I --> J[判斷是否符合 TTL 7 天過期機制]
+    subgraph StateManagement [設定與狀態管理]
+        F --> G[讀取 LocalStorage 設定]
+        G --> H[_sanitizeConfig 欄位清理與型別審查]
+        H --> I[_validateProgressSchema 進度合法性校驗]
+        I --> J[檢查 7 天 TTL 資料生命週期]
     end
 
-    subgraph ExamSession [考試執行循環]
-        J --> K[抽題與題目/選項亂序處理]
-        K --> L[渲染題目卡與側邊欄題號矩陣]
-        L --> M[使用者鍵盤 / 滑鼠作答]
-        M --> N[自動儲存進度至 LocalStorage]
-        N --> O[最後一題提交評分]
+    subgraph ExamSession [互動答題循環]
+        J --> K[抽題數量過濾與題序/選項亂序處理]
+        K --> L[渲染題目卡與題號導覽側邊欄]
+        L --> M[全鍵盤 / 滑鼠作答互動]
+        M --> N[即時儲存作答進度至 LocalStorage]
+        N --> O[最後一題確認提交]
     end
 
-    subgraph EvaluationExport [結算與安全匯出]
-        O --> P[即時計分、正確率與錯題解析]
+    subgraph EvaluationExport [結算評估與防禦匯出]
+        O --> P[即時計算總分、正確率與錯題解析]
         P --> Q{選擇匯出格式}
-        Q -- JSON --> R[產生標準化 JSON 報表]
-        Q -- CSV --> S[UTF-8 with BOM + 公式注入防護處理]
-        R --> T[透過 MouseEvent 安全觸發下載]
+        Q -- JSON --> R[產出標準 JSON 結構報表]
+        Q -- CSV --> S[UTF-8 with BOM 編碼 + 公式字元轉義]
+        R --> T[MouseEvent 安全背景觸發檔案下載]
         S --> T
     end
 ```
@@ -128,25 +130,25 @@ flowchart TD
 
 ### 測驗與答題系統
 
-| 功能模組 | 技術實現與說明 |
-|----------|----------------|
-| 多領域專業題庫 | 內建 11 套題庫，涵蓋 ERP 企業資源規劃、IPAS AI 應用規劃師、專案管理、理財規劃等專業認證 |
-| 雙題型支援 | 支援單選題（4 選項）與簡答題（Short Answer Question, SAQ） |
-| 靈活抽題模式 | 支援抽取「全部題目」或隨機抽取「10 / 20 / 30 / 50 / 100 / 自訂題數」 |
-| 題序與選項亂序 | 隨機打亂題序與選項排列，選項打亂時動態重新標記 A–D 並更新標準答案對應鍵 |
-| 深度解析回饋 | 每道題目均附有詳細解析說明，考後即時掌握知識盲點 |
-| 答題導覽側邊欄 | 右側即時展示全題目矩陣，透過視覺描邊即時標示已答、未答與當前題目位置 |
+| 功能模組 | 技術實現與功能說明 |
+|----------|--------------------|
+| 多領域專業題庫 | 內建 11 套題庫，涵蓋 ERP 規劃師、IPAS AI 應用規劃師、專案管理與理財規劃等專業認證領域 |
+| 雙題型無縫支援 | 完整支援 4 選項單選題（Single Choice）與簡答自評題（Short Answer Question, SAQ） |
+| 彈性抽題模式 | 支援抽取「全部題目」或隨機抽取「10 / 20 / 30 / 50 / 100 / 自訂題數」 |
+| 隨機題序與選項 | 支援題目隨機排序與選項隨機排列；選項亂序時動態更新 A–D 標記並精確重映射正確答案 |
+| 深度知識解析 | 每一題均附有詳盡的知識點解析，交卷後即時回顧答題盲點 |
+| 即時導覽側邊欄 | 右側題號矩陣即時展示已答、未答與當前題目位置，點擊即可快速跳轉 |
 
 ### 資料持久化與安全設定
 
-| 功能模組 | 技術實現與說明 |
-|----------|----------------|
-| 進度自動保存 | 支援答題即時儲存至 LocalStorage，意外關閉頁面可無縫接續 |
+| 功能模組 | 技術實現與功能說明 |
+|----------|--------------------|
+| 進度自動保存 | 支援答題即時儲存至 LocalStorage，意外關閉分頁可無縫復原 |
 | 題庫獨立隔離 | 各題庫之進度與歷史紀錄採獨立鍵值儲存，切換題庫互不干擾 |
-| 智慧復原機制 | 重新進入頁面時主動偵測現有進度，提供「繼續作答」或「重新開始」選項 |
+| 智慧復原提示 | 重新進入頁面時主動偵測現有進度，提供「繼續作答」或「重新開始」選項 |
 | 資料生命週期 (TTL) | 進度、設定與測驗紀錄預設保留 7 天，逾期由系統自動安全清理 |
 | 主題外觀切換 | 支援深色模式（Dark Mode）與淺色模式（Light Mode），自動相容系統喜好 |
-| 一鍵清理資料 | 設定面板提供單鍵清除本機所有快取資料，確保隱私不留存 |
+| 一鍵清理快取 | 設定面板提供單鍵清除本機所有資料，確保公用電腦隱私不留存 |
 
 ### 結果分析與防禦性匯出
 
@@ -165,17 +167,17 @@ flowchart TD
 | 匯出時間 | 匯出執行時間戳記 | `2026-06-03T10:15:30.000Z` |
 
 - **CSV 防禦性編碼**：採用 `UTF-8 with BOM` 確保 Microsoft Excel 正確解碼無亂碼，並針對 `=`, `+`, `-`, `@` 開頭的文字欄位自動前置單引號，阻絕 CSV 公式注入（CSV Command Injection）攻擊。
-- **安全觸發下載**：透過 `dispatchEvent(new MouseEvent(...))` 觸發 Blob 下載，完全不把 DOM 節點掛載入 document tree，杜絕 DOM 污染。
+- **安全觸發下載**：透過 `dispatchEvent(new MouseEvent(...))` 觸發 Blob 下載，完全不把臨時 DOM 節點掛載入 document tree，杜絕 DOM 污染。
 
 ---
 
-## 題庫清單與規格
+## 題庫規格與資料統計
 
 系統內建 11 套完整的專業題庫，全部檔案統一存放於 `./json/` 目錄：
 
-| 題庫名稱 | 檔案路徑 | 題型範疇與重點摘要 |
+| 題庫名稱 | 檔案路徑 | 領域範疇與重點摘要 |
 |----------|----------|-------------------|
-| ERP 規劃師 參考題型 | `json/ERP Planner_Reference Question Types_202509_V06.json` | 企業資源規劃架構、生產製造、配銷管理、財務會計與系統導入流程 |
+| ERP 規劃師 參考題型 | `json/ERP Planner_Reference Question Types_202509_V06.json` | 企業資源規劃架構、生產製造、配銷管理、財務會計與系統導入流程（含完整繁中解析） |
 | ERP 基礎檢定 (學科) | `json/PFERP_Reference119_20240201.json` | 企業流程整合、生管、銷存、會計與 ERP 認證學科基礎題型 |
 | IPAS AI 應用規劃師 L11 (A卷) | `json/IPAS-AI-L11-A.json` | AI 核心基礎、機器學習概念、演算法評估與 AI 治理法規標準 |
 | IPAS AI 應用規劃師 L11 (B卷) | `json/IPAS-AI-L11-B.json` | 倫理隱私、資料治理、機器學習專案生命週期與模型驗證 |
@@ -212,11 +214,11 @@ flowchart TD
 
 | 快捷鍵 | 作用情境 | 功能描述 |
 |--------|----------|----------|
-| `←` (Left Arrow) | 答題進行中 | 切換至上一題 |
-| `→` (Right Arrow) | 答題進行中 | 切換至下一題 |
-| `1` / `2` / `3` / `4` | 單選題作答 | 快速選取選項 A / B / C / D |
-| `Enter` | 答題進行中 | 進入下一題；若位於最後一題則提交並結算考試 |
-| `Enter` | 結果展示頁面 | 立即重新開始新一輪測驗 |
+| <kbd>←</kbd> (Left Arrow) | 答題進行中 | 切換至上一題 |
+| <kbd>→</kbd> (Right Arrow) | 答題進行中 | 切換至下一題 |
+| <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> / <kbd>4</kbd> | 單選題作答 | 快速選取選項 A / B / C / D |
+| <kbd>Enter</kbd> | 答題進行中 | 進入下一題；若位於最後一題則提交並結算考試 |
+| <kbd>Enter</kbd> | 結果展示頁面 | 立即重新開始新一輪測驗 |
 
 ---
 
@@ -349,7 +351,7 @@ graph LR
 |----------|----------|-------------------|
 | 頁面提示「題庫載入失敗」 | 使用 `file://` 協定直接開啟 `index.html` 觸發瀏覽器 CORS 限制 | 請依據[快速開始](#快速開始)指引，使用 Bun 或 Python 啟動本機伺服器開啟頁面 |
 | 匯出的 CSV 檔案在 Excel 開啟出現亂碼 | 舊版 Excel 未自動識別 UTF-8 編碼 | 點選 Excel「資料 > 從文字/CSV 匯入」，手動選取「65001 : Unicode (UTF-8)」編碼 |
-| 快捷鍵或選項按鈕無反應 | 瀏覽器快取殘留舊版 JavaScript | 按下 `Ctrl + Shift + R` (Windows) 或 `Cmd + Shift + R` (macOS) 強制重新載入 |
+| 快捷鍵或選項按鈕無反應 | 瀏覽器快取殘留舊版 JavaScript | 按下 <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (Windows) 或 <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (macOS) 強制重新載入 |
 | 測驗進度或歷史紀錄突然遺失 | 啟用了無痕/隱私瀏覽模式，或本機資料已超過 7 天 TTL | 系統正常運作依賴 LocalStorage；請使用一般視窗進行長週期答題練習 |
 | 欲清空所有快取重新配置 | 舊有設定干擾最新功能運作 | 前往首頁「考試設定」面板，點擊「清除所有本機資料」按鈕重置 |
 
@@ -401,14 +403,14 @@ A：請完成三步驟：
 
 ## 聯絡方式
 
-| 管道 | 連結 |
-|------|------|
-| 電子郵件 | [yao921024@gmail.com](mailto:yao921024@gmail.com) |
-| Instagram | [@scorpio_meow_1024](https://www.instagram.com/scorpio_meow_1024) |
-| Threads | [@scorpio_meow_1024](https://www.threads.com/@scorpio_meow_1024) |
-| 問題追蹤 | [GitHub Issues](https://github.com/Scorpio-meow/Examination-System/issues) |
-| 協作合併 | [GitHub Pull Requests](https://github.com/Scorpio-meow/Examination-System/pulls) |
-| 專案首頁 | [GitHub Repository](https://github.com/Scorpio-meow/Examination-System) |
+| 管道 | 徽章與連結 |
+|------|------------|
+| **電子郵件** | [![Email](https://img.shields.io/badge/Email-yao921024%40gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:yao921024@gmail.com) |
+| **Instagram** | [![Instagram](https://img.shields.io/badge/Instagram-%40scorpio__meow__1024-E4405F?style=flat-square&logo=Instagram&logoColor=white)](https://www.instagram.com/scorpio_meow_1024) |
+| **Threads** | [![Threads](https://img.shields.io/badge/Threads-%40scorpio__meow__1024-000000?style=flat-square&logo=Threads&logoColor=white)](https://www.threads.com/@scorpio_meow_1024) |
+| **問題回報** | [![GitHub Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/issues) |
+| **協作開發** | [![GitHub PRs](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/pulls) |
+| **專案首頁** | [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System) |
 
 ---
 

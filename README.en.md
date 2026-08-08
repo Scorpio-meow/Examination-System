@@ -6,10 +6,12 @@
 
 [![Version](https://img.shields.io/badge/Version-3.5.2-brightgreen?style=flat-square)](CHANGELOG.en.md)
 [![License](https://img.shields.io/badge/License-MIT-orange?style=flat-square)](LICENSE)
-[![Updated](https://img.shields.io/badge/Updated-2026--06--03-blue?style=flat-square)](CHANGELOG.en.md)
+[![Tech Stack](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-blue?style=flat-square)](https://developer.mozilla.org/en-US/)
+[![Dependencies](https://img.shields.io/badge/Dependencies-Zero%20Dependency-success?style=flat-square)](app.js)
+[![Accessibility](https://img.shields.io/badge/Accessibility-WCAG%20AA%20Compliant-purple?style=flat-square)](style.css)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
-[![Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/issues)
-[![Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square)](https://github.com/Scorpio-meow/Examination-System/pulls)
+[![Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/issues)
+[![Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/pulls)
 
 ---
 
@@ -212,11 +214,11 @@ The platform is fully navigable via keyboard controls:
 
 | Key Binding | Context | Action |
 |-------------|---------|--------|
-| `←` (Left Arrow) | Active Exam | Navigate to previous question |
-| `→` (Right Arrow) | Active Exam | Navigate to next question |
-| `1` / `2` / `3` / `4` | Single Choice | Select option A / B / C / D |
-| `Enter` | Active Exam | Proceed to next question; submits exam on final question |
-| `Enter` | Result Screen | Restart a new exam immediately |
+| <kbd>←</kbd> (Left Arrow) | Active Exam | Navigate to previous question |
+| <kbd>→</kbd> (Right Arrow) | Active Exam | Navigate to next question |
+| <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> / <kbd>4</kbd> | Single Choice | Select option A / B / C / D |
+| <kbd>Enter</kbd> | Active Exam | Proceed to next question; submits exam on final question |
+| <kbd>Enter</kbd> | Result Screen | Restart a new exam immediately |
 
 ---
 
@@ -349,7 +351,7 @@ graph LR
 |-------|-----------------|----------------------|
 | "Failed to load question bank" | Opening via `file://` protocol triggers browser CORS blocks | Launch via Bun or Python local server as documented in [Quick Start](#quick-start) |
 | CSV export shows garbled text in Excel | Excel does not automatically detect UTF-8 encoding | Use Excel "Data > From Text/CSV" and explicitly choose "65001 : Unicode (UTF-8)" |
-| Shortcuts or option buttons unresponsive | Browser cached outdated JavaScript assets | Perform a hard refresh using `Ctrl + Shift + R` (Windows) or `Cmd + Shift + R` (macOS) |
+| Shortcuts or option buttons unresponsive | Browser cached outdated JavaScript assets | Perform a hard refresh using <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>R</kbd> (macOS) |
 | Test progress or records lost | Incognito mode active or LocalStorage 7-day TTL elapsed | Use standard browser windows for long-term study preservation |
 | Need to reset all preferences and cache | Outdated cache states interfering with newer versions | Navigate to "Exam Settings" on the landing page and click "Clear All Local Data" |
 
@@ -401,14 +403,14 @@ We welcome contributions to question banks, UI refinements, and architectural im
 
 ## Contact
 
-| Channel | Link |
-|---------|------|
-| Email | [yao921024@gmail.com](mailto:yao921024@gmail.com) |
-| Instagram | [@scorpio_meow_1024](https://www.instagram.com/scorpio_meow_1024) |
-| Threads | [@scorpio_meow_1024](https://www.threads.com/@scorpio_meow_1024) |
-| Issue Tracker | [GitHub Issues](https://github.com/Scorpio-meow/Examination-System/issues) |
-| Pull Requests | [GitHub Pull Requests](https://github.com/Scorpio-meow/Examination-System/pulls) |
-| Repository | [GitHub Repository](https://github.com/Scorpio-meow/Examination-System) |
+| Channel | Badge / Link |
+|---------|--------------|
+| **Email** | [![Email](https://img.shields.io/badge/Email-yao921024%40gmail.com-blue?style=flat-square&logo=gmail&logoColor=white)](mailto:yao921024@gmail.com) |
+| **Instagram** | [![Instagram](https://img.shields.io/badge/Instagram-%40scorpio__meow__1024-E4405F?style=flat-square&logo=Instagram&logoColor=white)](https://www.instagram.com/scorpio_meow_1024) |
+| **Threads** | [![Threads](https://img.shields.io/badge/Threads-%40scorpio__meow__1024-000000?style=flat-square&logo=Threads&logoColor=white)](https://www.threads.com/@scorpio_meow_1024) |
+| **Issue Tracker** | [![GitHub Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/issues) |
+| **Pull Requests** | [![GitHub PRs](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/pulls) |
+| **Repository** | [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System) |
 
 ---
 
