@@ -1,0 +1,12 @@
+{
+  "name": "examination-system",
+  "version": "4.0.0",
+  "private": true,
+  "description": "純前端線上考試與練習系統（零執行期依賴，僅提供開發用腳本）",
+  "type": "module",
+  "scripts": {
+    "test": "bun test",
+    "build:banks": "bun scripts/build-banks.js",
+    "check:banks": "bun scripts/build-banks.js --check"
+  }
+}
