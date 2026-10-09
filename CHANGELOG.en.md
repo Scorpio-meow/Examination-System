@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Resume Progress Card**: When unfinished progress exists, the home page now shows it at the top (question bank, answered count, save time) with "Continue" and "Discard and Restart" actions, replacing the `confirm()` dialog shown during page load.
+- **Question Bank Load Errors with Retry**: When a question bank fails to load, the reason (connection failure, HTTP status, invalid JSON, empty bank) and a "Retry" button now appear below the bank selector.
+
+### Changed
+- **Lighter Site Icons**: Replaced the 4.5 MB 2048×2048 `favicon.png` with 32×32, 512×512 and 180×180 (Apple Touch Icon, opaque background) versions totaling about 55 KB.
+- **Submission Always Confirms**: Submitting the exam now asks for confirmation even when every question is answered.
+- **Shortcut Scope**: Key combinations with Alt / Ctrl / ⌘ no longer trigger exam shortcuts and are left to the browser.
+
+### Fixed
+- Fixed resumed progress landing on the home page, where pressing "Start Exam" wiped the restored answers.
+- Fixed Enter on the result page always restarting the exam, which discarded results when using the export buttons from the keyboard.
+- Fixed the exam page intercepting Enter globally, which broke the question-number and "Previous" buttons and sent the final question straight into submission.
+- Fixed arrow keys changing the answer instead of the question, and number keys 1–4 not working, after clicking an option with the mouse.
+- Fixed being able to start an empty exam, or one with the previous bank's questions, after a question bank failed to load.
+- Fixed the dropdown arrow (a data: SVG) being blocked by CSP `img-src 'self'`; it is now drawn with CSS gradients.
+
+---
+
 ## [3.5.2] - 2026-06-03
 
 ### Added
