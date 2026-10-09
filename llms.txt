@@ -57,7 +57,7 @@
 - LocalStorage 防禦驗證 (Defensive Storage Audits): 進度與歷史資料載入前透過 `_validateProgressSchema` 與 `_validateRecordsSchema` 審核結構與數值範圍，資料預設保留 7 天 (TTL)。
 - 設定反序列化清理 (Config Sanitization): 使用 `_sanitizeConfig` 逐欄驗證外部設定值，取代不安全的物件展開合併（`{ ...config, ...savedConfig }`），防範原型污染。
 - 匯出安全防護 (CSV Formula Injection Defense): 匯出 CSV 採用 UTF-8 with BOM，並對以 `=`, `+`, `-`, `@` 開頭之欄位前置單引號處理；透過 `dispatchEvent` 觸發下載，避免 DOM 污染。
-- 無障礙相容 (A11y Standards): 實作全鍵盤快捷鍵（方向鍵導航、數字鍵選題、Enter 換題/提交）、ARIA 狀態標記與 `aria-live` 螢幕閱讀器狀態通告。
+- 無障礙相容 (A11y Standards): 實作全鍵盤快捷鍵（方向鍵導航、數字鍵選題、Enter 換題；交卷一律經確認）、ARIA 狀態標記與 `aria-live` 螢幕閱讀器狀態通告。
 
 ---
 

@@ -145,7 +145,7 @@ flowchart TD
 |---------|-------------|
 | Auto-save Progress | Answers are automatically persisted to LocalStorage to prevent accidental loss |
 | Bank Isolation | Session states and test histories are stored under isolated keys per question bank |
-| Smart Restoration | Prompts the user to continue from saved states or restart fresh upon revisits |
+| Smart Restoration | Shows a resume card on the home page upon revisits to continue the saved session or discard it and restart |
 | Expiration TTL (7 Days) | LocalStorage items automatically expire and purge after 7 days |
 | Dark/Light Theme System | Follows system theme preferences and allows manual toggle via CSS custom properties |
 | Manual Data Reset | Provides a one-click button in the settings panel to clear all local cache and history |
@@ -217,8 +217,9 @@ The platform is fully navigable via keyboard controls:
 | <kbd>←</kbd> (Left Arrow) | Active Exam | Navigate to previous question |
 | <kbd>→</kbd> (Right Arrow) | Active Exam | Navigate to next question |
 | <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> / <kbd>4</kbd> | Single Choice | Select option A / B / C / D |
-| <kbd>Enter</kbd> | Active Exam | Proceed to next question; submits exam on final question |
-| <kbd>Enter</kbd> | Result Screen | Restart a new exam immediately |
+| <kbd>Enter</kbd> | Active Exam | Proceed to next question; activates the focused button when a button has focus. Never submits on the final question; use "Submit Exam" |
+
+Shortcuts are ignored while typing in a short-answer box, and combinations with <kbd>Alt</kbd> / <kbd>Ctrl</kbd> / <kbd>⌘</kbd> are left to the browser.
 
 ---
 
@@ -270,7 +271,10 @@ Examination-System/
 ├── index.html                  # Core application HTML and accessible DOM layout
 ├── app.js                      # Main application logic (ExamApp class & security filters)
 ├── style.css                   # Stylesheet (CSS design tokens, dark/light themes, A11y)
-├── favicon.png                 # Standard favicon and Apple Touch Icon
+├── favicon.png                 # Source icon artwork (2048×2048, not referenced by the page)
+├── favicon-32.png              # Browser tab icon (32×32)
+├── favicon-512.png             # High-resolution site icon (512×512)
+├── apple-touch-icon.png        # iOS home screen icon (180×180, opaque background)
 ├── CHANGELOG.md                # Traditional Chinese update history (Keep a Changelog)
 ├── CHANGELOG.en.md             # English update history
 ├── README.md                   # Traditional Chinese project documentation

@@ -59,7 +59,8 @@ class ExamApp {
                 const select = document.getElementById('question-bank-select');
                 if (select) select.value = targetBank;
                 this.clearSavedProgress();
-                this.loadQuestions(true).then(() => {
+                this.renderResumeCard();
+                this.loadQuestions().then(() => {
                     this.currentQuestionIndex = 0;
                     this.userAnswers = {};
                     this.isExamCompleted = false;
@@ -71,35 +72,43 @@ class ExamApp {
             }
         });
     }
-    async loadQuestions(forceReload = false) {
+    async loadQuestions() {
         this.isLoading = true;
         this.showLoadingState(true);
+        document.getElementById('load-error').classList.add('hidden');
         try {
-            let response;
-            let questions = [];
             if (!ALLOWED_BANKS.has(this.selectedQuestionBank)) {
                 throw new Error(`非法的題庫來源：${this.selectedQuestionBank}`);
             }
             const baseUrl = window.location.href.split('/').slice(0, -1).join('/') + '/json/';
             const questionBankUrl = new URL(this.selectedQuestionBank, baseUrl).href;
             logger.log(`嘗試從 ${questionBankUrl} 載入題庫`);
-            response = await fetch(questionBankUrl);
-            if (response.ok) {
-                questions = await response.json();
-                logger.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
-                const validationResult = this.validateQuestionSchema(questions);
-                if (!validationResult.isValid) {
-                    logger.warn('題庫格式驗證警告:', validationResult.errors);
-                }
-            } else {
-                throw new Error('題庫載入失敗');
+            const response = await fetch(questionBankUrl).catch(() => {
+                throw new Error('無法連線到伺服器，請檢查網路連線');
+            });
+            if (!response.ok) {
+                throw new Error(`伺服器回應 HTTP ${response.status}`);
             }
-            this.questions = this.validateAndNormalizeQuestions(questions);
-            this.originalQuestions = [...this.questions];
-            if (!forceReload) this.loadSavedProgress();
+            const questions = await response.json().catch(() => {
+                throw new Error('題庫檔案不是有效的 JSON');
+            });
+            if (!Array.isArray(questions)) {
+                throw new Error('題庫必須是陣列格式');
+            }
+            logger.log(`從 ${this.selectedQuestionBank} 載入 ${questions.length} 題`);
+            const validationResult = this.validateQuestionSchema(questions);
+            if (!validationResult.isValid) {
+                logger.warn('題庫格式驗證警告:', validationResult.errors);
+            }
+            const normalizedQuestions = this.validateAndNormalizeQuestions(questions);
+            if (normalizedQuestions.length === 0) {
+                throw new Error('題庫中沒有題目');
+            }
+            this.questions = normalizedQuestions;
+            this.originalQuestions = [...normalizedQuestions];
         } catch (error) {
-            logger.error('載入題目失敗:', error);
-            this.handleLoadError();
+            logger.error('載入題目失敗:', this.selectedQuestionBank, error);
+            this.handleLoadError(error);
         } finally {
             this.isLoading = false;
             this.showLoadingState(false);
@@ -186,28 +195,16 @@ class ExamApp {
             return question;
         }).filter(q => q.id != null);
     }
-    handleLoadError() {
-        logger.error('題庫載入失敗，嘗試備用內容');
-        logger.log('目前題庫:', this.selectedQuestionBank);
-        logger.log('頁面位置:', window.location.href);
-        this.questions = [{
-            "id": 1,
-            "question": "題目載入失敗，請檢查網路連接並重新整理頁面。",
-            "options": ["A. 重新整理頁面", "B. 檢查網路連接", "C. 聯繫技術支援", "D. 稍後再試"],
-            "answer": "A",
-            "explanation": "請檢查網路連接或重新載入頁面"
-        }];
-        this.showErrorMessage(`題目載入失敗 (${this.selectedQuestionBank})，請重新整理頁面重試。`);
+    handleLoadError(error) {
+        this.questions = [];
+        this.originalQuestions = [];
+        document.getElementById('load-error').classList.remove('hidden');
+        document.getElementById('load-error-text').textContent = `題庫載入失敗：${error.message}`;
     }
     showLoadingState(show) {
         const startBtn = document.getElementById('start-exam-btn');
-        if (show) {
-            startBtn.textContent = '載入中...';
-            startBtn.disabled = true;
-        } else {
-            startBtn.textContent = '開始考試';
-            startBtn.disabled = false;
-        }
+        startBtn.textContent = show ? '載入中...' : '開始考試';
+        startBtn.disabled = show || this.originalQuestions.length === 0;
     }
     showErrorMessage(message) {
         const existingError = document.querySelector('.error-message');
@@ -255,7 +252,8 @@ class ExamApp {
                     e.target.value = previousQuestionBank;
                     return;
                 }
-                const hasProgress = !this.isExamCompleted && Object.keys(this.userAnswers).length > 0;
+                const hasProgress = (!this.isExamCompleted && Object.keys(this.userAnswers).length > 0) ||
+                    this.getSavedProgress() !== null;
                 if (hasProgress) {
                     const confirmSwitch = confirm(
                         '您有未完成的考試進度，切換題庫將會清除目前的進度。\n\n確定要切換題庫嗎？'
@@ -271,7 +269,8 @@ class ExamApp {
                 window.history.pushState({}, '', url);
                 logger.log(`切換題庫：從 ${previousQuestionBank} 到 ${this.selectedQuestionBank}`);
                 this.clearSavedProgress();
-                this.loadQuestions(true).then(() => {
+                this.renderResumeCard();
+                this.loadQuestions().then(() => {
                     this.currentQuestionIndex = 0;
                     this.userAnswers = {};
                     this.isExamCompleted = false;
@@ -477,6 +476,20 @@ class ExamApp {
         document.getElementById('start-exam-btn').addEventListener('click', () => {
             this.startExam();
         });
+        document.getElementById('resume-exam-btn').addEventListener('click', () => {
+            this.resumeSavedProgress();
+        });
+        document.getElementById('discard-progress-btn').addEventListener('click', () => {
+            this.clearSavedProgress();
+            this.renderResumeCard();
+            this.startExam();
+        });
+        document.getElementById('retry-load-btn').addEventListener('click', () => {
+            this.loadQuestions().then(() => {
+                this.updateExamInfo();
+                this.renderResumeCard();
+            });
+        });
         document.getElementById('prev-btn').addEventListener('click', () => {
             this.previousQuestion();
         });
@@ -506,7 +519,7 @@ class ExamApp {
             exportCsvBtn.addEventListener('click', () => this.exportResults('csv'));
         }
         document.addEventListener('keydown', (e) => {
-            if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
+            if (e.altKey || e.ctrlKey || e.metaKey || this._isTextEntryTarget(e.target)) {
                 return;
             }
             if (document.getElementById('exam-page').classList.contains('active')) {
@@ -522,12 +535,11 @@ class ExamApp {
                         this.nextQuestion();
                         break;
                     case 'Enter':
-                        e.preventDefault();
-                        if (this.currentQuestionIndex === this.questions.length - 1) {
-                            this.submitExam();
-                        } else {
-                            this.nextQuestion();
+                        if (e.target.closest('button, a')) {
+                            break;
                         }
+                        e.preventDefault();
+                        this.nextQuestion();
                         break;
                     case '1':
                     case '2':
@@ -538,11 +550,6 @@ class ExamApp {
                             this.selectOptionByNumber(parseInt(e.key) - 1);
                         }
                         break;
-                }
-            } else if (document.getElementById('result-page').classList.contains('active')) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    this.restartExam();
                 }
             }
         });
@@ -582,6 +589,7 @@ class ExamApp {
         document.getElementById(`${pageId}-page`).classList.add('active');
         if (pageId === 'home') {
             document.title = '線上考試系統';
+            this.renderResumeCard();
         } else if (pageId === 'exam') {
             const select = document.getElementById('question-bank-select');
             const bankName = select ? select.options[select.selectedIndex].text.trim().replace(/\s+/g, ' ') : '指定題庫';
@@ -593,6 +601,7 @@ class ExamApp {
         }
     }
     startExam() {
+        if (this.originalQuestions.length === 0) return;
         this.questions = [...this.originalQuestions];
         const drawCount = parseInt(this.config.drawQuestionCount, 10) || 0;
         if (drawCount > 0 && drawCount < this.questions.length) {
@@ -922,10 +931,10 @@ class ExamApp {
         this._isSubmitting = true;
         setTimeout(() => { this._isSubmitting = false; }, 1000);
         const unansweredQuestions = this.questions.filter(q => !this.userAnswers[q.id]);
-        if (unansweredQuestions.length > 0) {
-            const confirmSubmit = confirm(`您還有 ${unansweredQuestions.length} 題未回答，確定要提交考試嗎？未回答的題目將視為錯誤。`);
-            if (!confirmSubmit) return;
-        }
+        const confirmMessage = unansweredQuestions.length > 0
+            ? `您還有 ${unansweredQuestions.length} 題未回答，確定要提交考試嗎？未回答的題目將視為錯誤。`
+            : '確定要提交考試嗎？提交後將無法修改答案。';
+        if (!confirm(confirmMessage)) return;
         this.examEndTime = new Date();
         this.isExamCompleted = true;
         this.stopTimer();
@@ -1266,49 +1275,63 @@ class ExamApp {
         }
         return true;
     }
-    loadSavedProgress() {
-        try {
-            const savedData = this._lsGetWithTtl('examProgress');
-            if (savedData) {
-                if (!this._validateProgressSchema(savedData)) {
-                    logger.warn('examProgress 資料結構異常，已忽略並清除');
-                    this.clearSavedProgress();
-                    return false;
-                }
-                const progressData = savedData;
-                if (progressData.questionBank && progressData.questionBank !== this.selectedQuestionBank) {
-                    logger.log(`保存的進度來自不同題庫 (${progressData.questionBank})，已忽略`);
-                    return false;
-                }
-                if (progressData.userAnswers && Object.keys(progressData.userAnswers).length > 0) {
-                    const continueExam = confirm('發現未完成的考試進度，是否繼續之前的考試？');
-                    if (continueExam) {
-                        this.currentQuestionIndex = progressData.currentQuestionIndex || 0;
-                        this.userAnswers = progressData.userAnswers || {};
-                        this.examStartTime = new Date(progressData.examStartTime);
-                        if (progressData.questions && Array.isArray(progressData.questions) && progressData.questions.length > 0) {
-                            this.questions = progressData.questions;
-                        }
-                        this.showPage('exam');
-                        this.displayQuestion();
-                        this.updateProgress();
-                        this.updateNavigation();
-                        this.updateAnswerStatus();
-                        this.renderQuestionGrid();
-                        this.startTimer();
-                        this.showSuccessMessage('已恢復之前的考試進度');
-                        return true;
-                    } else {
-                        this.clearSavedProgress();
-                        return false;
-                    }
-                }
-            }
-            return false;
-        } catch (error) {
-            logger.warn('載入保存的進度失敗:', error);
-            return false;
+    getSavedProgress() {
+        const progress = this._lsGetWithTtl('examProgress');
+        if (!progress) return null;
+        if (!this._validateProgressSchema(progress)) {
+            logger.warn('examProgress 資料結構異常，已忽略並清除');
+            this.clearSavedProgress();
+            return null;
         }
+        if (progress.questionBank && progress.questionBank !== this.selectedQuestionBank) {
+            logger.log(`保存的進度來自不同題庫 (${progress.questionBank})，已忽略`);
+            return null;
+        }
+        const hasAnswers = Object.keys(progress.userAnswers).length > 0;
+        const hasQuestions = Array.isArray(progress.questions) &&
+            progress.questions.length > progress.currentQuestionIndex;
+        return hasAnswers && hasQuestions ? progress : null;
+    }
+    renderResumeCard() {
+        const card = document.getElementById('resume-card');
+        const progress = this.getSavedProgress();
+        if (!progress) {
+            card.classList.add('hidden');
+            return;
+        }
+        const answeredCount = Object.values(progress.userAnswers).filter(v => v.trim() !== '').length;
+        const details = [`已答 ${answeredCount} / ${progress.questions.length} 題`];
+        const savedAt = new Date(progress.timestamp);
+        if (!isNaN(savedAt)) {
+            details.push(`儲存於 ${savedAt.toLocaleString('zh-TW')}`);
+        }
+        document.getElementById('resume-card-meta').replaceChildren(
+            this._getSelectedBankInfo().label,
+            document.createElement('br'),
+            details.join(' · ')
+        );
+        document.getElementById('discard-progress-btn').disabled = this.originalQuestions.length === 0;
+        card.classList.remove('hidden');
+    }
+    resumeSavedProgress() {
+        const progress = this.getSavedProgress();
+        if (!progress) {
+            this.renderResumeCard();
+            return;
+        }
+        this.questions = progress.questions;
+        this.currentQuestionIndex = progress.currentQuestionIndex;
+        this.userAnswers = progress.userAnswers;
+        this.isExamCompleted = false;
+        this.examStartTime = new Date(progress.examStartTime);
+        this.examEndTime = null;
+        this.showPage('exam');
+        this.displayQuestion();
+        this.updateProgress();
+        this.updateNavigation();
+        this.updateAnswerStatus();
+        this.renderQuestionGrid();
+        this.startTimer();
     }
     clearSavedProgress() {
         try {
@@ -1610,6 +1633,7 @@ class ExamApp {
             localStorage.removeItem('examProgress');
             localStorage.removeItem('examConfig');
             localStorage.removeItem('examRecords');
+            this.renderResumeCard();
             this.showSuccessMessage('已清除所有本機資料');
         } catch (e) {
             console.warn('清除本機資料失敗:', e);
@@ -1676,6 +1700,10 @@ class ExamApp {
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#39;');
+    }
+    _isTextEntryTarget(el) {
+        if (el.isContentEditable || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') return true;
+        return el.tagName === 'INPUT' && !['radio', 'checkbox', 'button', 'submit', 'reset'].includes(el.type);
     }
     _getElement(id, warnIfMissing = true) {
         const element = document.getElementById(id);
