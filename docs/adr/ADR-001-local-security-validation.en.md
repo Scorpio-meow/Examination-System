@@ -1,7 +1,7 @@
 # ADR-001: Client-Side Data Security and Defensive Verification Mechanism
 
 ## Status
-Accepted
+Accepted; since v4.0.0 the bank whitelist in item 1 is superseded by the bank catalog in [ADR-002](ADR-002-frontend-architecture.en.md), and the remaining mechanisms still apply.
 
 ## Context
 In previous architectural iterations, the Examination System operated as a static client-side single-page web application with several latent security weaknesses and defensive omissions:

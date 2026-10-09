@@ -1,0 +1,160 @@
+{
+  "defaultBank": "ERP Planner_Reference Question Types_202509_V06.json",
+  "groups": [
+    {
+      "id": "erp",
+      "title": "ERP 企業資源規劃"
+    },
+    {
+      "id": "ipas",
+      "title": "iPAS AI 應用規劃師"
+    },
+    {
+      "id": "management",
+      "title": "專業管理與理財"
+    }
+  ],
+  "banks": [
+    {
+      "file": "ERP Planner_Reference Question Types_202509_V06.json",
+      "group": "erp",
+      "title": "ERP規劃師_參考題型202509_V06",
+      "shortTitle": "ERP 規劃師",
+      "subtitle": "參考題型 202509 V06",
+      "questionCount": 443,
+      "typeCounts": {
+        "single": 443,
+        "saq": 0
+      },
+      "explanationCount": 443
+    },
+    {
+      "file": "PFERP_Reference119_20240201.json",
+      "group": "erp",
+      "title": "ERP 基礎檢定考試(學科)-參考題型",
+      "shortTitle": "ERP 基礎檢定",
+      "subtitle": "學科參考題型",
+      "questionCount": 119,
+      "typeCounts": {
+        "single": 119,
+        "saq": 0
+      },
+      "explanationCount": 0
+    },
+    {
+      "file": "IPAS-AI-L11-A.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)",
+      "shortTitle": "L11 · A 卷",
+      "subtitle": "基礎與治理",
+      "questionCount": 45,
+      "typeCounts": {
+        "single": 45,
+        "saq": 0
+      },
+      "explanationCount": 45
+    },
+    {
+      "file": "IPAS-AI-L11-B.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L11 基礎與治理】模擬考(B卷)",
+      "shortTitle": "L11 · B 卷",
+      "subtitle": "基礎與治理",
+      "questionCount": 45,
+      "typeCounts": {
+        "single": 45,
+        "saq": 0
+      },
+      "explanationCount": 45
+    },
+    {
+      "file": "IPAS-AI-L12-A.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(A卷)",
+      "shortTitle": "L12 · A 卷",
+      "subtitle": "生成式 AI 應用與規劃",
+      "questionCount": 35,
+      "typeCounts": {
+        "single": 35,
+        "saq": 0
+      },
+      "explanationCount": 35
+    },
+    {
+      "file": "IPAS-AI-L12-B.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)",
+      "shortTitle": "L12 · B 卷",
+      "subtitle": "生成式 AI 應用與規劃",
+      "questionCount": 35,
+      "typeCounts": {
+        "single": 35,
+        "saq": 0
+      },
+      "explanationCount": 35
+    },
+    {
+      "file": "IPAS-AI-L12-C.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)",
+      "shortTitle": "L12 · C 卷",
+      "subtitle": "生成式 AI 應用與規劃",
+      "questionCount": 35,
+      "typeCounts": {
+        "single": 35,
+        "saq": 0
+      },
+      "explanationCount": 35
+    },
+    {
+      "file": "IPAS-AI-L12-D.json",
+      "group": "ipas",
+      "title": "IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)",
+      "shortTitle": "L12 · D 卷",
+      "subtitle": "生成式 AI 應用與規劃",
+      "questionCount": 35,
+      "typeCounts": {
+        "single": 35,
+        "saq": 0
+      },
+      "explanationCount": 35
+    },
+    {
+      "file": "IPAS-AI-L11-130994.json",
+      "group": "ipas",
+      "title": "114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994",
+      "shortTitle": "114 年初級 · 科目一",
+      "subtitle": "L1101 #130994",
+      "questionCount": 50,
+      "typeCounts": {
+        "single": 50,
+        "saq": 0
+      },
+      "explanationCount": 50
+    },
+    {
+      "file": "Project_Management.json",
+      "group": "management",
+      "title": "專案管理",
+      "shortTitle": "專案管理",
+      "questionCount": 50,
+      "typeCounts": {
+        "single": 50,
+        "saq": 0
+      },
+      "explanationCount": 50
+    },
+    {
+      "file": "Basic_Financial_Planning.json",
+      "group": "management",
+      "title": "理財規劃",
+      "shortTitle": "理財規劃",
+      "questionCount": 151,
+      "typeCounts": {
+        "single": 138,
+        "saq": 13
+      },
+      "explanationCount": 0
+    }
+  ]
+}

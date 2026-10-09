@@ -1,7 +1,7 @@
 # ADR-001: 用戶端資料安全與防禦性驗證機制
 
 ## 狀態
-已接受 (Accepted)
+已接受 (Accepted)；第 1 點的題庫白名單自 v4.0.0 起由 [ADR-002](ADR-002-frontend-architecture.md) 的題庫目錄取代，其餘機制持續沿用。
 
 ## 上下文 (Context)
 在先前的版本架構中，考試系統作為純前端靜態單頁應用程式（Single Page Application, SPA），存在數個潛在的安全隱患與防禦缺陷：

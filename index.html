@@ -3,218 +3,604 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>線上考試系統</title>
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none';">
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="color-scheme" content="light dark">
+    <script src="js/color-scheme.js"></script>
+    <title>考試系統</title>
+    <meta name="description" content="免安裝的線上練習與模擬考工具，收錄 ERP 規劃師、iPAS AI 應用規劃師、專案管理與理財規劃題庫，支援練習模式、錯題重練與本機進度保存。">
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#172328" media="(prefers-color-scheme: dark)">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <meta name="msapplication-TileImage" content="favicon-512.png">
+    <script type="module" src="app.js"></script>
 </head>
 
-<body>
-    <main class="container">
-        <div id="home-page" class="page active">
-            <div class="hero-section">
-                <h1>考試系統</h1>
-                <section class="resume-card card hidden" id="resume-card" aria-labelledby="resume-card-title">
-                    <div class="card__body">
-                        <h3 id="resume-card-title">繼續上次進度</h3>
-                        <p class="resume-card__meta" id="resume-card-meta"></p>
-                        <div class="resume-card__actions">
-                            <button type="button" class="btn btn--primary" id="resume-exam-btn">繼續作答</button>
-                            <button type="button" class="btn btn--outline" id="discard-progress-btn">放棄並重新開始</button>
+<body data-view="boot">
+    <a class="skip-link" href="#main" data-skip-link>跳到主要內容</a>
+    <header class="app-bar">
+        <div class="container app-bar__inner">
+            <a class="brand" href="#/">
+                <img class="brand__logo" src="assets/logo-64.png" alt="" width="32" height="32">
+                <span>考試系統</span>
+            </a>
+            <nav class="app-nav" aria-label="主要">
+                <a class="app-nav__link" href="#/history" data-nav="history">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-history"></use>
+                    </svg>
+                    <span>歷史紀錄</span>
+                </a>
+            </nav>
+            <button class="icon-btn" type="button" data-scheme-toggle>
+                <svg class="icon" aria-hidden="true" data-when-scheme="light">
+                    <use href="#i-moon"></use>
+                </svg>
+                <svg class="icon" aria-hidden="true" data-when-scheme="dark">
+                    <use href="#i-sun"></use>
+                </svg>
+                <span class="visually-hidden" data-when-scheme="light">切換為深色主題</span>
+                <span class="visually-hidden" data-when-scheme="dark">切換為淺色主題</span>
+            </button>
+        </div>
+    </header>
+    <main id="main" class="app-main" tabindex="-1">
+        <section class="view container boot" data-view="boot" aria-labelledby="boot-title">
+            <div class="boot__panel" data-boot-loading>
+                <div class="spinner" aria-hidden="true"></div>
+                <p id="boot-title">正在載入題庫目錄…</p>
+            </div>
+            <div class="boot__panel" data-boot-error hidden>
+                <div class="alert" role="alert">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-alert"></use>
+                    </svg>
+                    <div class="alert__body">
+                        <strong>無法載入題庫目錄</strong>
+                        <p data-boot-error-text></p>
+                        <button class="btn btn--sm" type="button" data-boot-retry>
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-refresh"></use>
+                            </svg>
+                            <span>重試</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="view container" data-view="home" aria-labelledby="home-title" hidden>
+            <div class="home-intro">
+                <h1 id="home-title" class="page-title" tabindex="-1">選擇題庫，開始練習</h1>
+                <p class="page-lead">挑一份題庫，決定模式與題數就能開始。作答進度會自動存在這台裝置，隨時可以離開再回來。</p>
+            </div>
+            <section class="card resume-card" data-resume aria-labelledby="resume-title" hidden>
+                <div>
+                    <h2 id="resume-title" class="resume-card__title">繼續上次進度</h2>
+                    <p class="resume-card__bank" data-resume-bank></p>
+                    <p class="resume-card__meta" data-resume-meta></p>
+                    <progress class="progress resume-card__progress" data-resume-progress aria-label="作答進度"></progress>
+                </div>
+                <div class="resume-card__actions">
+                    <button class="btn btn--primary" type="button" data-resume-continue>繼續作答</button>
+                    <button class="btn" type="button" data-resume-discard>放棄並重新開始</button>
+                </div>
+            </section>
+            <div class="home-layout">
+                <section class="bank-picker" aria-labelledby="bank-picker-title">
+                    <h2 id="bank-picker-title" class="section-title bank-picker__title">1. 選擇題庫</h2>
+                    <div data-bank-groups></div>
+                </section>
+                <section class="card start-panel" aria-labelledby="start-title">
+                    <h2 id="start-title" class="section-title">2. 開始設定</h2>
+                    <div class="start-panel__bank" aria-live="polite">
+                        <span class="start-panel__bank-label">目前題庫</span>
+                        <span class="start-panel__bank-name" data-start-bank-name></span>
+                        <span class="start-panel__bank-meta" data-start-bank-meta></span>
+                    </div>
+                    <div class="alert" role="alert" data-bank-error hidden>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#i-alert"></use>
+                        </svg>
+                        <div class="alert__body">
+                            <p data-bank-error-text></p>
+                            <button class="btn btn--sm" type="button" data-bank-retry>
+                                <svg class="icon" aria-hidden="true">
+                                    <use href="#i-refresh"></use>
+                                </svg>
+                                <span>重試</span>
+                            </button>
                         </div>
+                    </div>
+                    <fieldset class="field">
+                        <legend class="field__label">模式</legend>
+                        <div class="segmented">
+                            <label class="segmented__item">
+                                <input class="sr-input" type="radio" name="mode" value="exam">
+                                <span class="segmented__label">模擬考</span>
+                            </label>
+                            <label class="segmented__item">
+                                <input class="sr-input" type="radio" name="mode" value="practice">
+                                <span class="segmented__label">練習</span>
+                            </label>
+                        </div>
+                        <p class="field__hint" data-mode-hint></p>
+                    </fieldset>
+                    <fieldset class="field">
+                        <legend class="field__label">題數</legend>
+                        <div class="chips" data-count-choices></div>
+                        <div class="custom-count" data-custom-count hidden>
+                            <label for="custom-count-input">自訂題數</label>
+                            <input class="input" id="custom-count-input" type="number" inputmode="numeric" min="1"
+                                step="1" aria-describedby="custom-count-error">
+                        </div>
+                        <p class="field__error" id="custom-count-error" data-custom-count-error hidden></p>
+                    </fieldset>
+                    <details class="disclosure" data-advanced>
+                        <summary>
+                            <span>進階設定</span>
+                            <svg class="icon disclosure__chevron" aria-hidden="true">
+                                <use href="#i-chevron-down"></use>
+                            </svg>
+                        </summary>
+                        <div class="disclosure__body">
+                            <label class="switch">
+                                <span class="switch__text">隨機題目順序</span>
+                                <input class="switch__input" type="checkbox" role="switch"
+                                    data-setting="shuffleQuestions">
+                            </label>
+                            <label class="switch">
+                                <span class="switch__text">隨機選項順序</span>
+                                <input class="switch__input" type="checkbox" role="switch"
+                                    data-setting="shuffleOptions">
+                            </label>
+                            <label class="switch">
+                                <span class="switch__text">顯示解析<small class="switch__hint">練習時作答後、交卷後的回顧中</small></span>
+                                <input class="switch__input" type="checkbox" role="switch"
+                                    data-setting="showExplanation">
+                            </label>
+                            <label class="switch">
+                                <span class="switch__text">顯示計時</span>
+                                <input class="switch__input" type="checkbox" role="switch" data-setting="showTimer">
+                            </label>
+                            <label class="switch">
+                                <span class="switch__text">單鍵快捷鍵<small class="switch__hint">數字鍵作答、F 標記、?
+                                        說明、方向鍵換題</small></span>
+                                <input class="switch__input" type="checkbox" role="switch" data-setting="shortcuts">
+                            </label>
+                            <div class="number-field">
+                                <label for="passing-score-input">及格分數</label>
+                                <input class="input" id="passing-score-input" type="number" inputmode="numeric" min="0"
+                                    max="100" step="1" aria-describedby="passing-score-error">
+                                <span>分</span>
+                            </div>
+                            <p class="field__error" id="passing-score-error" data-passing-error hidden></p>
+                        </div>
+                    </details>
+                    <div class="start-panel__go">
+                        <button class="btn btn--primary btn--lg btn--block" type="button" data-start>
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-play"></use>
+                            </svg>
+                            <span data-start-label>開始</span>
+                        </button>
+                        <p class="start-panel__note">進度自動儲存，交卷前都能修改答案。</p>
                     </div>
                 </section>
-                <div class="system-notice card">
-                    <div class="card__body">
-                        <h3>重要說明</h3>
-                        <p><strong>本系統為個人練習/學習工具</strong></p>
-                        <ul>
-                            <li>所有題目與答案皆公開可見（位於瀏覽器端 JSON 檔案中）</li>
-                            <li>本系統<strong>不適用於</strong>需要防弊的正式考試場景</li>
-                            <li>僅適合自我練習、知識複習與學習評估使用</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="exam-info card">
-                    <div class="card__body">
-                        <h3>考試說明</h3>
-                        <div class="form-group">
-                            <label for="question-bank-select"><strong>選擇題庫：</strong></label>
-                            <select id="question-bank-select" class="form-control">
-                                <optgroup label="ERP 企業資源規劃">
-                                    <option value="ERP Planner_Reference Question Types_202509_V06.json">ERP規劃師_參考題型202509_V06</option>
-                                    <option value="PFERP_Reference119_20240201.json">ERP 基礎檢定考試(學科)-參考題型</option>
-                                </optgroup>
-                                <optgroup label="IPAS AI 應用規劃師">
-                                    <option value="IPAS-AI-L11-A.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(A卷)</option>
-                                    <option value="IPAS-AI-L11-B.json">IPAS AI應用規劃師【L11 基礎與治理】模擬考(B卷)</option>
-                                    <option value="IPAS-AI-L12-A.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(A卷)</option>
-                                    <option value="IPAS-AI-L12-B.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(B卷)</option>
-                                    <option value="IPAS-AI-L12-C.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(C卷)</option>
-                                    <option value="IPAS-AI-L12-D.json">IPAS AI應用規劃師【L12 生成式 AI 應用與規劃】模擬考(D卷)</option>
-                                    <option value="IPAS-AI-L11-130994.json">114年 - iPAS◆AI應用規劃師◆初級-科目1-L1101#130994</option>
-                                </optgroup>
-                                <optgroup label="專業管理與理財">
-                                    <option value="Project_Management.json">專案管理</option>
-                                    <option value="Basic_Financial_Planning.json">理財規劃</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                        <div class="load-error hidden" id="load-error" role="alert">
-                            <p id="load-error-text"></p>
-                            <button type="button" class="btn btn--outline btn--sm" id="retry-load-btn">重試</button>
-                        </div>
-                        <ul class="exam-details">
-                            <li><strong>題目數量：</strong>50 題</li>
-                            <li><strong>題目類型：</strong>單選題、簡答題</li>
-                            <li><strong>考試時間：</strong>無限制</li>
-                            <li><strong>及格分數：</strong>60 分</li>
-                        </ul>
-                        <p class="note">請仔細閱讀每個題目，選擇最適當的答案。考試過程中可以前後導航修改答案。</p>
-                        <button class="btn btn--primary btn--lg btn--full-width" id="start-exam-btn">
-                            開始考試
-                        </button>
-                    </div>
-                </div>
             </div>
-        </div>
-        <div id="exam-page" class="page">
-            <div class="exam-header">
-                <div class="progress-info">
-                    <h2>考試系統</h2>
-                    <div class="progress-bar">
-                        <div class="progress-fill" id="progress-fill"></div>
-                    </div>
-                    <div class="progress-text">
-                        第 <span id="current-question">1</span> 題 / 共 <span id="total-questions">50</span> 題
-                    </div>
-                </div>
+            <div class="floating-cta" data-floating-cta hidden>
+                <p class="floating-cta__bank"><span>目前題庫</span><strong data-floating-bank></strong></p>
+                <button class="btn btn--primary" type="button" data-start-proxy>
+                    <span data-floating-label>開始</span>
+                </button>
             </div>
-            <div class="exam-content">
-                <div class="exam-main">
-                    <div class="question-section">
-                        <div class="question-card card">
-                            <div class="card__body">
-                                <div class="question-number">
-                                    題目 <span id="question-number">1</span>
-                                </div>
-                                <div class="question-text" id="question-text">
-                                    載入中...
-                                </div>
-                                <div class="options-container" id="options-container">
-                                </div>
-                            </div>
-                        </div>
+        </section>
+        <section class="view view--exam" data-view="exam" aria-labelledby="exam-title" hidden>
+            <header class="exam-bar" data-exam-bar>
+                <div class="container exam-bar__inner">
+                    <button class="btn btn--ghost btn--sm exam-bar__leave" type="button" data-leave>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#i-arrow-left"></use>
+                        </svg>
+                        <span class="exam-bar__leave-text">離開</span>
+                        <span class="visually-hidden">（保存進度並回到首頁）</span>
+                    </button>
+                    <div class="exam-bar__title">
+                        <h1 id="exam-title" class="exam-bar__bank"><span class="exam-bar__bank-full"
+                                data-exam-bank-full></span><span class="exam-bar__bank-short"
+                                data-exam-bank-short></span></h1>
+                        <p class="exam-bar__sub" data-exam-sub></p>
                     </div>
-                    <div class="navigation-section">
-                        <button class="btn btn--outline" id="prev-btn" disabled>
-                            上一題
-                        </button>
-                        <button class="btn btn--primary" id="next-btn">
-                            下一題
-                        </button>
-                        <button class="btn btn--primary btn--lg hidden" id="submit-btn">
-                            提交考試
+                    <div class="exam-bar__progress">
+                        <span data-answered-text></span>
+                        <progress class="progress" data-answered-progress aria-label="作答進度"></progress>
+                    </div>
+                    <div class="exam-bar__timer">
+                        <span class="visually-hidden">已用時間</span>
+                        <span data-timer></span>
+                        <button class="icon-btn" type="button" data-timer-toggle aria-pressed="false">
+                            <svg class="icon" aria-hidden="true" data-timer-icon="hide">
+                                <use href="#i-eye-off"></use>
+                            </svg>
+                            <svg class="icon" aria-hidden="true" data-timer-icon="show" hidden>
+                                <use href="#i-clock"></use>
+                            </svg>
+                            <span class="visually-hidden">隱藏計時</span>
                         </button>
                     </div>
-                    <div class="keyboard-hints">
-                        <h5>鍵盤快捷鍵</h5>
-                        <ul class="hint-list">
-                            <li class="hint-item">
-                                <span>上一題</span>
-                                <span class="hint-key">←</span>
-                            </li>
-                            <li class="hint-item">
-                                <span>下一題</span>
-                                <span class="hint-key">→ / Enter</span>
-                            </li>
-                            <li class="hint-item">
-                                <span>選項A (僅單選題)</span>
-                                <span class="hint-key">1</span>
-                            </li>
-                            <li class="hint-item">
-                                <span>選項B (僅單選題)</span>
-                                <span class="hint-key">2</span>
-                            </li>
-                            <li class="hint-item">
-                                <span>選項C (僅單選題)</span>
-                                <span class="hint-key">3</span>
-                            </li>
-                            <li class="hint-item">
-                                <span>選項D (僅單選題)</span>
-                                <span class="hint-key">4</span>
-                            </li>
-                        </ul>
-                    </div>
+                    <button class="btn btn--primary btn--sm exam-bar__submit" type="button" data-submit>交卷</button>
                 </div>
-                <aside class="exam-sidebar" aria-label="題目導覽">
-                    <div class="answer-status" aria-live="polite">
-                        已答 <span id="answered-count">0</span> 題 · 未答 <span id="unanswered-count">0</span> 題
+            </header>
+            <div class="container exam-layout">
+                <article class="card question" data-question aria-labelledby="question-title">
+                    <div class="question__head">
+                        <h2 id="question-title" class="question__no" tabindex="-1" data-question-no></h2>
+                        <span class="tag" data-question-type></span>
+                        <button class="btn btn--sm question__flag" type="button" data-flag aria-pressed="false">
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-flag"></use>
+                            </svg>
+                            <span>標記</span>
+                        </button>
                     </div>
-                    <div class="question-grid" id="question-grid" aria-label="題號列表" role="navigation"></div>
+                    <p class="question__stem" id="question-stem" data-question-stem></p>
+                    <div data-answer-area></div>
+                    <div data-feedback-area></div>
+                    <nav class="question__nav" aria-label="題目導覽">
+                        <button class="btn" type="button" data-prev>
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-arrow-left"></use>
+                            </svg>
+                            <span>上一題</span>
+                        </button>
+                        <p class="question__hint" data-shortcut-hint>按 <kbd>1</kbd>–<kbd>4</kbd> 作答 · <kbd>F</kbd> 標記 ·
+                            <kbd>?</kbd> 快捷鍵
+                        </p>
+                        <button class="btn btn--primary" type="button" data-next>
+                            <span data-next-label>下一題</span>
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-arrow-right"></use>
+                            </svg>
+                        </button>
+                    </nav>
+                </article>
+                <aside class="card qmap-panel" aria-labelledby="qmap-title">
+                    <h2 id="qmap-title" class="qmap-panel__title">題號</h2>
+                    <div class="qmap" data-qmap="panel"></div>
                 </aside>
             </div>
-        </div>
-        <div id="result-page" class="page">
-            <div class="result-header">
-                <h1>考試結果</h1>
+            <nav class="exam-dock" aria-label="作答導覽">
+                <button class="btn" type="button" data-prev>
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-arrow-left"></use>
+                    </svg>
+                    <span class="visually-hidden">上一題</span>
+                </button>
+                <button class="btn btn--ghost exam-dock__map" type="button" data-open-map aria-haspopup="dialog">
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-grid"></use>
+                    </svg>
+                    <span data-dock-position></span>
+                    <span class="visually-hidden">，開啟題號列表</span>
+                </button>
+                <button class="btn btn--primary" type="button" data-next>
+                    <span data-next-label>下一題</span>
+                    <svg class="icon" aria-hidden="true">
+                        <use href="#i-arrow-right"></use>
+                    </svg>
+                </button>
+            </nav>
+        </section>
+        <section class="view container" data-view="result" aria-labelledby="result-title" hidden>
+            <div class="result-head">
+                <h1 id="result-title" class="page-title" tabindex="-1">作答結果</h1>
+                <p class="result-head__bank" data-result-bank></p>
+                <p class="result-head__meta" data-result-meta></p>
             </div>
-            <div class="score-section">
-                <div class="score-card card">
-                    <div class="card__body">
-                        <div class="score-display">
-                            <div class="score-circle">
-                                <div class="score-number" id="final-score">0</div>
-                                <div class="score-label">分</div>
-                            </div>
-                        </div>
-                        <div class="score-details">
-                            <div class="score-item">
-                                <span>正確題數：</span>
-                                <span id="correct-count">0</span> / <span id="total-count">50</span>
-                            </div>
-                            <div class="score-item">
-                                <span>正確率：</span>
-                                <span id="accuracy-rate">0%</span>
-                            </div>
-                            <div class="score-item">
-                                <span>考試結果：</span>
-                                <span id="exam-status" class="status">未知</span>
-                            </div>
-                        </div>
+            <section class="card summary" data-summary aria-label="成績摘要">
+                <div class="score-ring">
+                    <svg viewBox="0 0 120 120" aria-hidden="true">
+                        <circle class="score-ring__track" cx="60" cy="60" r="50"></circle>
+                        <circle class="score-ring__value" cx="60" cy="60" r="50" data-ring-value></circle>
+                        <line class="score-ring__threshold" x1="117" y1="60" x2="103" y2="60" data-ring-threshold>
+                        </line>
+                    </svg>
+                    <div class="score-ring__label">
+                        <span class="score-ring__score" data-score></span>
+                        <span class="score-ring__sub" data-score-sub></span>
                     </div>
                 </div>
-            </div>
-            <div class="review-section">
-                <div class="section-header">
-                    <h3>答題回顧</h3>
-                    <p>檢視每題的正確答案和您的選擇</p>
+                <div class="summary__main">
+                    <div class="verdict" data-verdict></div>
+                    <dl class="kpis" data-kpis></dl>
+                    <p class="summary__meta" data-summary-meta></p>
+                    <div class="alert pending-note" data-pending-note hidden>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#i-info"></use>
+                        </svg>
+                        <div class="alert__body">
+                            <p data-pending-text></p>
+                            <button class="btn btn--sm" type="button" data-show-pending>前往自評</button>
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="btn btn--primary" type="button" data-drill>
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-refresh"></use>
+                            </svg>
+                            <span data-drill-label>重練錯題</span>
+                        </button>
+                        <button class="btn" type="button" data-retake>重新考試</button>
+                        <div class="menu" data-export-menu>
+                            <button class="btn" type="button" aria-expanded="false" aria-controls="export-panel"
+                                data-export-toggle>
+                                <svg class="icon" aria-hidden="true">
+                                    <use href="#i-download"></use>
+                                </svg>
+                                <span>匯出</span>
+                                <svg class="icon" aria-hidden="true">
+                                    <use href="#i-chevron-down"></use>
+                                </svg>
+                            </button>
+                            <div class="menu__panel" id="export-panel" hidden>
+                                <button class="menu__item" type="button" data-export="csv">匯出 CSV（Excel）</button>
+                                <button class="menu__item" type="button" data-export="json">匯出 JSON</button>
+                            </div>
+                        </div>
+                        <a class="btn btn--ghost" href="#/">
+                            <svg class="icon" aria-hidden="true">
+                                <use href="#i-home"></use>
+                            </svg>
+                            <span>回首頁</span>
+                        </a>
+                    </div>
                 </div>
-                <div id="review-container">
+            </section>
+            <section class="review" aria-labelledby="review-title">
+                <div class="review__head">
+                    <h2 id="review-title" class="section-title">答題回顧</h2>
+                    <div class="review__tools">
+                        <fieldset class="review__filters">
+                            <legend class="visually-hidden">篩選回顧題目</legend>
+                            <div class="segmented segmented--sm" data-review-filters></div>
+                        </fieldset>
+                        <button class="btn btn--ghost btn--sm" type="button" data-review-toggle-all hidden>全部展開</button>
+                    </div>
                 </div>
+                <ol class="review-list" data-review-list></ol>
+                <p class="empty-state" data-review-empty hidden></p>
+                <div class="review__more" data-review-more hidden>
+                    <button class="btn" type="button" data-review-more-button></button>
+                </div>
+            </section>
+        </section>
+        <section class="view container" data-view="history" aria-labelledby="history-title" hidden>
+            <h1 id="history-title" class="page-title" tabindex="-1">歷史紀錄</h1>
+            <p class="page-lead">保留最近 100 次作答，資料只存在這台裝置，最後一次更新後保留 7 天。</p>
+            <div class="history-list" data-history-list></div>
+            <div class="empty-state" data-history-empty hidden>
+                <svg class="icon" aria-hidden="true">
+                    <use href="#i-history"></use>
+                </svg>
+                <h2 class="empty-state__title">還沒有作答紀錄</h2>
+                <p>完成一次模擬考或練習後，成績與趨勢會出現在這裡。</p>
+                <a class="btn btn--primary" href="#/">去選擇題庫</a>
             </div>
-            <div class="action-section">
-                <button class="btn btn--primary btn--lg" id="restart-exam-btn">
-                    重新考試
-                </button>
-                <button class="btn btn--outline btn--lg" id="export-json-btn">
-                    匯出結果（JSON）
-                </button>
-                <button class="btn btn--outline btn--lg" id="export-csv-btn">
-                    匯出結果（CSV）
-                </button>
-                <button class="btn btn--outline btn--lg" id="history-btn">
-                    查看歷史記錄
-                </button>
+        </section>
+    </main>
+    <footer class="app-footer">
+        <div class="container app-footer__inner">
+            <p>本系統為個人練習工具：題目與答案公開於瀏覽器端的 JSON 檔，不適用於需要防弊的正式考試。</p>
+            <div class="app-footer__links">
+                <span>考試系統 v4.0.0</span>
+                <a href="https://github.com/Scorpio-meow/Examination-System" rel="noopener">GitHub</a>
+                <a href="https://github.com/Scorpio-meow/Examination-System/issues" rel="noopener">問題回報</a>
+                <button class="link-button" type="button" data-open-privacy>資料與隱私</button>
             </div>
         </div>
-    </main>
-    <script src="app.js"></script>
+    </footer>
+    <div class="toast-region" role="status" aria-live="polite" data-toasts></div>
+    <div class="visually-hidden" aria-live="polite" aria-atomic="true" data-announcer></div>
+    <dialog class="dialog" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-body">
+        <form class="dialog__inner" method="dialog">
+            <h2 class="dialog__title" id="confirm-title"></h2>
+            <div class="dialog__body" id="confirm-body"></div>
+            <div class="dialog__actions">
+                <button class="btn" type="submit" value="cancel" data-confirm-cancel>取消</button>
+                <button class="btn btn--primary" type="submit" value="confirm" data-confirm-ok>確定</button>
+            </div>
+        </form>
+    </dialog>
+    <dialog class="dialog dialog--wide" id="submit-dialog" aria-labelledby="submit-title"
+        aria-describedby="submit-note">
+        <form class="dialog__inner" method="dialog">
+            <h2 class="dialog__title" id="submit-title">確定要交卷嗎？</h2>
+            <dl class="submit-stats">
+                <div>
+                    <dt>已答</dt>
+                    <dd data-submit-answered></dd>
+                </div>
+                <div>
+                    <dt>未答</dt>
+                    <dd data-submit-unanswered></dd>
+                </div>
+                <div>
+                    <dt>已標記</dt>
+                    <dd data-submit-flagged></dd>
+                </div>
+            </dl>
+            <p id="submit-note" data-submit-note></p>
+            <div class="dialog__actions dialog__actions--split">
+                <button class="btn btn--ghost" type="submit" value="goto" data-submit-goto>前往第一個未答題</button>
+                <div class="dialog__actions-group">
+                    <button class="btn" type="submit" value="cancel">繼續作答</button>
+                    <button class="btn btn--primary" type="submit" value="submit">交卷</button>
+                </div>
+            </div>
+        </form>
+    </dialog>
+    <dialog class="dialog" id="shortcuts-dialog" aria-labelledby="shortcuts-title">
+        <div class="dialog__inner">
+            <div class="dialog__head">
+                <h2 class="dialog__title" id="shortcuts-title">鍵盤快捷鍵</h2>
+                <form method="dialog"><button class="icon-btn" type="submit"><svg class="icon" aria-hidden="true">
+                            <use href="#i-x"></use>
+                        </svg><span class="visually-hidden">關閉</span></button></form>
+            </div>
+            <dl class="shortcut-list">
+                <div>
+                    <dt>選擇選項 A–D</dt>
+                    <dd><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd></dd>
+                </div>
+                <div>
+                    <dt>上一題／下一題</dt>
+                    <dd><kbd>←</kbd><kbd>→</kbd></dd>
+                </div>
+                <div>
+                    <dt>下一題（焦點不在按鈕上時）</dt>
+                    <dd><kbd>Enter</kbd></dd>
+                </div>
+                <div>
+                    <dt>標記此題</dt>
+                    <dd><kbd>F</kbd></dd>
+                </div>
+                <div>
+                    <dt>開啟這份說明</dt>
+                    <dd><kbd>?</kbd></dd>
+                </div>
+            </dl>
+            <p class="field__hint">在簡答題輸入框中打字時快捷鍵不會作用；可在首頁的進階設定關閉單鍵快捷鍵。</p>
+        </div>
+    </dialog>
+    <dialog class="sheet" id="map-sheet" aria-labelledby="map-sheet-title">
+        <div class="sheet__inner">
+            <div class="dialog__head">
+                <h2 class="dialog__title" id="map-sheet-title">題號</h2>
+                <form method="dialog"><button class="icon-btn" type="submit"><svg class="icon" aria-hidden="true">
+                            <use href="#i-x"></use>
+                        </svg><span class="visually-hidden">關閉</span></button></form>
+            </div>
+            <div class="qmap" data-qmap="sheet"></div>
+        </div>
+    </dialog>
+    <dialog class="dialog dialog--wide" id="privacy-dialog" aria-labelledby="privacy-title">
+        <div class="dialog__inner">
+            <div class="dialog__head">
+                <h2 class="dialog__title" id="privacy-title">資料與隱私</h2>
+                <form method="dialog"><button class="icon-btn" type="submit"><svg class="icon" aria-hidden="true">
+                            <use href="#i-x"></use>
+                        </svg><span class="visually-hidden">關閉</span></button></form>
+            </div>
+            <div class="dialog__body">
+                <p>所有資料只存在這台裝置的瀏覽器（localStorage），不會上傳到任何伺服器。</p>
+                <ul class="privacy-list">
+                    <li>作答進度、最近一次結果、設定與歷史紀錄：最後一次更新後保留 7 天，逾期自動清除。</li>
+                    <li>外觀（淺色／深色）偏好：保留到你清除為止。</li>
+                    <li>題目與答案以 JSON 檔公開在瀏覽器端，本系統不適用於需要防弊的正式考試。</li>
+                </ul>
+                <div class="danger-zone">
+                    <h3 class="danger-zone__title">清除本機資料</h3>
+                    <p>刪除作答進度、最近一次結果、設定、歷史紀錄與外觀偏好，無法復原。</p>
+                    <button class="btn btn--danger" type="button" data-clear-data>
+                        <svg class="icon" aria-hidden="true">
+                            <use href="#i-trash"></use>
+                        </svg>
+                        <span>清除所有本機資料</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </dialog>
+    <svg xmlns="http://www.w3.org/2000/svg" hidden>
+        <symbol id="i-arrow-left" viewBox="0 0 24 24">
+            <path d="M19 12H5" />
+            <path d="m12 19-7-7 7-7" />
+        </symbol>
+        <symbol id="i-arrow-right" viewBox="0 0 24 24">
+            <path d="M5 12h14" />
+            <path d="m12 5 7 7-7 7" />
+        </symbol>
+        <symbol id="i-chevron-down" viewBox="0 0 24 24">
+            <path d="m6 9 6 6 6-6" />
+        </symbol>
+        <symbol id="i-flag" viewBox="0 0 24 24">
+            <path d="M5 21V4" />
+            <path d="M5 4h12l-2.5 4L17 12H5" />
+        </symbol>
+        <symbol id="i-check" viewBox="0 0 24 24">
+            <path d="M20 6 9 17l-5-5" />
+        </symbol>
+        <symbol id="i-x" viewBox="0 0 24 24">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+        </symbol>
+        <symbol id="i-minus" viewBox="0 0 24 24">
+            <path d="M5 12h14" />
+        </symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="i-eye-off" viewBox="0 0 24 24">
+            <path d="m3 3 18 18" />
+            <path d="M10.6 5.1A10.4 10.4 0 0 1 12 5c6.4 0 10 7 10 7a17.7 17.7 0 0 1-3.2 4.3" />
+            <path d="M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a9.8 9.8 0 0 0 5.4-1.6" />
+            <path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" />
+        </symbol>
+        <symbol id="i-grid" viewBox="0 0 24 24">
+            <rect x="4" y="4" width="6" height="6" rx="1" />
+            <rect x="14" y="4" width="6" height="6" rx="1" />
+            <rect x="4" y="14" width="6" height="6" rx="1" />
+            <rect x="14" y="14" width="6" height="6" rx="1" />
+        </symbol>
+        <symbol id="i-history" viewBox="0 0 24 24">
+            <path d="M3 12a9 9 0 1 0 2.6-6.4L3 8" />
+            <path d="M3 3v5h5" />
+            <path d="M12 7v5l3 2" />
+        </symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4" />
+            <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+        </symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" />
+        </symbol>
+        <symbol id="i-download" viewBox="0 0 24 24">
+            <path d="M12 4v11" />
+            <path d="m7 10 5 5 5-5" />
+            <path d="M5 20h14" />
+        </symbol>
+        <symbol id="i-refresh" viewBox="0 0 24 24">
+            <path d="M20 11a8 8 0 1 0-2.3 5.7" />
+            <path d="M20 4v7h-7" />
+        </symbol>
+        <symbol id="i-home" viewBox="0 0 24 24">
+            <path d="m4 11 8-7 8 7" />
+            <path d="M6 9.5V20h12V9.5" />
+        </symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24">
+            <path d="M12 3 2 21h20L12 3z" />
+            <path d="M12 10v4" />
+            <path d="M12 17.5v.5" />
+        </symbol>
+        <symbol id="i-info" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 11v6" />
+            <path d="M12 7.5v.5" />
+        </symbol>
+        <symbol id="i-trash" viewBox="0 0 24 24">
+            <path d="M4 7h16" />
+            <path d="M9 7V4h6v3" />
+            <path d="m6 7 1 13h10l1-13" />
+        </symbol>
+        <symbol id="i-play" viewBox="0 0 24 24">
+            <path d="M7 5v14l11-7z" />
+        </symbol>
+    </svg>
 </body>
 
 </html>
