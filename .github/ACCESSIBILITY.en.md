@@ -80,7 +80,7 @@ Please include as much of the following as you can:
 
 ### How We Respond
 
-- The maintainer aims to reply within 7 days, confirming whether the issue can be reproduced, suggesting a workaround if one exists and outlining next steps.
+- The maintainer will reply as soon as possible, confirming whether the issue can be reproduced, suggesting a workaround if one exists and outlining next steps.
 - Issues are prioritized by severity, and Critical issues are fixed first.
 - Fixes are recorded in [CHANGELOG.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.en.md), and you will be notified in the issue.
 

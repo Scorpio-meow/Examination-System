@@ -80,7 +80,7 @@ v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，�
 
 ### 處理方式
 
-- 維護者會盡量在 7 天內回覆，說明是否能重現、可行的暫時替代方式，以及後續處理方向。
+- 維護者會盡快回覆，說明是否能重現、可行的暫時替代方式，以及後續處理方向。
 - 依嚴重程度排定處理順序，「嚴重」等級的問題優先修正。
 - 修正後會在 [CHANGELOG.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.md) 記錄，並在 Issue 中通知。
 

@@ -39,7 +39,7 @@ Please include as much of the following as you can:
 
 ## Response Process
 
-1. The maintainer aims to acknowledge your report within 7 days.
+1. The maintainer will acknowledge your report as soon as possible.
 2. Once the issue is confirmed, the maintainer will share the assessment and the planned fix, and keep you updated while it is being fixed.
 3. After the fix ships, it is recorded under "Security" in [CHANGELOG.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.en.md), and a GitHub security advisory is published when appropriate. You will be credited in the advisory if you wish.
 

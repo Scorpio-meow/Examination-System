@@ -39,7 +39,7 @@
 
 ## 處理流程
 
-1. 維護者會盡量在 7 天內確認收到回報。
+1. 維護者會盡快確認收到回報。
 2. 確認問題成立後，維護者會說明評估結果與預計的修補方式，並在修補過程中與你保持聯繫。
 3. 修補發布後，會在 [CHANGELOG.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.md) 的「安全性 (Security)」區塊記錄，必要時發布 GitHub 安全性公告；若你願意，會在公告中致謝。
 
