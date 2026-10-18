@@ -41,7 +41,7 @@
 
 1. 維護者會盡量在 7 天內確認收到回報。
 2. 確認問題成立後，維護者會說明評估結果與預計的修補方式，並在修補過程中與你保持聯繫。
-3. 修補發布後，會在 [CHANGELOG.md](CHANGELOG.md) 的「安全性 (Security)」區塊記錄，必要時發布 GitHub 安全性公告；若你願意，會在公告中致謝。
+3. 修補發布後，會在 [CHANGELOG.md](../CHANGELOG.md) 的「安全性 (Security)」區塊記錄，必要時發布 GitHub 安全性公告；若你願意，會在公告中致謝。
 
 在修補發布或雙方約定的日期之前，請不要公開漏洞細節。本專案由個人維護，沒有提供漏洞獎勵。
 
@@ -62,7 +62,7 @@
 
 | 項目 | 原因 |
 |------|------|
-| 在瀏覽器中可以看到題目與答案 | 設計使然。本系統定位為自學工具，題庫公開於用戶端，不具防弊能力，詳見 [README 安全防禦與架構限制](README.md#安全防禦與架構限制) |
+| 在瀏覽器中可以看到題目與答案 | 設計使然。本系統定位為自學工具，題庫公開於用戶端，不具防弊能力，詳見 [README 安全防禦與架構限制](../README.md#安全防禦與架構限制) |
 | 使用者修改自己的 localStorage 或用開發者工具竄改分數 | 只影響使用者自己的瀏覽器，不會影響其他人 |
 | Self-XSS | 需要受害者自行在開發者工具貼上並執行程式碼 |
 | GitHub Pages 無法設定的 HTTP 回應標頭，例如 `X-Frame-Options` 或以標頭傳送的 CSP `frame-ancestors` | 屬於靜態託管平台的限制，且網站沒有登入或其他敏感操作 |
@@ -75,5 +75,5 @@
 
 本系統已實作的防禦機制請參閱：
 
-- [ADR-001：用戶端資料安全與防禦性驗證機制](docs/adr/ADR-001-local-security-validation.md)
-- [ADR-002：前端重構](docs/adr/ADR-002-frontend-architecture.md)
+- [ADR-001：用戶端資料安全與防禦性驗證機制](../docs/adr/ADR-001-local-security-validation.md)
+- [ADR-002：前端重構](../docs/adr/ADR-002-frontend-architecture.md)

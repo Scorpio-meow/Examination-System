@@ -39,7 +39,7 @@ Please search [existing issues](https://github.com/Scorpio-meow/Examination-Syst
 The site has no build step and no dependencies to install. You only need:
 
 - [Bun](https://bun.sh/) to run the unit tests and the bank statistics script.
-- Any static web server. Browsers do not load ES modules or bank JSON over `file://`; see [Quick Start in the README](README.en.md#quick-start).
+- Any static web server. Browsers do not load ES modules or bank JSON over `file://`; see [Quick Start in the README](../README.en.md#quick-start).
 
 Make sure these commands pass before you submit:
 
@@ -55,7 +55,7 @@ bun run check:banks
 
 ## Coding Conventions
 
-See [ADR-001](docs/adr/ADR-001-local-security-validation.en.md) and [ADR-002](docs/adr/ADR-002-frontend-architecture.en.md) for the full design decisions.
+See [ADR-001](../docs/adr/ADR-001-local-security-validation.en.md) and [ADR-002](../docs/adr/ADR-002-frontend-architecture.en.md) for the full design decisions.
 
 ### Architecture
 
@@ -85,7 +85,7 @@ Follow the surrounding code: 4-space indentation, single quotes and semicolons a
 
 ### Adding a Bank
 
-1. Put the bank JSON in `json/`, following the [Data Schema in the README](README.en.md#data-schema--standards). The file name must match `^[A-Za-z0-9][A-Za-z0-9 _.-]*\.json$`.
+1. Put the bank JSON in `json/`, following the [Data Schema in the README](../README.en.md#data-schema--standards). The file name must match `^[A-Za-z0-9][A-Za-z0-9 _.-]*\.json$`.
 2. Add an entry to `banks` in `json/banks.json` (`file`, `group`, `title`, `shortTitle` and an optional `subtitle`).
 3. Run `bun run build:banks` to generate the statistics and make sure it prints no warnings.
 
@@ -110,7 +110,7 @@ bun run build:banks
 ## Documentation
 
 - **Bilingual docs**: the README, CHANGELOG, ADRs and this guide each have a Traditional Chinese version and an `.en.md` English version. Update both when you change one. If you cannot write the other language, say so in the pull request and the maintainer will fill it in.
-- **Changelog**: record user-facing changes under `[Unreleased]` in [CHANGELOG.en.md](CHANGELOG.en.md), following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+- **Changelog**: record user-facing changes under `[Unreleased]` in [CHANGELOG.en.md](../CHANGELOG.en.md), following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Architecture decisions**: add an ADR in `docs/adr/` for decisions that affect the overall architecture, using the same Status, Context, Decision and Consequences structure as the existing ADRs.
 
 ---
@@ -148,4 +148,4 @@ Keep each pull request focused on one change. Small pull requests are easier to 
 
 ## License
 
-Code and content you write yourself, such as explanations and documentation, are released under the project's [MIT License](LICENSE). Questions taken from official announcements remain the property of their original rights holders, so cite the source in the pull request. The [Code of Conduct](CODE_OF_CONDUCT.en.md) is adapted from the Contributor Covenant and licensed separately under CC BY-SA 4.0.
+Code and content you write yourself, such as explanations and documentation, are released under the project's [MIT License](../LICENSE). Questions taken from official announcements remain the property of their original rights holders, so cite the source in the pull request. The [Code of Conduct](CODE_OF_CONDUCT.en.md) is adapted from the Contributor Covenant and licensed separately under CC BY-SA 4.0.

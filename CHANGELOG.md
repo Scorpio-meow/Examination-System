@@ -12,8 +12,11 @@
 ## [Unreleased]
 
 ### 新增 (Added)
-- **社群文件**：新增貢獻指南 [CONTRIBUTING.md](CONTRIBUTING.md)、改編自 Contributor Covenant 3.0 的行為準則 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)、安全政策 [SECURITY.md](SECURITY.md) 與無障礙聲明 [ACCESSIBILITY.md](ACCESSIBILITY.md)（中英文）。
+- **社群文件**：新增貢獻指南 [CONTRIBUTING.md](.github/CONTRIBUTING.md)、改編自 Contributor Covenant 3.0 的行為準則 [CODE_OF_CONDUCT.md](.github/CODE_OF_CONDUCT.md)、安全政策 [SECURITY.md](.github/SECURITY.md) 與無障礙聲明 [ACCESSIBILITY.md](.github/ACCESSIBILITY.md)（中英文）。
 - **Issue 與 Pull Request 範本**：新增錯誤回報、題目錯誤回報、功能建議與無障礙問題回報四種 Issue 表單，以及 Pull Request 範本。
+
+### 改進 (Changed)
+- **整理根目錄**：社群文件集中到 `.github/`；網站圖示 `favicon-32.png`、`favicon-512.png`、`apple-touch-icon.png` 與原始檔 `favicon.png` 移到 `assets/icons/`，`index.html` 同步更新路徑。
 
 ---
 

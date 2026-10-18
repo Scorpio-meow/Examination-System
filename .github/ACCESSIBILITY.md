@@ -34,7 +34,7 @@
 
 ### 驗收方式
 
-v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，結果為 0 違規；另以 E2E 測試與 Lighthouse 檢查主要流程，版面以 375px 寬的手機畫面驗收。詳見 [ADR-002](docs/adr/ADR-002-frontend-architecture.md)。
+v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，結果為 0 違規；另以 E2E 測試與 Lighthouse 檢查主要流程，版面以 375px 寬的手機畫面驗收。詳見 [ADR-002](../docs/adr/ADR-002-frontend-architecture.md)。
 
 ---
 
@@ -56,7 +56,7 @@ v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，�
 - **題目中的英文術語**：題庫內容以純文字呈現，題目中夾雜的英文術語（例如 RAG、Fine-tuning）沒有另外標示語言，螢幕閱讀器可能以中文語音朗讀。
 - **練習模式會鎖定答案**：練習模式點選選項後立即顯示對錯，答案隨即鎖定，誤觸時無法更改。若擔心誤觸，請改用「模擬考」模式，交卷前都可以修改答案。
 - **介面語言**：介面只提供繁體中文。
-- **必須透過網頁伺服器開啟**：直接以 `file://` 開啟 `index.html` 時無法載入程式與題庫，請使用[線上版](https://scorpio-meow.github.io/Examination-System/)或依 [README 快速開始](README.md#快速開始)啟動本機伺服器。
+- **必須透過網頁伺服器開啟**：直接以 `file://` 開啟 `index.html` 時無法載入程式與題庫，請使用[線上版](https://scorpio-meow.github.io/Examination-System/)或依 [README 快速開始](../README.md#快速開始)啟動本機伺服器。
 
 ---
 
@@ -83,7 +83,7 @@ v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，�
 
 - 維護者會盡量在 7 天內回覆，說明是否能重現、可行的暫時替代方式，以及後續處理方向。
 - 依嚴重程度排定處理順序，「嚴重」等級的問題優先修正。
-- 修正後會在 [CHANGELOG.md](CHANGELOG.md) 記錄，並在 Issue 中通知。
+- 修正後會在 [CHANGELOG.md](../CHANGELOG.md) 記錄，並在 Issue 中通知。
 
 ---
 

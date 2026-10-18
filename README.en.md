@@ -331,23 +331,27 @@ Examination-System/
 ├── json/
 │   ├── banks.json              # Bank catalog (whitelist and statistics)
 │   └── *.json                  # 11 question banks
-├── assets/logo-64.png          # Top bar logo
-├── favicon.png                 # Source icon artwork (2048×2048, not referenced by the page)
-├── favicon-32.png              # Browser tab icon (32×32)
-├── favicon-512.png             # High-resolution site icon (512×512)
-├── apple-touch-icon.png        # iOS home screen icon (180×180, opaque background)
+├── assets/
+│   ├── logo-64.png             # Top bar logo
+│   └── icons/
+│       ├── favicon.png         # Source icon artwork (2048×2048, not referenced by the page)
+│       ├── favicon-32.png      # Browser tab icon (32×32)
+│       ├── favicon-512.png     # High-resolution site icon (512×512)
+│       └── apple-touch-icon.png # iOS home screen icon (180×180, opaque background)
 ├── scripts/build-banks.js      # Generates / checks catalog statistics
 ├── tests/                      # bun test unit tests
 ├── package.json                # Development scripts (no dependencies)
 ├── CHANGELOG.md / CHANGELOG.en.md
 ├── README.md / README.en.md
-├── CONTRIBUTING.md / CONTRIBUTING.en.md
-├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
-├── SECURITY.md / SECURITY.en.md
-├── ACCESSIBILITY.md / ACCESSIBILITY.en.md
 ├── llms.txt                    # Project index for LLMs and AI tools
 ├── LICENSE                     # MIT License
-├── .github/                    # Issue forms (bug, question error, feature, accessibility) and PR template
+├── .github/
+│   ├── ISSUE_TEMPLATE/         # Issue forms: bug, question error, feature, accessibility
+│   ├── pull_request_template.md # Pull request template
+│   ├── CONTRIBUTING.md / CONTRIBUTING.en.md
+│   ├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
+│   ├── SECURITY.md / SECURITY.en.md
+│   └── ACCESSIBILITY.md / ACCESSIBILITY.en.md
 └── docs/
     ├── screenshots/            # Interface screenshots (WebP)
     └── adr/                    # Architecture Decision Records ADR-001, ADR-002 (Chinese & English)
@@ -491,7 +495,7 @@ Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
 
 ## Contribution Guide
 
-We welcome contributions to question banks, architecture and features. See [CONTRIBUTING.en.md](CONTRIBUTING.en.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](CODE_OF_CONDUCT.en.md). Report security vulnerabilities privately as described in the [Security policy](SECURITY.en.md), and see the [Accessibility statement](ACCESSIBILITY.en.md) for supported environments and how to report barriers.
+We welcome contributions to question banks, architecture and features. See [CONTRIBUTING.en.md](.github/CONTRIBUTING.en.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](.github/CODE_OF_CONDUCT.en.md). Report security vulnerabilities privately as described in the [Security policy](.github/SECURITY.en.md), and see the [Accessibility statement](.github/ACCESSIBILITY.en.md) for supported environments and how to report barriers.
 
 1. Fork this repository to your GitHub account.
 2. Create a feature branch: `git checkout -b feature/your-feature-name`.

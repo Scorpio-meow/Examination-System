@@ -34,7 +34,7 @@ We want everyone to be able to practice and take mock exams with the Examination
 
 ### How We Test
 
-For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](docs/adr/ADR-002-frontend-architecture.en.md).
+For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](../docs/adr/ADR-002-frontend-architecture.en.md).
 
 ---
 
@@ -56,7 +56,7 @@ The site relies on widely available web features such as `:has()`, `<dialog>` an
 - **English terms in questions**: bank content is rendered as plain text, so English terms inside Chinese questions (for example RAG or Fine-tuning) are not marked with their language and screen readers may read them with a Chinese voice.
 - **Practice mode locks answers**: in practice mode, choosing an option immediately shows the result and locks the answer, so an accidental tap cannot be undone. If that is a concern, use the 「模擬考」 (mock exam) mode, where answers can be changed until you submit.
 - **Interface language**: the interface is only available in Traditional Chinese.
-- **A web server is required**: opening `index.html` directly over `file://` cannot load the code or banks. Use the [live site](https://scorpio-meow.github.io/Examination-System/) or start a local server as described in [Quick Start in the README](README.en.md#quick-start).
+- **A web server is required**: opening `index.html` directly over `file://` cannot load the code or banks. Use the [live site](https://scorpio-meow.github.io/Examination-System/) or start a local server as described in [Quick Start in the README](../README.en.md#quick-start).
 
 ---
 
@@ -83,7 +83,7 @@ Please include as much of the following as you can:
 
 - The maintainer aims to reply within 7 days, confirming whether the issue can be reproduced, suggesting a workaround if one exists and outlining next steps.
 - Issues are prioritized by severity, and Critical issues are fixed first.
-- Fixes are recorded in [CHANGELOG.en.md](CHANGELOG.en.md), and you will be notified in the issue.
+- Fixes are recorded in [CHANGELOG.en.md](../CHANGELOG.en.md), and you will be notified in the issue.
 
 ---
 

@@ -12,8 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Community docs**: added the contributing guide [CONTRIBUTING.en.md](CONTRIBUTING.en.md), a code of conduct adapted from Contributor Covenant 3.0 [CODE_OF_CONDUCT.en.md](CODE_OF_CONDUCT.en.md), the security policy [SECURITY.en.md](SECURITY.en.md) and the accessibility statement [ACCESSIBILITY.en.md](ACCESSIBILITY.en.md), each in Chinese and English.
+- **Community docs**: added the contributing guide [CONTRIBUTING.en.md](.github/CONTRIBUTING.en.md), a code of conduct adapted from Contributor Covenant 3.0 [CODE_OF_CONDUCT.en.md](.github/CODE_OF_CONDUCT.en.md), the security policy [SECURITY.en.md](.github/SECURITY.en.md) and the accessibility statement [ACCESSIBILITY.en.md](.github/ACCESSIBILITY.en.md), each in Chinese and English.
 - **Issue and pull request templates**: added four issue forms (bug report, question error, feature request and accessibility issue) and a pull request template.
+
+### Changed
+- **Tidier root folder**: community docs now live in `.github/`, and the site icons `favicon-32.png`, `favicon-512.png`, `apple-touch-icon.png` and the source `favicon.png` moved to `assets/icons/`, with the paths in `index.html` updated.
 
 ---
 
