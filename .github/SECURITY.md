@@ -1,6 +1,6 @@
 # 安全政策 (Security Policy)
 
-[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/SECURITY.en.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/SECURITY.md)
 
 考試系統是部署在 GitHub Pages 的純前端靜態網站，沒有伺服器端程式、帳號或資料庫，所有資料只存在使用者自己的瀏覽器 localStorage。即使如此，我們仍重視任何可能讓使用者受害的漏洞，感謝你協助負責任地揭露。
 

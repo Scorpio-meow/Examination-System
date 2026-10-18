@@ -1,6 +1,6 @@
 # 貢獻指南 (Contributing)
 
-[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.en.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CONTRIBUTING.md)
 
 感謝你願意協助改善考試系統！本專案是由個人維護的純前端自學練習工具，歡迎回報問題、修正題目、改善無障礙與提交程式碼。參與本專案即表示你同意遵守[行為準則](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.md)。
 
@@ -109,7 +109,7 @@ bun run build:banks
 
 ## 文件
 
-- **中英雙語**：README、CHANGELOG、ADR 與本指南都有中文版與 `.en.md` 英文版，修改其中一份時請同步更新另一份。若無法撰寫另一種語言，請在 Pull Request 中說明，由維護者補上。
+- **中英雙語**：README、CHANGELOG、ADR 都有中文版與 `.en.md` 英文版，本指南的英文版則放在 `.github/en/`，修改其中一份時請同步更新另一份。若無法撰寫另一種語言，請在 Pull Request 中說明，由維護者補上。
 - **更新日誌**：使用者看得到的變更，記錄在 [CHANGELOG.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.md) 的 `[Unreleased]` 區塊，格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)。
 - **架構決策**：影響整體架構的決策，請在 `docs/adr/` 新增 ADR，沿用既有 ADR 的「狀態、上下文、決策、結果與權衡」結構。
 

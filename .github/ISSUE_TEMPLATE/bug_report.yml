@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         感謝回報！題目、答案或解析有誤請改用「題目錯誤回報」；安全性漏洞請勿公開，依 [SECURITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/SECURITY.md) 私下回報。
-        Thanks for reporting! Use the "Question error" template for wrong questions, answers or explanations. Do not report security vulnerabilities publicly; follow [SECURITY.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/SECURITY.en.md) instead.
+        Thanks for reporting! Use the "Question error" template for wrong questions, answers or explanations. Do not report security vulnerabilities publicly; follow [en/SECURITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/SECURITY.md) instead.
   - type: textarea
     id: description
     attributes:

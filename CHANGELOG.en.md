@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Community docs**: added the contributing guide [CONTRIBUTING.en.md](.github/CONTRIBUTING.en.md), a code of conduct adapted from Contributor Covenant 3.0 [CODE_OF_CONDUCT.en.md](.github/CODE_OF_CONDUCT.en.md), the security policy [SECURITY.en.md](.github/SECURITY.en.md) and the accessibility statement [ACCESSIBILITY.en.md](.github/ACCESSIBILITY.en.md), each in Chinese and English.
+- **Community docs**: added the contributing guide [en/CONTRIBUTING.md](.github/en/CONTRIBUTING.md), a code of conduct adapted from Contributor Covenant 3.0 [en/CODE_OF_CONDUCT.md](.github/en/CODE_OF_CONDUCT.md), the security policy [en/SECURITY.md](.github/en/SECURITY.md) and the accessibility statement [en/ACCESSIBILITY.md](.github/en/ACCESSIBILITY.md), each in Chinese and English.
 - **Issue and pull request templates**: added four issue forms (bug report, question error, feature request and accessibility issue) and a pull request template.
 
 ### Changed

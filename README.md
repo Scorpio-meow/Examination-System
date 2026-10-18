@@ -346,10 +346,10 @@ Examination-System/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # Issue 表單：錯誤、題目錯誤、功能建議、無障礙
 │   ├── pull_request_template.md # Pull Request 範本
-│   ├── CONTRIBUTING.md / CONTRIBUTING.en.md
-│   ├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
-│   ├── SECURITY.md / SECURITY.en.md
-│   └── ACCESSIBILITY.md / ACCESSIBILITY.en.md
+│   ├── CONTRIBUTING.md / en/CONTRIBUTING.md
+│   ├── CODE_OF_CONDUCT.md / en/CODE_OF_CONDUCT.md
+│   ├── SECURITY.md / en/SECURITY.md
+│   └── ACCESSIBILITY.md / en/ACCESSIBILITY.md
 └── docs/
     ├── screenshots/            # 介面截圖 (WebP)
     └── adr/                    # 架構決策記錄 ADR-001、ADR-002（中英文）

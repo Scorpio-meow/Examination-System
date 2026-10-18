@@ -2,7 +2,7 @@
 
 [繁體中文版](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.md)
 
-Thank you for helping improve the Examination System! This is a client-side self-study tool maintained by one person. Bug reports, question fixes, accessibility improvements and code contributions are all welcome. By participating, you agree to follow the [Code of Conduct](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.en.md).
+Thank you for helping improve the Examination System! This is a client-side self-study tool maintained by one person. Bug reports, question fixes, accessibility improvements and code contributions are all welcome. By participating, you agree to follow the [Code of Conduct](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CODE_OF_CONDUCT.md).
 
 ---
 
@@ -25,9 +25,9 @@ Thank you for helping improve the Examination System! This is a client-side self
 |---------------------|-------------|
 | Report a bug | [Bug report](https://github.com/Scorpio-meow/Examination-System/issues/new?template=bug_report.yml) |
 | Report a wrong question, answer or explanation | [Question error](https://github.com/Scorpio-meow/Examination-System/issues/new?template=question_error.yml) |
-| Report an accessibility barrier | [Accessibility issue](https://github.com/Scorpio-meow/Examination-System/issues/new?template=accessibility.yml), see also the [Accessibility statement](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.en.md) |
+| Report an accessibility barrier | [Accessibility issue](https://github.com/Scorpio-meow/Examination-System/issues/new?template=accessibility.yml), see also the [Accessibility statement](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/ACCESSIBILITY.md) |
 | Suggest a feature or a new bank | [Feature request](https://github.com/Scorpio-meow/Examination-System/issues/new?template=feature_request.yml) |
-| Report a security vulnerability | **Do not open a public issue.** Report it privately as described in the [Security policy](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/SECURITY.en.md) |
+| Report a security vulnerability | **Do not open a public issue.** Report it privately as described in the [Security policy](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/SECURITY.md) |
 | Fix code or documentation | Follow the [Pull Request process](#pull-request-process) below |
 
 Please search [existing issues](https://github.com/Scorpio-meow/Examination-System/issues?q=is%3Aissue) before opening a new one. For larger changes such as new features, architectural changes or new question banks, open an issue first so we can agree on the direction before you start.
@@ -73,7 +73,7 @@ See [ADR-001](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/
 
 - Use the color tokens in `style.css`, define both light and dark values, and keep WCAG AA contrast.
 - Keep touch targets at least 44px, and put animations inside `@media (prefers-reduced-motion: no-preference)`.
-- Every interactive control must work with the keyboard alone and show a visible focus indicator. New single-key shortcuts must be switchable off in the advanced settings. See the [Accessibility statement](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.en.md).
+- Every interactive control must work with the keyboard alone and show a visible focus indicator. New single-key shortcuts must be switchable off in the advanced settings. See the [Accessibility statement](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/ACCESSIBILITY.md).
 
 ### Style
 
@@ -109,7 +109,7 @@ bun run build:banks
 
 ## Documentation
 
-- **Bilingual docs**: the README, CHANGELOG, ADRs and this guide each have a Traditional Chinese version and an `.en.md` English version. Update both when you change one. If you cannot write the other language, say so in the pull request and the maintainer will fill it in.
+- **Bilingual docs**: the README, CHANGELOG and ADRs each have a Traditional Chinese version and an `.en.md` English version, and the English version of this guide lives in `.github/en/`. Update both when you change one. If you cannot write the other language, say so in the pull request and the maintainer will fill it in.
 - **Changelog**: record user-facing changes under `[Unreleased]` in [CHANGELOG.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.en.md), following [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Architecture decisions**: add an ADR in `docs/adr/` for decisions that affect the overall architecture, using the same Status, Context, Decision and Consequences structure as the existing ADRs.
 
@@ -148,4 +148,4 @@ Keep each pull request focused on one change. Small pull requests are easier to 
 
 ## License
 
-Code and content you write yourself, such as explanations and documentation, are released under the project's [MIT License](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/LICENSE). Questions taken from official announcements remain the property of their original rights holders, so cite the source in the pull request. The [Code of Conduct](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.en.md) is adapted from the Contributor Covenant and licensed separately under CC BY-SA 4.0.
+Code and content you write yourself, such as explanations and documentation, are released under the project's [MIT License](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/LICENSE). Questions taken from official announcements remain the property of their original rights holders, so cite the source in the pull request. The [Code of Conduct](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CODE_OF_CONDUCT.md) is adapted from the Contributor Covenant and licensed separately under CC BY-SA 4.0.

@@ -348,10 +348,10 @@ Examination-System/
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # Issue forms: bug, question error, feature, accessibility
 │   ├── pull_request_template.md # Pull request template
-│   ├── CONTRIBUTING.md / CONTRIBUTING.en.md
-│   ├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
-│   ├── SECURITY.md / SECURITY.en.md
-│   └── ACCESSIBILITY.md / ACCESSIBILITY.en.md
+│   ├── CONTRIBUTING.md / en/CONTRIBUTING.md
+│   ├── CODE_OF_CONDUCT.md / en/CODE_OF_CONDUCT.md
+│   ├── SECURITY.md / en/SECURITY.md
+│   └── ACCESSIBILITY.md / en/ACCESSIBILITY.md
 └── docs/
     ├── screenshots/            # Interface screenshots (WebP)
     └── adr/                    # Architecture Decision Records ADR-001, ADR-002 (Chinese & English)
@@ -495,7 +495,7 @@ Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
 
 ## Contribution Guide
 
-We welcome contributions to question banks, architecture and features. See [CONTRIBUTING.en.md](.github/CONTRIBUTING.en.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](.github/CODE_OF_CONDUCT.en.md). Report security vulnerabilities privately as described in the [Security policy](.github/SECURITY.en.md), and see the [Accessibility statement](.github/ACCESSIBILITY.en.md) for supported environments and how to report barriers.
+We welcome contributions to question banks, architecture and features. See [en/CONTRIBUTING.md](.github/en/CONTRIBUTING.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](.github/en/CODE_OF_CONDUCT.md). Report security vulnerabilities privately as described in the [Security policy](.github/en/SECURITY.md), and see the [Accessibility statement](.github/en/ACCESSIBILITY.md) for supported environments and how to report barriers.
 
 1. Fork this repository to your GitHub account.
 2. Create a feature branch: `git checkout -b feature/your-feature-name`.

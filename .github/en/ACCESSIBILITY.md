@@ -88,7 +88,7 @@ Please include as much of the following as you can:
 
 ## Ownership and Maintenance
 
-The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.en.md#styling-and-accessibility).
+The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CONTRIBUTING.md#styling-and-accessibility).
 
 ---
 
