@@ -341,8 +341,13 @@ Examination-System/
 ├── package.json                # Development scripts (no dependencies)
 ├── CHANGELOG.md / CHANGELOG.en.md
 ├── README.md / README.en.md
+├── CONTRIBUTING.md / CONTRIBUTING.en.md
+├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
+├── SECURITY.md / SECURITY.en.md
+├── ACCESSIBILITY.md / ACCESSIBILITY.en.md
 ├── llms.txt                    # Project index for LLMs and AI tools
 ├── LICENSE                     # MIT License
+├── .github/                    # Issue forms (bug, question error, feature, accessibility) and PR template
 └── docs/
     ├── screenshots/            # Interface screenshots (WebP)
     └── adr/                    # Architecture Decision Records ADR-001, ADR-002 (Chinese & English)
@@ -486,7 +491,7 @@ Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
 
 ## Contribution Guide
 
-We welcome contributions to question banks, architecture and features:
+We welcome contributions to question banks, architecture and features. See [CONTRIBUTING.en.md](CONTRIBUTING.en.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](CODE_OF_CONDUCT.en.md). Report security vulnerabilities privately as described in the [Security policy](SECURITY.en.md), and see the [Accessibility statement](ACCESSIBILITY.en.md) for supported environments and how to report barriers.
 
 1. Fork this repository to your GitHub account.
 2. Create a feature branch: `git checkout -b feature/your-feature-name`.

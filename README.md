@@ -339,8 +339,13 @@ Examination-System/
 ├── package.json                # 開發腳本（無任何依賴）
 ├── CHANGELOG.md / CHANGELOG.en.md
 ├── README.md / README.en.md
+├── CONTRIBUTING.md / CONTRIBUTING.en.md
+├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT.en.md
+├── SECURITY.md / SECURITY.en.md
+├── ACCESSIBILITY.md / ACCESSIBILITY.en.md
 ├── llms.txt                    # 給大型語言模型與 AI 工具的專案索引
 ├── LICENSE                     # MIT 授權條款
+├── .github/                    # Issue 表單（錯誤、題目錯誤、功能建議、無障礙）與 PR 範本
 └── docs/
     ├── screenshots/            # 介面截圖 (WebP)
     └── adr/                    # 架構決策記錄 ADR-001、ADR-002（中英文）
@@ -482,7 +487,7 @@ A：請完成三個步驟：
 
 ## 貢獻指南
 
-歡迎參與題庫擴充、架構精進與功能優化：
+歡迎參與題庫擴充、架構精進與功能優化。完整流程、程式慣例與題庫規範請參閱 [CONTRIBUTING.md](CONTRIBUTING.md)，參與者皆須遵守[行為準則](CODE_OF_CONDUCT.md)。安全性漏洞請依[安全政策](SECURITY.md)私下回報；支援環境與障礙回報方式請參閱[無障礙聲明](ACCESSIBILITY.md)。
 
 1. 前往專案儲存庫 Fork 本專案至個人帳號。
 2. 建立功能分支：`git checkout -b feature/your-feature-name`。

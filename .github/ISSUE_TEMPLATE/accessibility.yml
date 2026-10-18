@@ -1,0 +1,77 @@
+name: 無障礙問題回報 / Accessibility issue
+description: 回報使用鍵盤、螢幕閱讀器或其他輔助科技時遇到的障礙 / Report a barrier you hit with the keyboard, a screen reader or other assistive technology
+title: "[無障礙] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝你協助改善無障礙！目前的支援範圍與已知限制請參閱 [ACCESSIBILITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/ACCESSIBILITY.md)。不方便填寫表單時，也可以寄信至 yao921024@gmail.com，主旨以 `[Accessibility]` 開頭。
+        Thank you for helping improve accessibility! See [ACCESSIBILITY.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/ACCESSIBILITY.en.md) for current support and known limitations. If this form is hard to use, email yao921024@gmail.com with a subject line starting with `[Accessibility]`.
+  - type: textarea
+    id: barrier
+    attributes:
+      label: 遇到的障礙 / Barrier
+      description: 你想做什麼，卻因為什麼而無法完成？ / What were you trying to do, and what stopped you?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重現步驟 / Steps to reproduce
+      placeholder: |
+        1. 在首頁按 Tab 移到題庫卡片 / On the home page, press Tab to reach a bank card
+        2. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期結果 / Expected behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: 嚴重程度 / Severity
+      options:
+        - 嚴重：無法完成作答、交卷或查看成績 / Critical - cannot answer, submit or view the score
+        - 重大：需要明顯困難的替代方式 / Serious - only possible through a difficult workaround
+        - 中等：造成不便但能完成 / Moderate - inconvenient but possible
+        - 輕微：不影響完成任務 / Minor - does not stop the task
+    validations:
+      required: true
+  - type: checkboxes
+    id: assistive-tech
+    attributes:
+      label: 使用的輔助方式 / Assistive technology used
+      options:
+        - label: 只用鍵盤 / Keyboard only
+        - label: 螢幕閱讀器 / Screen reader
+        - label: 畫面放大或瀏覽器縮放 / Magnification or browser zoom
+        - label: 高對比或強制色彩模式 / High contrast or forced colors
+        - label: 減少動態效果 / Reduced motion
+        - label: 語音控制 / Voice control
+        - label: 其他 / Other
+  - type: input
+    id: assistive-tech-details
+    attributes:
+      label: 輔助科技名稱與版本 / Assistive technology name and version
+      placeholder: NVDA + Firefox、VoiceOver + iOS Safari、200% 縮放 / 200% zoom
+  - type: input
+    id: environment
+    attributes:
+      label: 瀏覽器與作業系統 / Browser and OS
+      placeholder: Chrome / Windows 11、Safari / iOS
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / Version
+      description: 頁尾顯示的版本號 / The version shown in the page footer
+      placeholder: 考試系統 v4.0.0
+  - type: textarea
+    id: extra
+    attributes:
+      label: 截圖、錄影或補充資訊 / Screenshots, recordings or additional context

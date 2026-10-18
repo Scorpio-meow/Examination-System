@@ -1,0 +1,96 @@
+name: 錯誤回報 / Bug report
+description: 回報程式錯誤或非預期的行為 / Report a bug or unexpected behavior
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝回報！題目、答案或解析有誤請改用「題目錯誤回報」；安全性漏洞請勿公開，依 [SECURITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/SECURITY.md) 私下回報。
+        Thanks for reporting! Use the "Question error" template for wrong questions, answers or explanations. Do not report security vulnerabilities publicly; follow [SECURITY.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/SECURITY.en.md) instead.
+  - type: textarea
+    id: description
+    attributes:
+      label: 問題描述 / Description
+      description: 發生了什麼問題？ / What went wrong?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 重現步驟 / Steps to reproduce
+      placeholder: |
+        1. 開啟首頁並選擇題庫 / Open the home page and choose a bank
+        2. 點選「開始 N 題模擬考」 / Click the start button
+        3. …
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 預期結果 / Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 實際結果 / Actual behavior
+    validations:
+      required: true
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: 使用環境 / Where did it happen?
+      options:
+        - 線上版 GitHub Pages / Live site on GitHub Pages
+        - 本機伺服器 / Local server
+        - 其他自行部署 / Other self-hosted deployment
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / Version
+      description: 頁尾顯示的版本號 / The version shown in the page footer
+      placeholder: 考試系統 v4.0.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 瀏覽器與作業系統 / Browser and OS
+      placeholder: Chrome / Windows 11、Safari / iOS
+    validations:
+      required: true
+  - type: input
+    id: bank
+    attributes:
+      label: 題庫 / Question bank
+      description: 與特定題庫有關時填寫 / Fill in if the bug is tied to a specific bank
+  - type: dropdown
+    id: mode
+    attributes:
+      label: 作答模式 / Mode
+      options:
+        - 模擬考 / Mock exam
+        - 練習 / Practice
+        - 不適用 / Not applicable
+  - type: textarea
+    id: console
+    attributes:
+      label: Console 錯誤訊息 / Console errors
+      description: 按 F12 開啟開發者工具，複製 Console 中的錯誤 / Press F12 to open developer tools and copy any errors from the Console
+      render: shell
+  - type: textarea
+    id: extra
+    attributes:
+      label: 截圖或補充資訊 / Screenshots or additional context
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認事項 / Checklist
+      options:
+        - label: 我已搜尋過既有 Issue，沒有重複的回報 / I searched existing issues and found no duplicate
+          required: true
+        - label: 這不是安全性漏洞 / This is not a security vulnerability
+          required: true

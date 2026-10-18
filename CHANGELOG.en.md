@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [Unreleased]
+
+### Added
+- **Community docs**: added the contributing guide [CONTRIBUTING.en.md](CONTRIBUTING.en.md), a code of conduct adapted from Contributor Covenant 3.0 [CODE_OF_CONDUCT.en.md](CODE_OF_CONDUCT.en.md), the security policy [SECURITY.en.md](SECURITY.en.md) and the accessibility statement [ACCESSIBILITY.en.md](ACCESSIBILITY.en.md), each in Chinese and English.
+- **Issue and pull request templates**: added four issue forms (bug report, question error, feature request and accessibility issue) and a pull request template.
+
+---
+
 ## [4.0.0] - 2026-10-09
 
 A full rewrite of the interface and code architecture that resolves the 6 P0 and 31 P1–P3 issues found in the v3.5.2 UI/UX review. See [ADR-002](docs/adr/ADR-002-frontend-architecture.en.md) for the design decisions. The interface is in Traditional Chinese, so UI labels are quoted in Chinese with an English translation.

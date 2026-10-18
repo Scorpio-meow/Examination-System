@@ -17,6 +17,8 @@
 - [ADR-002 前端重構](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/docs/adr/ADR-002-frontend-architecture.md): 模組劃分、題庫目錄、hash 路由、作答 session v2、原生對話框與無障礙互動模型的決策與取捨
 - [ADR-002 Front-end rewrite](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/docs/adr/ADR-002-frontend-architecture.en.md): Decisions and trade-offs for modules, the bank catalog, hash routing, session v2, native dialogs and the accessible interaction model
 - [ADR-001 用戶端資料安全](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/docs/adr/ADR-001-local-security-validation.md): 結構驗證、設定清理、CSP 與 CSV 防護；第 1 點的白名單已由 ADR-002 取代 / Schema validation, config sanitizing, CSP and CSV protection; its whitelist item is superseded by ADR-002
+- [CONTRIBUTING（繁體中文）](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/CONTRIBUTING.md): 貢獻流程、程式慣例、題庫新增與修正規範、Commit 格式
+- [CONTRIBUTING (English)](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/CONTRIBUTING.en.md): Contribution workflow, coding conventions, bank rules and commit format
 
 ## 程式模組 Source modules
 
@@ -58,6 +60,8 @@
 
 - [CHANGELOG（繁體中文）](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/CHANGELOG.md): 版本更新紀錄
 - [CHANGELOG (English)](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/CHANGELOG.en.md): Release notes
+- [SECURITY](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/SECURITY.md): 漏洞私下回報管道、支援版本與回報範圍 / Private vulnerability reporting, supported versions and scope
+- [ACCESSIBILITY](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/ACCESSIBILITY.md): 無障礙支援、支援環境、已知限制與回報方式 / Accessibility support, environments, known limitations and how to report barriers
 - [ADR-001 Client-side data security](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/docs/adr/ADR-001-local-security-validation.en.md): English version of ADR-001
 - [scripts/build-banks.js](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/scripts/build-banks.js): 產生與檢查題庫目錄統計 / Generates and checks catalog statistics
 - [package.json](https://raw.githubusercontent.com/Scorpio-meow/Examination-System/HEAD/package.json): 開發腳本，沒有任何依賴 / Development scripts with no dependencies

@@ -1,0 +1,53 @@
+name: 功能建議 / Feature request
+description: 建議新功能、改善現有功能或新增題庫 / Suggest a new feature, an improvement or a new question bank
+title: "[功能] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        本系統定位為純前端自學工具，題庫與批改都在瀏覽器中，不提供帳號、伺服器端儲存或防弊功能。
+        This is a client-side self-study tool. Banks and grading live in the browser, so accounts, server-side storage and anti-cheating features are out of scope.
+  - type: dropdown
+    id: area
+    attributes:
+      label: 相關範圍 / Area
+      options:
+        - 作答與練習 / Answering and practice
+        - 結果與歷史紀錄 / Results and history
+        - 題庫（新增或擴充） / Question banks (new or expanded)
+        - 介面與無障礙 / Interface and accessibility
+        - 匯出 / Export
+        - 其他 / Other
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 想解決的問題 / Problem
+      description: 目前遇到什麼不便？ / What is inconvenient today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建議的做法 / Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 考慮過的替代方案 / Alternatives considered
+  - type: textarea
+    id: bank-source
+    attributes:
+      label: 題庫來源與授權 / Bank source and rights
+      description: 建議新增題庫時填寫：題目來源、年度，以及是否可公開 / For new banks, describe where the questions come from, the year, and whether they may be published
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認事項 / Checklist
+      options:
+        - label: 我已搜尋過既有 Issue，沒有重複的建議 / I searched existing issues and found no duplicate
+          required: true
+        - label: 我願意協助實作這項功能 / I am willing to help implement this

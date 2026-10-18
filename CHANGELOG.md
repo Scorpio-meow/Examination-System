@@ -9,6 +9,14 @@
 
 ---
 
+## [Unreleased]
+
+### 新增 (Added)
+- **社群文件**：新增貢獻指南 [CONTRIBUTING.md](CONTRIBUTING.md)、改編自 Contributor Covenant 3.0 的行為準則 [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)、安全政策 [SECURITY.md](SECURITY.md) 與無障礙聲明 [ACCESSIBILITY.md](ACCESSIBILITY.md)（中英文）。
+- **Issue 與 Pull Request 範本**：新增錯誤回報、題目錯誤回報、功能建議與無障礙問題回報四種 Issue 表單，以及 Pull Request 範本。
+
+---
+
 ## [4.0.0] - 2026-10-09
 
 全面重構介面與程式架構，處理 v3.5.2 UI/UX 檢查發現的 6 項 P0 與 31 項 P1–P3 問題。設計決策請參閱 [ADR-002](docs/adr/ADR-002-frontend-architecture.md)。

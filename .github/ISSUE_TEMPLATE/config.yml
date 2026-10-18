@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 回報安全性漏洞 / Report a security vulnerability
+    url: https://github.com/Scorpio-meow/Examination-System/security/advisories/new
+    about: 請勿開公開 Issue，改用私下回報 / Do not open a public issue; report it privately instead
+  - name: 使用說明與常見問題 / Documentation and FAQ
+    url: https://github.com/Scorpio-meow/Examination-System#readme
+    about: 開 Issue 前，可先查看 README 的疑難排解與常見問題 / Check the troubleshooting and FAQ sections in the README before opening an issue

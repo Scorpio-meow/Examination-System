@@ -1,0 +1,60 @@
+name: 題目錯誤回報 / Question error
+description: 題目、選項、答案或解析有誤 / A question, option, answer or explanation is wrong
+title: "[題目] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請附上可查證的依據，維護者確認後才會修改題庫。
+        Please include a verifiable source. The bank is only changed after the maintainer confirms it.
+  - type: input
+    id: bank
+    attributes:
+      label: 題庫 / Question bank
+      description: 題庫卡片上的名稱或 `json/` 中的檔名 / The name on the bank card or the file name in `json/`
+      placeholder: L12 · A 卷 / IPAS-AI-L12-A.json
+    validations:
+      required: true
+  - type: input
+    id: question-id
+    attributes:
+      label: 題目 ID / Question ID
+      description: 結果頁匯出的 CSV 或 JSON 中的「ID」欄位；找不到時可留空 / The "ID" column in the CSV or JSON exported from the result page; leave empty if you cannot find it
+  - type: textarea
+    id: question
+    attributes:
+      label: 題目內容 / Question text
+      description: 貼上題目與選項全文 / Paste the full question and its options
+    validations:
+      required: true
+  - type: checkboxes
+    id: error-type
+    attributes:
+      label: 錯誤類型 / Type of error
+      options:
+        - label: 答案錯誤 / Wrong answer
+        - label: 選項錯誤或缺漏 / Wrong or missing option
+        - label: 題目錯字或敘述不清 / Typo or unclear wording
+        - label: 解析錯誤或缺漏 / Wrong or missing explanation
+        - label: 其他 / Other
+  - type: textarea
+    id: correction
+    attributes:
+      label: 建議的修正 / Suggested correction
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: 依據來源 / Source
+      description: 官方公告、教材名稱與頁碼、法規條文或其他可查證的資料 / An official announcement, textbook title and page, legal provision or other verifiable reference
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 確認事項 / Checklist
+      options:
+        - label: 我已確認這題在最新的線上版仍然有誤 / I confirmed the question is still wrong on the latest live site
+          required: true
