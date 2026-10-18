@@ -1757,7 +1757,12 @@
     font-weight: 700;
   }
 
-  .saq__actions {
+  .choice {
+    display: grid;
+    gap: var(--sp-4);
+  }
+
+  .answer-actions {
     display: flex;
     flex-wrap: wrap;
     gap: var(--sp-2);

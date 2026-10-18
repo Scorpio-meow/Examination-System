@@ -1,8 +1,8 @@
 # 貢獻指南 (Contributing)
 
-[English Version](CONTRIBUTING.en.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.en.md)
 
-感謝你願意協助改善考試系統！本專案是由個人維護的純前端自學練習工具，歡迎回報問題、修正題目、改善無障礙與提交程式碼。參與本專案即表示你同意遵守[行為準則](CODE_OF_CONDUCT.md)。
+感謝你願意協助改善考試系統！本專案是由個人維護的純前端自學練習工具，歡迎回報問題、修正題目、改善無障礙與提交程式碼。參與本專案即表示你同意遵守[行為準則](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.md)。
 
 ---
 
@@ -25,9 +25,9 @@
 |----------|------|
 | 回報程式錯誤 | [錯誤回報](https://github.com/Scorpio-meow/Examination-System/issues/new?template=bug_report.yml) |
 | 回報題目、答案或解析錯誤 | [題目錯誤回報](https://github.com/Scorpio-meow/Examination-System/issues/new?template=question_error.yml) |
-| 回報無障礙障礙 | [無障礙問題回報](https://github.com/Scorpio-meow/Examination-System/issues/new?template=accessibility.yml)，並參閱[無障礙聲明](ACCESSIBILITY.md) |
+| 回報無障礙障礙 | [無障礙問題回報](https://github.com/Scorpio-meow/Examination-System/issues/new?template=accessibility.yml)，並參閱[無障礙聲明](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.md) |
 | 建議新功能或新題庫 | [功能建議](https://github.com/Scorpio-meow/Examination-System/issues/new?template=feature_request.yml) |
-| 回報安全性漏洞 | **請勿開公開 Issue**，依[安全政策](SECURITY.md)私下回報 |
+| 回報安全性漏洞 | **請勿開公開 Issue**，依[安全政策](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/SECURITY.md)私下回報 |
 | 修正程式或文件 | 依下方[Pull Request 流程](#pull-request-流程)提交 |
 
 開 Issue 前請先搜尋[既有 Issue](https://github.com/Scorpio-meow/Examination-System/issues?q=is%3Aissue)，避免重複。新功能、架構調整或新增題庫等較大的變更，請先開 Issue 討論方向，確認後再動工。
@@ -39,7 +39,7 @@
 網站本身沒有建置步驟，也沒有任何需要安裝的依賴套件。開發只需要：
 
 - [Bun](https://bun.sh/)：執行單元測試與題庫統計腳本。
-- 任一靜態網頁伺服器：瀏覽器不允許在 `file://` 下載入 ES modules 與題庫 JSON，啟動方式請參閱 [README 快速開始](../README.md#快速開始)。
+- 任一靜態網頁伺服器：瀏覽器不允許在 `file://` 下載入 ES modules 與題庫 JSON，啟動方式請參閱 [README 快速開始](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/README.md#快速開始)。
 
 提交前請確認下列指令都通過：
 
@@ -55,7 +55,7 @@ bun run check:banks
 
 ## 程式慣例
 
-完整的設計決策請參閱 [ADR-001](../docs/adr/ADR-001-local-security-validation.md) 與 [ADR-002](../docs/adr/ADR-002-frontend-architecture.md)。
+完整的設計決策請參閱 [ADR-001](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-001-local-security-validation.md) 與 [ADR-002](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-002-frontend-architecture.md)。
 
 ### 架構
 
@@ -73,7 +73,7 @@ bun run check:banks
 
 - 顏色使用 `style.css` 的 token，淺色與深色都要定義，並符合 WCAG AA 對比。
 - 觸控目標至少 44px；動畫放在 `@media (prefers-reduced-motion: no-preference)` 中。
-- 互動元件必須能只用鍵盤操作，焦點清楚可見；新增單鍵快捷鍵時要能在進階設定關閉。詳見[無障礙聲明](ACCESSIBILITY.md)。
+- 互動元件必須能只用鍵盤操作，焦點清楚可見；新增單鍵快捷鍵時要能在進階設定關閉。詳見[無障礙聲明](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.md)。
 
 ### 風格
 
@@ -85,7 +85,7 @@ bun run check:banks
 
 ### 新增題庫
 
-1. 依 [README 資料結構規範](../README.md#資料結構規範)將題庫 JSON 放入 `json/`。檔名必須符合 `^[A-Za-z0-9][A-Za-z0-9 _.-]*\.json$`。
+1. 依 [README 資料結構規範](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/README.md#資料結構規範)將題庫 JSON 放入 `json/`。檔名必須符合 `^[A-Za-z0-9][A-Za-z0-9 _.-]*\.json$`。
 2. 在 `json/banks.json` 的 `banks` 加入一筆資料（`file`、`group`、`title`、`shortTitle`，可選 `subtitle`）。
 3. 執行 `bun run build:banks` 產生題數統計，並確認沒有出現警告。
 
@@ -110,7 +110,7 @@ bun run build:banks
 ## 文件
 
 - **中英雙語**：README、CHANGELOG、ADR 與本指南都有中文版與 `.en.md` 英文版，修改其中一份時請同步更新另一份。若無法撰寫另一種語言，請在 Pull Request 中說明，由維護者補上。
-- **更新日誌**：使用者看得到的變更，記錄在 [CHANGELOG.md](../CHANGELOG.md) 的 `[Unreleased]` 區塊，格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)。
+- **更新日誌**：使用者看得到的變更，記錄在 [CHANGELOG.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.md) 的 `[Unreleased]` 區塊，格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-TW/1.0.0/)。
 - **架構決策**：影響整體架構的決策，請在 `docs/adr/` 新增 ADR，沿用既有 ADR 的「狀態、上下文、決策、結果與權衡」結構。
 
 ---
@@ -148,4 +148,4 @@ bun run build:banks
 
 ## 授權
 
-你提交的程式碼與自行撰寫的內容（例如解析與文件），皆依本專案的 [MIT License](../LICENSE) 釋出。轉載自官方公告的題目，權利仍屬原權利人，請在 Pull Request 中註明來源。[行為準則](CODE_OF_CONDUCT.md)改編自 Contributor Covenant，另依 CC BY-SA 4.0 授權。
+你提交的程式碼與自行撰寫的內容（例如解析與文件），皆依本專案的 [MIT License](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/LICENSE) 釋出。轉載自官方公告的題目，權利仍屬原權利人，請在 Pull Request 中註明來源。[行為準則](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.md)改編自 Contributor Covenant，另依 CC BY-SA 4.0 授權。

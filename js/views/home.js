@@ -5,7 +5,7 @@ import { bankStats } from '../history.js';
 const MODE_LABELS = Object.freeze({ exam: '模擬考', practice: '練習' });
 const MODE_HINTS = Object.freeze({
     exam: '交卷後才顯示對錯與解析，交卷前都能修改答案。',
-    practice: '每題作答後立即顯示對錯與解析，答案會鎖定。'
+    practice: '選好答案後按「核對答案」顯示對錯與解析，核對前都能更換答案。'
 });
 export function bankMetaText(bank) {
     const parts = [`${bank.questionCount} 題`];

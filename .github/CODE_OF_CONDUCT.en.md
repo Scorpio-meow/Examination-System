@@ -1,6 +1,6 @@
 # Contributor Covenant 3.0 Code of Conduct
 
-[繁體中文版](CODE_OF_CONDUCT.md)
+[繁體中文版](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT.md)
 
 ## Our Pledge
 

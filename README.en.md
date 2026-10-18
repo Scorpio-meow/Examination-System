@@ -133,7 +133,7 @@ flowchart TD
 | Feature | Description |
 |---------|-------------|
 | Bank Cards | 11 banks grouped into ERP, iPAS AI and Management & Finance; each card shows a short name, question count, question types, whether explanations are included, and the last and best scores |
-| Two Modes | "Exam" reveals answers after submission; "Practice" shows right or wrong and the explanation immediately after each answer and then locks it |
+| Two Modes | "Exam" reveals answers after submission; "Practice" shows right or wrong and the explanation as soon as you press 「核對答案」 ("Check answer") or <kbd>Enter</kbd>. The answer can be changed until it is checked and is locked afterwards |
 | Flexible Drawing | 10 / 20 / 50 / all / custom question counts; choices larger than the bank are hidden, and the start button states the count (「開始 20 題模擬考」) |
 | Shuffled Questions & Options | Questions and options can be shuffled; the correct answer is re-mapped after shuffling options |
 | Flags & Question Map | Press <kbd>F</kbd> to flag a question; the question map shows current, answered, flagged and unanswered questions and can filter to unanswered or flagged ones |
@@ -234,7 +234,7 @@ The color scheme preference is stored separately in `color-scheme` and is writte
 |-------------|---------|--------|
 | <kbd>1</kbd> / <kbd>2</kbd> / <kbd>3</kbd> / <kbd>4</kbd> | Single choice | Select option A / B / C / D |
 | <kbd>←</kbd> / <kbd>→</kbd> | Exam page | Previous / next question |
-| <kbd>Enter</kbd> | Exam page | Goes to the next question when focus is not on a button or link; activates the focused button otherwise. Never submits the exam |
+| <kbd>Enter</kbd> | Exam page | When focus is not on a button or link, checks the answer in practice mode if one is selected but not yet checked, and otherwise goes to the next question; activates the focused button otherwise. Never submits the exam |
 | <kbd>F</kbd> | Exam page | Flag or unflag the current question |
 | <kbd>?</kbd> | Exam page | Open the shortcut guide |
 | <kbd>Esc</kbd> | Dialogs | Close the dialog or the question sheet |
@@ -398,7 +398,7 @@ The interface is in Traditional Chinese.
 
 ### Practice Mode and Dark Theme
 
-![Practice mode showing the correct answer, the user's answer and the explanation right after answering](docs/screenshots/practice.webp)
+![Practice mode showing the correct answer, the user's answer and the explanation after checking](docs/screenshots/practice.webp)
 
 ![Practice mode in the dark theme](docs/screenshots/dark-practice.webp)
 
@@ -456,7 +456,7 @@ bun run check:banks
 ## FAQ
 
 **Q: What is the difference between exam and practice mode?**
-A: Exam mode shows right or wrong and the explanations only after submission, and answers can be changed until then. Practice mode shows the result and explanation right after each answer and locks it, which suits question-by-question study.
+A: Exam mode shows right or wrong and the explanations only after submission, and answers can be changed until then. Practice mode shows the result and explanation as soon as you press 「核對答案」 ("Check answer") or <kbd>Enter</kbd>. You can change the answer until it is checked, and it is locked afterwards, which suits question-by-question study.
 
 **Q: How are short answers scored?**
 A: The system first runs a lenient match that ignores full-width versus half-width forms, spaces, letter case and trailing punctuation. Matching answers count as correct; the rest are marked as pending self-grade, and the result page shows your answer next to the reference answer so you can choose 「我答對了」 / 「我答錯了」. The score and history update immediately.

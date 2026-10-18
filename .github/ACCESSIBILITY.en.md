@@ -1,6 +1,6 @@
 # Accessibility Statement
 
-[繁體中文版](ACCESSIBILITY.md)
+[繁體中文版](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.md)
 
 We want everyone to be able to practice and take mock exams with the Examination System, including people who use only a keyboard, screen readers, screen magnification, high contrast modes or reduced motion. This statement describes our goals, what is supported today, known limitations and how to report a barrier.
 
@@ -24,6 +24,7 @@ We want everyone to be able to practice and take mock exams with the Examination
 | Skip link | A 「跳到主要內容」 (skip to main content) link is provided at the top of the page |
 | Semantics | Options are native radio buttons inside a `fieldset` named by the question stem. The attempt history table has a caption |
 | Focus management | Focus moves to the page heading after each view change. Dialogs use the native `<dialog>` element and return focus to the triggering button when closed |
+| Answer confirmation | In practice mode, arrow keys, number keys and mouse clicks only select an answer; the result appears after pressing 「核對答案」 ("Check answer") or <kbd>Enter</kbd>. In mock exam mode, answers can be changed until submission, and submitting always opens a confirmation dialog (WCAG 3.3.4) |
 | Announcements | Question changes, practice-mode results, flagging and toast messages are announced through `aria-live` regions |
 | Question map | Each number is named "Question N, answered / unanswered / correct / wrong, flagged", and the current question is marked with `aria-current`. Correct and wrong answers also show check and cross icons, so color is not the only cue |
 | Chart alternative | The score trend chart can be explored with a mouse or the arrow keys, and the same data is also shown in a table |
@@ -34,7 +35,7 @@ We want everyone to be able to practice and take mock exams with the Examination
 
 ### How We Test
 
-For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](../docs/adr/ADR-002-frontend-architecture.en.md).
+For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-002-frontend-architecture.en.md).
 
 ---
 
@@ -53,10 +54,8 @@ The site relies on widely available web features such as `:has()`, `<dialog>` an
 ## Known Limitations
 
 - **Screen reader testing**: the documented checks are mostly automated. No complete walkthrough of every flow with NVDA, JAWS, VoiceOver or TalkBack has been recorded yet. Reports from assistive technology users are especially welcome.
-- **English terms in questions**: bank content is rendered as plain text, so English terms inside Chinese questions (for example RAG or Fine-tuning) are not marked with their language and screen readers may read them with a Chinese voice.
-- **Practice mode locks answers**: in practice mode, choosing an option immediately shows the result and locks the answer, so an accidental tap cannot be undone. If that is a concern, use the 「模擬考」 (mock exam) mode, where answers can be changed until you submit.
+- **English terms in questions**: almost all English in the banks consists of technical terms and product names (for example RAG, Fine-tuning or VS Code). WCAG 3.1.2 does not require marking the language of technical terms and proper names, so bank content carries no extra `lang` attributes and screen readers read these words with a Chinese voice. Please report any English passage that gets in the way of understanding.
 - **Interface language**: the interface is only available in Traditional Chinese.
-- **A web server is required**: opening `index.html` directly over `file://` cannot load the code or banks. Use the [live site](https://scorpio-meow.github.io/Examination-System/) or start a local server as described in [Quick Start in the README](../README.en.md#quick-start).
 
 ---
 
@@ -83,13 +82,13 @@ Please include as much of the following as you can:
 
 - The maintainer aims to reply within 7 days, confirming whether the issue can be reproduced, suggesting a workaround if one exists and outlining next steps.
 - Issues are prioritized by severity, and Critical issues are fixed first.
-- Fixes are recorded in [CHANGELOG.en.md](../CHANGELOG.en.md), and you will be notified in the issue.
+- Fixes are recorded in [CHANGELOG.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.en.md), and you will be notified in the issue.
 
 ---
 
 ## Ownership and Maintenance
 
-The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](CONTRIBUTING.en.md#styling-and-accessibility).
+The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.en.md#styling-and-accessibility).
 
 ---
 

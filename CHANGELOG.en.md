@@ -17,6 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Tidier root folder**: community docs now live in `.github/`, and the site icons `favicon-32.png`, `favicon-512.png`, `apple-touch-icon.png` and the source `favicon.png` moved to `assets/icons/`, with the paths in `index.html` updated.
+- **Practice mode: select, then check**: single-choice answers now show right or wrong and the explanation only after pressing 「核對答案」 ("Check answer") or <kbd>Enter</kbd>, and can be changed until then. Single-choice and short-answer questions share the same check flow, and the question map's "answered, not checked" legend now applies to single-choice questions too.
+
+### Fixed
+- **Keyboard answering in practice mode**: moving through options with the up and down arrow keys checked and locked the first option reached, so keyboard and screen reader users could not hear all options first. The select-then-check flow fixes this and meets the WCAG 3.3.4 requirement that answers can be changed before they are submitted.
+- **In-repo links in community docs**: the code of conduct, contributing, security and accessibility tabs on the GitHub repository page resolved relative links inside `.github/` incorrectly, so these links are now absolute URLs.
 
 ---
 

@@ -1,6 +1,6 @@
 # 無障礙聲明 (Accessibility Statement)
 
-[English Version](ACCESSIBILITY.en.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.en.md)
 
 我們希望每個人都能使用考試系統練習與模擬考，包括只使用鍵盤、使用螢幕閱讀器、放大畫面、高對比模式或減少動態效果的使用者。本文說明我們的目標、目前的支援情況、已知限制，以及回報障礙的方式。
 
@@ -24,6 +24,7 @@
 | 略過導覽 | 頁面開頭提供「跳到主要內容」連結 |
 | 語意結構 | 選項使用原生 radio，並放在以題幹命名的 `fieldset` 中；作答紀錄表格附有標題（caption） |
 | 焦點管理 | 換頁後焦點移到該頁標題；對話框使用原生 `<dialog>`，關閉後焦點回到原本的按鈕 |
+| 作答確認 | 練習模式用方向鍵、數字鍵或滑鼠都只會選取答案，按「核對答案」或 <kbd>Enter</kbd> 才顯示對錯；模擬考交卷前都能修改答案，交卷前一律開啟確認對話框（WCAG 3.3.4） |
 | 狀態通告 | 切換題目、練習模式的對錯、標記與 Toast 提示都會透過 `aria-live` 通告 |
 | 題號地圖 | 每個題號都有「第 N 題，已答／未答／答對／答錯，已標記」的名稱，目前題目以 `aria-current` 標示；答對與答錯另有勾與叉圖示，不只靠顏色區分 |
 | 圖表替代 | 歷史分數趨勢圖可用滑鼠或方向鍵查看每次分數，並另有表格呈現相同資料 |
@@ -34,7 +35,7 @@
 
 ### 驗收方式
 
-v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，結果為 0 違規；另以 E2E 測試與 Lighthouse 檢查主要流程，版面以 375px 寬的手機畫面驗收。詳見 [ADR-002](../docs/adr/ADR-002-frontend-architecture.md)。
+v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，結果為 0 違規；另以 E2E 測試與 Lighthouse 檢查主要流程，版面以 375px 寬的手機畫面驗收。詳見 [ADR-002](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-002-frontend-architecture.md)。
 
 ---
 
@@ -53,10 +54,8 @@ v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，�
 ## 已知限制
 
 - **螢幕閱讀器測試**：目前記錄的驗收以自動化工具為主，尚未記錄以 NVDA、JAWS、VoiceOver 或 TalkBack 完整走過所有流程的結果。若你在使用輔助科技時遇到問題，特別歡迎回報。
-- **題目中的英文術語**：題庫內容以純文字呈現，題目中夾雜的英文術語（例如 RAG、Fine-tuning）沒有另外標示語言，螢幕閱讀器可能以中文語音朗讀。
-- **練習模式會鎖定答案**：練習模式點選選項後立即顯示對錯，答案隨即鎖定，誤觸時無法更改。若擔心誤觸，請改用「模擬考」模式，交卷前都可以修改答案。
+- **題目中的英文術語**：題庫中的英文幾乎都是技術名詞與產品名稱（例如 RAG、Fine-tuning、VS Code）。WCAG 3.1.2 不要求標示技術名詞與專有名稱的語言，因此題庫內容沒有另外加上 `lang` 屬性，螢幕閱讀器會以中文語音朗讀這些詞。如果某段英文影響理解，歡迎回報。
 - **介面語言**：介面只提供繁體中文。
-- **必須透過網頁伺服器開啟**：直接以 `file://` 開啟 `index.html` 時無法載入程式與題庫，請使用[線上版](https://scorpio-meow.github.io/Examination-System/)或依 [README 快速開始](../README.md#快速開始)啟動本機伺服器。
 
 ---
 
@@ -83,13 +82,13 @@ v4.0.0 以 axe（WCAG 2.2 A／AA 與 best-practice 規則）掃描各畫面，�
 
 - 維護者會盡量在 7 天內回覆，說明是否能重現、可行的暫時替代方式，以及後續處理方向。
 - 依嚴重程度排定處理順序，「嚴重」等級的問題優先修正。
-- 修正後會在 [CHANGELOG.md](../CHANGELOG.md) 記錄，並在 Issue 中通知。
+- 修正後會在 [CHANGELOG.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.md) 記錄，並在 Issue 中通知。
 
 ---
 
 ## 維護與責任
 
-本專案由維護者 [@Scorpio-meow](https://github.com/Scorpio-meow) 負責無障礙問題的分類、追蹤與本文的更新。新的介面變更都應符合[貢獻指南](CONTRIBUTING.md#樣式與無障礙)中的無障礙要求。
+本專案由維護者 [@Scorpio-meow](https://github.com/Scorpio-meow) 負責無障礙問題的分類、追蹤與本文的更新。新的介面變更都應符合[貢獻指南](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING.md#樣式與無障礙)中的無障礙要求。
 
 ---
 

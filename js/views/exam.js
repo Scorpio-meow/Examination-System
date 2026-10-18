@@ -88,12 +88,11 @@ export function createExamView(ctx) {
         function build() {
             const name = `qmap-filter-${inSheet ? 'sheet' : 'panel'}`;
             const practice = session.mode === 'practice';
-            const hasSaq = session.questions.some(question => question.type === 'saq');
             const legend = h('div', { class: 'qmap__legend', 'aria-hidden': 'true' },
                 h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--current' }), '目前'),
                 practice ? h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--correct' }), '答對') : null,
                 practice ? h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--wrong' }), '答錯') : null,
-                !practice || hasSaq ? h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--answered' }), practice ? '已作答未核對' : '已答') : null,
+                h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--answered' }), practice ? '已作答未核對' : '已答'),
                 h('span', {}, h('i', { class: 'qmap__swatch qmap__swatch--flag' }), '標記'),
                 h('span', {}, h('i', { class: 'qmap__swatch' }), '未答'));
             counts = {};
@@ -172,6 +171,7 @@ export function createExamView(ctx) {
         const parts = [];
         if (question.type === 'single') {
             parts.push(['按 ', h('kbd', { text: '1' }), '–', h('kbd', { text: String(question.options.length) }), ' 作答']);
+            if (session.mode === 'practice' && !isRevealed(session, question.key)) parts.push([h('kbd', { text: 'Enter' }), ' 核對']);
         }
         parts.push([h('kbd', { text: 'F' }), ' 標記'], [h('kbd', { text: '?' }), ' 快捷鍵']);
         hint.replaceChildren(...parts.flatMap((part, index) => (index === 0 ? part : [' · ', ...part])));
@@ -196,7 +196,8 @@ export function createExamView(ctx) {
             fieldset.append(option);
         });
         fieldset.addEventListener('change', event => chooseOption(event.target.value, { viaKey: false }));
-        return fieldset;
+        if (session.mode !== 'practice' || locked) return fieldset;
+        return h('div', { class: 'choice' }, fieldset, checkControls(question));
     }
     function renderSaq(question) {
         const locked = session.mode === 'practice' && isRevealed(session, question.key);
@@ -204,33 +205,48 @@ export function createExamView(ctx) {
         textarea.value = session.answers[question.key] || '';
         textarea.readOnly = locked;
         const wrap = h('div', { class: 'saq' }, h('label', { class: 'saq__label', for: 'saq-input', text: locked ? '你的答案（已核對）' : '你的答案' }), textarea);
-        if (session.mode === 'practice' && !locked) {
-            const check = h('button', { class: 'btn', type: 'button' }, icon('check'), '核對答案');
-            check.disabled = !isAnswered(question, textarea.value);
-            check.addEventListener('click', () => {
-                reveal(session, question.key);
-                persistNow();
-                renderQuestion({ focus: false });
-                renderStatus();
-                announce('已顯示參考答案，請自評你的答案');
-                const firstGrade = $('[data-grade]', feedbackArea);
-                if (firstGrade) {
-                    firstGrade.focus();
-                } else {
-                    focusVisibleNext();
-                }
-            });
-            textarea.addEventListener('input', () => {
-                check.disabled = !isAnswered(question, textarea.value);
-            });
-            wrap.append(h('div', { class: 'saq__actions' }, check));
-        }
+        if (session.mode === 'practice' && !locked) wrap.append(checkControls(question));
         textarea.addEventListener('input', () => {
             setAnswer(session, question, textarea.value);
             persistSoon();
             renderStatus();
+            syncCheck(question);
         });
         return wrap;
+    }
+    function checkControls(question) {
+        const check = h('button', { class: 'btn', type: 'button', dataset: { check: '' } }, icon('check'), '核對答案');
+        check.disabled = !isAnswered(question, session.answers[question.key]);
+        check.addEventListener('click', checkAnswer);
+        return h('div', { class: 'answer-actions' }, check);
+    }
+    function syncCheck(question) {
+        const check = $('[data-check]', answerArea);
+        if (check) check.disabled = !isAnswered(question, session.answers[question.key]);
+    }
+    function canCheck(question) {
+        return session.mode === 'practice' && !isRevealed(session, question.key) && isAnswered(question, session.answers[question.key]);
+    }
+    function checkAnswer() {
+        const question = current();
+        if (!canCheck(question)) return;
+        reveal(session, question.key);
+        persistNow();
+        renderQuestion({ focus: false });
+        renderStatus();
+        if (question.type === 'single') {
+            const letter = session.answers[question.key];
+            announce(letter === question.answer ? '答對了' : `答錯了，正確答案是 ${question.answer}`);
+            focusVisibleNext();
+            return;
+        }
+        announce('已顯示參考答案，請自評你的答案');
+        const firstGrade = $('[data-grade]', feedbackArea);
+        if (firstGrade) {
+            firstGrade.focus();
+        } else {
+            focusVisibleNext();
+        }
     }
     function selfGradeControls(question) {
         const grade = session.selfGrades[question.key];
@@ -327,18 +343,10 @@ export function createExamView(ctx) {
     function chooseOption(letter, { viaKey }) {
         const question = current();
         if (!setAnswer(session, question, letter)) return;
-        if (session.mode === 'practice') {
-            reveal(session, question.key);
-            persistNow();
-            renderQuestion({ focus: false });
-            renderStatus();
-            announce(letter === question.answer ? '答對了' : `答錯了，正確答案是 ${question.answer}`);
-            focusVisibleNext();
-            return;
-        }
         persistNow();
         renderStatus();
-        if (viaKey) announce(`已選擇 ${letter}`);
+        syncCheck(question);
+        if (viaKey) announce(session.mode === 'practice' ? `已選擇 ${letter}，按 Enter 核對答案` : `已選擇 ${letter}`);
     }
     function selectByKey(letter) {
         const input = $(`input[name="answer"][value="${letter}"]`, answerArea);
@@ -397,7 +405,11 @@ export function createExamView(ctx) {
         if (event.key === 'Enter') {
             if (event.target.closest('button, a, summary')) return;
             event.preventDefault();
-            goTo(index + 1, { focusHeading: false });
+            if (canCheck(current())) {
+                checkAnswer();
+            } else {
+                goTo(index + 1, { focusHeading: false });
+            }
             return;
         }
         if (!ctx.config.shortcuts) return;
