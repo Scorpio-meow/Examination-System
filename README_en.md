@@ -4,11 +4,11 @@
 
 > A client-side practice and mock exam platform with zero runtime dependencies: start from a bank card in one click, choose between exam and practice modes, retry wrong answers, self-grade short answers, keep progress automatically, track score trends, switch between light and dark themes, and export results defensively.
 
-[![Version](https://img.shields.io/badge/Version-4.0.0-brightgreen?style=flat-square)](CHANGELOG.en.md)
+[![Version](https://img.shields.io/badge/Version-4.0.0-brightgreen?style=flat-square)](CHANGELOG_en.md)
 [![License](https://img.shields.io/badge/License-MIT-orange?style=flat-square)](LICENSE)
 [![Tech Stack](https://img.shields.io/badge/Stack-HTML5%20%7C%20CSS3%20%7C%20ES%20Modules-blue?style=flat-square)](https://developer.mozilla.org/en-US/)
 [![Dependencies](https://img.shields.io/badge/Runtime%20Dependencies-Zero%20Dependency-success?style=flat-square)](package.json)
-[![Accessibility](https://img.shields.io/badge/Accessibility-axe%20WCAG%202.2%20AA%200%20violations-purple?style=flat-square)](docs/adr/ADR-002-frontend-architecture.en.md)
+[![Accessibility](https://img.shields.io/badge/Accessibility-axe%20WCAG%202.2%20AA%200%20violations-purple?style=flat-square)](docs/adr/ADR-002-frontend-architecture_en.md)
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-brightgreen?style=flat-square&logo=github)](https://scorpio-meow.github.io/Examination-System/)
 [![Issues](https://img.shields.io/github/issues/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/issues)
 [![Pull Requests](https://img.shields.io/github/issues-pr/Scorpio-meow/Examination-System?style=flat-square&logo=github)](https://github.com/Scorpio-meow/Examination-System/pulls)
@@ -89,7 +89,7 @@ Use the `?bank=` parameter to preselect a bank, for example [`?bank=IPAS-AI-L12-
 
 ## Architecture & Data Flow
 
-The system is a serverless client-side application. ES modules separate the responsibilities, and hash routes switch between four views: home, exam, result and history. See [ADR-002: Front-end Rewrite](docs/adr/ADR-002-frontend-architecture.en.md) for the full design decisions.
+The system is a serverless client-side application. ES modules separate the responsibilities, and hash routes switch between four views: home, exam, result and history. See [ADR-002: Front-end Rewrite](docs/adr/ADR-002-frontend-architecture_en.md) for the full design decisions.
 
 ```mermaid
 flowchart TD
@@ -341,17 +341,17 @@ Examination-System/
 ├── scripts/build-banks.js      # Generates / checks catalog statistics
 ├── tests/                      # bun test unit tests
 ├── package.json                # Development scripts (no dependencies)
-├── CHANGELOG.md / CHANGELOG.en.md
-├── README.md / README.en.md
+├── CHANGELOG.md / CHANGELOG_en.md
+├── README.md / README_en.md
 ├── llms.txt                    # Project index for LLMs and AI tools
 ├── LICENSE                     # MIT License
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # Issue forms: bug, question error, feature, accessibility
 │   ├── pull_request_template.md # Pull request template
-│   ├── CONTRIBUTING.md / en/CONTRIBUTING.md
-│   ├── CODE_OF_CONDUCT.md / en/CODE_OF_CONDUCT.md
-│   ├── SECURITY.md / en/SECURITY.md
-│   └── ACCESSIBILITY.md / en/ACCESSIBILITY.md
+│   ├── CONTRIBUTING.md / CONTRIBUTING_en.md
+│   ├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT_en.md
+│   ├── SECURITY.md / SECURITY_en.md
+│   └── ACCESSIBILITY.md / ACCESSIBILITY_en.md
 └── docs/
     ├── screenshots/            # Interface screenshots (WebP)
     └── adr/                    # Architecture Decision Records ADR-001, ADR-002 (Chinese & English)
@@ -361,7 +361,7 @@ Examination-System/
 
 ## Security & Defensive Architecture
 
-See [ADR-001: Client-Side Data Security and Defensive Verification Mechanism](docs/adr/ADR-001-local-security-validation.en.md) and [ADR-002: Front-end Rewrite](docs/adr/ADR-002-frontend-architecture.en.md) for the full analysis.
+See [ADR-001: Client-Side Data Security and Defensive Verification Mechanism](docs/adr/ADR-001-local-security-validation_en.md) and [ADR-002: Front-end Rewrite](docs/adr/ADR-002-frontend-architecture_en.md) for the full analysis.
 
 ```mermaid
 graph LR
@@ -477,7 +477,7 @@ A: Follow three steps:
 
 ## Changelog
 
-Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
+Detailed release notes are tracked in [CHANGELOG_en.md](CHANGELOG_en.md).
 
 - **Current Version**: `v4.0.0` (2026-10-09)
   - New interface and design system: bank cards, start panel, light and dark themes
@@ -495,7 +495,7 @@ Detailed release notes are tracked in [CHANGELOG.en.md](CHANGELOG.en.md).
 
 ## Contribution Guide
 
-We welcome contributions to question banks, architecture and features. See [en/CONTRIBUTING.md](.github/en/CONTRIBUTING.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](.github/en/CODE_OF_CONDUCT.md). Report security vulnerabilities privately as described in the [Security policy](.github/en/SECURITY.md), and see the [Accessibility statement](.github/en/ACCESSIBILITY.md) for supported environments and how to report barriers.
+We welcome contributions to question banks, architecture and features. See [CONTRIBUTING_en.md](.github/CONTRIBUTING_en.md) for the full workflow, coding conventions and bank rules. Everyone taking part must follow the [Code of Conduct](.github/CODE_OF_CONDUCT_en.md). Report security vulnerabilities privately as described in the [Security policy](.github/SECURITY_en.md), and see the [Accessibility statement](.github/ACCESSIBILITY_en.md) for supported environments and how to report barriers.
 
 1. Fork this repository to your GitHub account.
 2. Create a feature branch: `git checkout -b feature/your-feature-name`.

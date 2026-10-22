@@ -1,6 +1,6 @@
 # ADR-002: 前端重構——模組化、題庫目錄與無障礙互動模型
 
-[English Version](ADR-002-frontend-architecture.en.md)
+[English Version](ADR-002-frontend-architecture_en.md)
 
 ## 狀態
 已接受 (Accepted)，v4.0.0 起生效。題庫白名單的實作方式取代 [ADR-001](ADR-001-local-security-validation.md) 第 1 點，其餘防禦機制沿用並延伸。

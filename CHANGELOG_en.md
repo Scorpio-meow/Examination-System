@@ -12,12 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- **Community docs**: added the contributing guide [en/CONTRIBUTING.md](.github/en/CONTRIBUTING.md), a code of conduct adapted from Contributor Covenant 3.0 [en/CODE_OF_CONDUCT.md](.github/en/CODE_OF_CONDUCT.md), the security policy [en/SECURITY.md](.github/en/SECURITY.md) and the accessibility statement [en/ACCESSIBILITY.md](.github/en/ACCESSIBILITY.md), each in Chinese and English.
+- **Community docs**: added the contributing guide [CONTRIBUTING_en.md](.github/CONTRIBUTING_en.md), a code of conduct adapted from Contributor Covenant 3.0 [CODE_OF_CONDUCT_en.md](.github/CODE_OF_CONDUCT_en.md), the security policy [SECURITY_en.md](.github/SECURITY_en.md) and the accessibility statement [ACCESSIBILITY_en.md](.github/ACCESSIBILITY_en.md), each in Chinese and English.
 - **Issue and pull request templates**: added four issue forms (bug report, question error, feature request and accessibility issue) and a pull request template.
 
 ### Changed
 - **Tidier root folder**: community docs now live in `.github/`, and the site icons `favicon-32.png`, `favicon-512.png`, `apple-touch-icon.png` and the source `favicon.png` moved to `assets/icons/`, with the paths in `index.html` updated.
 - **Practice mode: select, then check**: single-choice answers now show right or wrong and the explanation only after pressing 「核對答案」 ("Check answer") or <kbd>Enter</kbd>, and can be changed until then. Single-choice and short-answer questions share the same check flow, and the question map's "answered, not checked" legend now applies to single-choice questions too.
+- **`_en` naming for translations**: `README.en.md`, `CHANGELOG.en.md` and the two English ADRs are renamed to `_en.md`, and the English community docs move from `.github/en/` to `.github/` with an `_en` suffix (for example `.github/CONTRIBUTING_en.md`), with all links updated.
 
 ### Fixed
 - **Keyboard answering in practice mode**: moving through options with the up and down arrow keys checked and locked the first option reached, so keyboard and screen reader users could not hear all options first. The select-then-check flow fixes this and meets the WCAG 3.3.4 requirement that answers can be changed before they are submitted.
@@ -27,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - 2026-10-09
 
-A full rewrite of the interface and code architecture that resolves the 6 P0 and 31 P1–P3 issues found in the v3.5.2 UI/UX review. See [ADR-002](docs/adr/ADR-002-frontend-architecture.en.md) for the design decisions. The interface is in Traditional Chinese, so UI labels are quoted in Chinese with an English translation.
+A full rewrite of the interface and code architecture that resolves the 6 P0 and 31 P1–P3 issues found in the v3.5.2 UI/UX review. See [ADR-002](docs/adr/ADR-002-frontend-architecture_en.md) for the design decisions. The interface is in Traditional Chinese, so UI labels are quoted in Chinese with an English translation.
 
 ### Added
 - **Bank Cards**: The home page lists the 11 banks in three groups (ERP, iPAS AI Application Planner, Management & Finance); each card shows a short name, question count, question types, whether explanations are included, and the last and best scores.
@@ -51,7 +52,7 @@ A full rewrite of the interface and code architecture that resolves the 6 P0 and
 - **Load Errors with Retry**: When the bank catalog or a bank fails to load, the reason (connection failure, HTTP status, invalid JSON, no usable questions) appears with a retry button.
 - **Bank Catalog `json/banks.json`**: One place for groups, names and question statistics; `bun run build:banks` generates the statistics and `bun run check:banks` reports stale ones.
 - **Unit Tests**: 98 `bun test` cases covering bank normalization, the catalog whitelist, storage validation and legacy migration, drawing and grading, history and CSV protection.
-- **Architecture Decision Record**: Added [ADR-002](docs/adr/ADR-002-frontend-architecture.en.md) in Chinese and English.
+- **Architecture Decision Record**: Added [ADR-002](docs/adr/ADR-002-frontend-architecture_en.md) in Chinese and English.
 
 ### Changed
 - **Code Architecture**: The single 1,700-line `app.js` is split into ES modules: the `app.js` entry point, 10 shared modules in `js/` and 4 view modules in `js/views/`. There are still no runtime dependencies, and the site still deploys directly to GitHub Pages.

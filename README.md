@@ -1,6 +1,6 @@
 # 考試系統 (Examination System)
 
-[English Version](README.en.md)
+[English Version](README_en.md)
 
 > 純前端、零執行期依賴的線上練習與模擬考平台：題庫卡片一鍵開始，支援模擬考與練習兩種模式、錯題重練、簡答題自評、進度自動保存、歷史趨勢、深淺色主題與防禦性資料匯出。
 
@@ -339,17 +339,17 @@ Examination-System/
 ├── scripts/build-banks.js      # 產生／檢查題庫目錄統計
 ├── tests/                      # bun test 單元測試
 ├── package.json                # 開發腳本（無任何依賴）
-├── CHANGELOG.md / CHANGELOG.en.md
-├── README.md / README.en.md
+├── CHANGELOG.md / CHANGELOG_en.md
+├── README.md / README_en.md
 ├── llms.txt                    # 給大型語言模型與 AI 工具的專案索引
 ├── LICENSE                     # MIT 授權條款
 ├── .github/
 │   ├── ISSUE_TEMPLATE/         # Issue 表單：錯誤、題目錯誤、功能建議、無障礙
 │   ├── pull_request_template.md # Pull Request 範本
-│   ├── CONTRIBUTING.md / en/CONTRIBUTING.md
-│   ├── CODE_OF_CONDUCT.md / en/CODE_OF_CONDUCT.md
-│   ├── SECURITY.md / en/SECURITY.md
-│   └── ACCESSIBILITY.md / en/ACCESSIBILITY.md
+│   ├── CONTRIBUTING.md / CONTRIBUTING_en.md
+│   ├── CODE_OF_CONDUCT.md / CODE_OF_CONDUCT_en.md
+│   ├── SECURITY.md / SECURITY_en.md
+│   └── ACCESSIBILITY.md / ACCESSIBILITY_en.md
 └── docs/
     ├── screenshots/            # 介面截圖 (WebP)
     └── adr/                    # 架構決策記錄 ADR-001、ADR-002（中英文）

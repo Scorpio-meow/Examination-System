@@ -1,8 +1,8 @@
 # 貢獻者公約 3.0 行為準則 (Code of Conduct)
 
-[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CODE_OF_CONDUCT.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT_en.md)
 
-> 本文改寫自 Contributor Covenant 3.0 官方簡體中文譯本，轉為繁體中文與臺灣用語。Contributor Covenant 3.0 尚無官方繁體中文譯本，若中英文意思不一致，以[英文版](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CODE_OF_CONDUCT.md)為準。
+> 本文改寫自 Contributor Covenant 3.0 官方簡體中文譯本，轉為繁體中文與臺灣用語。Contributor Covenant 3.0 尚無官方繁體中文譯本，若中英文意思不一致，以[英文版](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CODE_OF_CONDUCT_en.md)為準。
 
 ## 我們的承諾
 

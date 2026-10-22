@@ -1,6 +1,6 @@
 # 更新日誌 (Changelog)
 
-[English Version](CHANGELOG.en.md)
+[English Version](CHANGELOG_en.md)
 
 本專案的所有重要變更均記錄於本檔案中。
 
@@ -18,6 +18,7 @@
 ### 改進 (Changed)
 - **整理根目錄**：社群文件集中到 `.github/`；網站圖示 `favicon-32.png`、`favicon-512.png`、`apple-touch-icon.png` 與原始檔 `favicon.png` 移到 `assets/icons/`，`index.html` 同步更新路徑。
 - **練習模式先選再核對**：單選題選好答案後按「核對答案」或 <kbd>Enter</kbd> 才顯示對錯與解析，核對前可以更換答案；與簡答題共用同一個核對流程，題號地圖的「已作答未核對」圖例也適用於單選題。
+- **翻譯檔改用 `_en` 命名**：`README.en.md`、`CHANGELOG.en.md` 與兩份 ADR 的英文版改為 `_en.md`，`.github/en/` 的英文社群文件改放 `.github/` 並加上 `_en`（例如 `.github/CONTRIBUTING_en.md`），站內連結一併更新。
 
 ### 修正 (Fixed)
 - **練習模式的鍵盤作答**：用上下方向鍵瀏覽選項時，會直接核對並鎖定第一個移到的選項，鍵盤與螢幕閱讀器使用者無法先聽完所有選項；改為先選再核對後，符合 WCAG 3.3.4 作答前可更改的要求。

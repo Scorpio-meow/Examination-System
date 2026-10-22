@@ -3,7 +3,7 @@
 [繁體中文版](ADR-002-frontend-architecture.md)
 
 ## Status
-Accepted, effective from v4.0.0. The bank whitelist implementation supersedes item 1 of [ADR-001](ADR-001-local-security-validation.en.md); the remaining defenses are kept and extended.
+Accepted, effective from v4.0.0. The bank whitelist implementation supersedes item 1 of [ADR-001](ADR-001-local-security-validation_en.md); the remaining defenses are kept and extended.
 
 ## Context
 The UI/UX review of v3.5.2 found 6 flow-breaking P0 issues and 31 P1–P3 issues. Most of them came from the architecture:

@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         感謝你協助改善無障礙！目前的支援範圍與已知限制請參閱 [ACCESSIBILITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY.md)。不方便填寫表單時，也可以寄信至 yao921024@gmail.com，主旨以 `[Accessibility]` 開頭。
-        Thank you for helping improve accessibility! See [en/ACCESSIBILITY.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/ACCESSIBILITY.md) for current support and known limitations. If this form is hard to use, email yao921024@gmail.com with a subject line starting with `[Accessibility]`.
+        Thank you for helping improve accessibility! See [ACCESSIBILITY_en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY_en.md) for current support and known limitations. If this form is hard to use, email yao921024@gmail.com with a subject line starting with `[Accessibility]`.
   - type: textarea
     id: barrier
     attributes:

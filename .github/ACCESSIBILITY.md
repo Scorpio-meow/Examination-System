@@ -1,6 +1,6 @@
 # 無障礙聲明 (Accessibility Statement)
 
-[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/ACCESSIBILITY.md)
+[English Version](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/ACCESSIBILITY_en.md)
 
 我們希望每個人都能使用考試系統練習與模擬考，包括只使用鍵盤、使用螢幕閱讀器、放大畫面、高對比模式或減少動態效果的使用者。本文說明我們的目標、目前的支援情況、已知限制，以及回報障礙的方式。
 

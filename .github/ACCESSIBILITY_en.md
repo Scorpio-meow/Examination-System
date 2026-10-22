@@ -35,7 +35,7 @@ We want everyone to be able to practice and take mock exams with the Examination
 
 ### How We Test
 
-For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-002-frontend-architecture.en.md).
+For v4.0.0, every view was scanned with axe (WCAG 2.2 A / AA and best-practice rules) with 0 violations. The main flows were also checked with E2E tests and Lighthouse, and the layout was accepted at a 375px mobile width. See [ADR-002](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/docs/adr/ADR-002-frontend-architecture_en.md).
 
 ---
 
@@ -82,13 +82,13 @@ Please include as much of the following as you can:
 
 - The maintainer will reply as soon as possible, confirming whether the issue can be reproduced, suggesting a workaround if one exists and outlining next steps.
 - Issues are prioritized by severity, and Critical issues are fixed first.
-- Fixes are recorded in [CHANGELOG.en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG.en.md), and you will be notified in the issue.
+- Fixes are recorded in [CHANGELOG_en.md](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/CHANGELOG_en.md), and you will be notified in the issue.
 
 ---
 
 ## Ownership and Maintenance
 
-The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/en/CONTRIBUTING.md#styling-and-accessibility).
+The maintainer, [@Scorpio-meow](https://github.com/Scorpio-meow), triages and tracks accessibility issues and keeps this statement up to date. All interface changes are expected to meet the accessibility requirements in the [Contributing guide](https://github.com/Scorpio-meow/Examination-System/blob/HEAD/.github/CONTRIBUTING_en.md#styling-and-accessibility).
 
 ---
 
